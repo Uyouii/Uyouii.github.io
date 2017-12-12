@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="libevent,c++,network," />
 
 
 
@@ -94,13 +94,22 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Keep Learning">
-<meta property="og:url" content="https://uyouii.github.io/index.html">
+<meta name="description" content="最近了解了下libevent，简单的实现了一个客户端服务端通信的demo，服务端会转发客户端发送的数据包给其他客户端，并测试每秒转发的数据量和数据包的个数。 包格式简单的定义了数据包头的格式，12个字节，包含三个变量，分别是targetID（目的地的id），sourceID（源id）和length（数据的长度，不包含h">
+<meta name="keywords" content="libevent,c++,network">
+<meta property="og:type" content="article">
+<meta property="og:title" content="libevent 服务端客户端 简单实例">
+<meta property="og:url" content="https://uyouii.github.io/2017/12/12/libevent-服务端客户端-简单实例/index.html">
 <meta property="og:site_name" content="Keep Learning">
+<meta property="og:description" content="最近了解了下libevent，简单的实现了一个客户端服务端通信的demo，服务端会转发客户端发送的数据包给其他客户端，并测试每秒转发的数据量和数据包的个数。 包格式简单的定义了数据包头的格式，12个字节，包含三个变量，分别是targetID（目的地的id），sourceID（源id）和length（数据的长度，不包含header的长度）。 暂时client的id分配由服务器分配，客户端编号从1开始">
 <meta property="og:locale" content="en">
+<meta property="og:image" content="https://uyouii.github.io/images/libevent%20server%201.PNG">
+<meta property="og:image" content="https://uyouii.github.io/images/lib%20event%20client1.PNG">
+<meta property="og:image" content="https://uyouii.github.io/images/libevent%20client%202.PNG">
+<meta property="og:updated_time" content="2017-12-12T04:44:44.695Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Keep Learning">
+<meta name="twitter:title" content="libevent 服务端客户端 简单实例">
+<meta name="twitter:description" content="最近了解了下libevent，简单的实现了一个客户端服务端通信的demo，服务端会转发客户端发送的数据包给其他客户端，并测试每秒转发的数据量和数据包的个数。 包格式简单的定义了数据包头的格式，12个字节，包含三个变量，分别是targetID（目的地的id），sourceID（源id）和length（数据的长度，不包含header的长度）。 暂时client的id分配由服务器分配，客户端编号从1开始">
+<meta name="twitter:image" content="https://uyouii.github.io/images/libevent%20server%201.PNG">
 
 
 
@@ -129,13 +138,13 @@
 
 
 
-  <link rel="canonical" href="https://uyouii.github.io/"/>
+  <link rel="canonical" href="https://uyouii.github.io/2017/12/12/libevent-服务端客户端-简单实例/"/>
 
 
 
 
 
-  <title>Keep Learning</title>
+  <title>libevent 服务端客户端 简单实例 | Keep Learning</title>
   
 
 
@@ -160,9 +169,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-   page-home 
- ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -245,9 +252,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -277,9 +284,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/12/12/libevent-服务端客户端-简单实例/" itemprop="url">libevent 服务端客户端 简单实例</a></h1>
+          <h1 class="post-title" itemprop="name headline">libevent 服务端客户端 简单实例</h1>
         
 
         <div class="post-meta">
@@ -329,9 +334,7 @@
       
 
       
-        
-          
-            <p>最近了解了下libevent，简单的实现了一个客户端服务端通信的demo，服务端会转发客户端发送的数据包给其他客户端，并测试每秒转发的数据量和数据包的个数。</p>
+        <p>最近了解了下libevent，简单的实现了一个客户端服务端通信的demo，服务端会转发客户端发送的数据包给其他客户端，并测试每秒转发的数据量和数据包的个数。</p>
 <h2 id="包格式"><a href="#包格式" class="headerlink" title="包格式"></a>包格式</h2><p>简单的定义了数据包头的格式，12个字节，包含三个变量，分别是targetID（目的地的id），sourceID（源id）和length（数据的长度，不包含header的长度）。</p>
 <p>暂时client的id分配由服务器分配，客户端编号从1开始，id为0代表是服务器发送的原始消息，不是转发的其他客户端发送的数据。</p>
 <h2 id="数据发送"><a href="#数据发送" class="headerlink" title="数据发送"></a>数据发送</h2><p>客户端每隔10ms发送一个数据包给其他客户端，服务器收到数据包后转发给其他客户端。</p>
@@ -353,8 +356,6 @@
 <p>client2：</p>
 <p><img src="/images/libevent client 2.PNG" alt=""></p>
 
-          
-        
       
     </div>
     
@@ -369,142 +370,40 @@
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2017/11/29/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Uyouii">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Keep Learning">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/11/29/hello-world/" itemprop="url">Hello World</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-11-29T15:58:40+08:00">
-                2017-11-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
+        <div class="post-tags">
           
-
+            <a href="/tags/libevent/" rel="tag"># libevent</a>
           
-            
+            <a href="/tags/c/" rel="tag"># c++</a>
           
-
+            <a href="/tags/network/" rel="tag"># network</a>
           
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
       
 
       
       
-        <div class="post-eof"></div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/29/hello-world/" rel="next" title="Hello World">
+                <i class="fa fa-chevron-left"></i> Hello World
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
       
     </footer>
   </div>
@@ -514,10 +413,11 @@
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -525,6 +425,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -545,8 +449,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
@@ -599,6 +512,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#包格式"><span class="nav-number">1.</span> <span class="nav-text">包格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据发送"><span class="nav-number">2.</span> <span class="nav-text">数据发送</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码"><span class="nav-number">3.</span> <span class="nav-text">代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#服务端"><span class="nav-number">3.1.</span> <span class="nav-text">服务端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#客户端"><span class="nav-number">3.2.</span> <span class="nav-text">客户端</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#效果图片"><span class="nav-number">4.</span> <span class="nav-text">效果图片</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -712,10 +641,10 @@
   
 
   
-    <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
 <script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
 
-  
+
 
   
 
