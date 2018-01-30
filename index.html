@@ -270,6 +270,412 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2018/01/30/python2.7-学习笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Uyouii">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Uyouii's Blogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/01/30/python2.7-学习笔记/" itemprop="url">python2.7 学习笔记</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-30T21:13:58+08:00">
+                2018-01-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><a href="http://www.pythondoc.com/pythontutorial27/index.html" target="_blank" rel="noopener">python 入门指南</a></p>
+<h2 id="数字"><a href="#数字" class="headerlink" title="数字"></a>数字</h2><ol>
+<li><code>//</code>运算符用于 floor division 而无论操作数是什么类型。</li>
+<li>可以使用 <code>**</code> 运算符计算幂乘方</li>
+</ol>
+<h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h2><ol>
+<li>使用 原始字符串，方法是在第一个引号前面加上一个 <code>r</code>，例如 <code>r&#39;C:\some\name&#39;</code></li>
+<li>字符串文本能够分成多行。一种方法是使用三引号：<code>&quot;&quot;&quot;...&quot;&quot;&quot;</code> 或者 <code>&#39;&#39;&#39;...&#39;&#39;&#39;</code>。行尾换行符会被自动包含到字符串中，但是可以在行尾加上 <code>\</code> 来避免这个行为。</li>
+<li>字符串可以由 <code>+</code> 操作符连接(粘到一起)，可以由 <code>*</code> 表示重复</li>
+<li>相邻的两个字符串文本自动连接在一起，只用于两个字符串文本，不能用于字符串表达式，如果想连接多个变量或者连接一个变量和一个字符串文本，使用 <code>+</code></li>
+<li><p>支持索引和切片。索引用于获得单个字符，切片 让你获得一个子字符串。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>word = <span class="string">'Python'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>word[<span class="number">0</span>:<span class="number">2</span>]  <span class="comment"># characters from position 0 (included) to 2 (excluded)</span></span><br><span class="line"><span class="string">'Py'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>word[<span class="number">2</span>:<span class="number">5</span>]  <span class="comment"># characters from position 2 (included) to 5 (excluded)</span></span><br><span class="line"><span class="string">'tho'</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Python字符串不可以被更改—它们是<strong>不可变</strong>的。因此，赋值给字符串索引的位置会导致错误。</p>
+</li>
+<li>内置函数 len() 返回字符串长度。</li>
+</ol>
+<h3 id="See-also"><a href="#See-also" class="headerlink" title="See also"></a>See also</h3><blockquote>
+<p><a href="https://docs.python.org/2.7/library/stdtypes.html#typesseq" target="_blank" rel="noopener">Sequence Types — str, unicode, list, tuple, bytearray, buffer, xrange</a><br><br><br>字符串和下节描述的Unicode字符串是 序列类型 的例子，它们支持这种类型共同的操作。</p>
+<p><a href="https://docs.python.org/2.7/library/stdtypes.html#string-methods" target="_blank" rel="noopener">String Methods</a><br><br><br>字符串和Unicode字符串都支持大量的方法用于基本的转换和查找。<br><br></p>
+<p><a href="https://docs.python.org/2.7/library/string.html#new-string-formatting" target="_blank" rel="noopener">String Formatting</a><br><br><br>这里描述了使用 str.format() 进行字符串格式化的信息。</p>
+<p><a href="https://docs.python.org/2.7/library/stdtypes.html#string-formatting" target="_blank" rel="noopener">String Formatting Operations</a><br><br><br>这里描述了旧式的字符串格式化操作，它们在字符串和Unicode字符串是 % 操作符的左操作数时调用。</p>
+</blockquote>
+<h2 id="流程控制"><a href="#流程控制" class="headerlink" title="流程控制"></a>流程控制</h2><ol>
+<li>在迭代过程中修改迭代序列不安全(只有在使用链表这样的可变序列时才会有这样的情况)。如果你想要修改你迭代的序列(例如：复制选择项)，你可以迭代它的复本。</li>
+<li><p>需要迭代链表索引的话，可以结合使用 range() 和 len()</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a = [&apos;Mary&apos;, &apos;had&apos;, &apos;a&apos;, &apos;little&apos;, &apos;lamb&apos;]</span><br><span class="line">for i in range(len(a)):</span><br><span class="line">    print i, a[i]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>循环可以有一个<code>else</code>子句；它在循环迭代完整个列表(对于<code>for</code>)后或执行条件为false(对于<code>while</code>) 时执行，但循环被 <code>break</code>中止的情况下不会执行。</p>
+</li>
+<li><code>try</code>语句的<code>else</code>子句在未出现异常时运行，循环的<code>else</code>子句在未出现<code>break</code>时运行。</li>
+</ol>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><ol>
+<li>函数调用 会为函数局部变量生成一个新的符号表。确切地说，所有函数中的变量赋值都是将值存储在<strong>局部符号表</strong>。变量引用首先在局部符号表中查找，然后是包含函数的局部符号表，然后是全局符号表，最后是内置名字表。因此，全局变量不能在函数中直接赋值 (除非用<code>global</code>语句命名)，尽管他们可以被引用。</li>
+<li>函数引用的实际参数在函数调用时引入局部符号表，因此，实参总是传值调用(这里的值总是一个对象引用，而不是该对象的值)。</li>
+<li>没有 return 语句的函数确实会返回一个值： <code>None</code>。</li>
+<li><strong>函数默认值只被赋值一次</strong>。这使得当默认值是可变对象时会有所不同，比如列表、字典或者大多数类的实例。</li>
+<li><code>def</code>是一个可执行指令，只有<code>def</code>执行的时候才会计算默认默认参数的值</li>
+<li>在函数调用中，关键字的参数必须跟随在位置参数的后面。</li>
+<li>引入一个形如<code>**name</code>的参数时，它接收一个字典。形如<code>*name</code>的形式参数，它接收一个元组。</li>
+<li>可以在调用函数时加一个<code>*</code>操作符来自动把参数列表拆开。使用 <code>**</code> 操作符分拆关键字参数为字典。</li>
+</ol>
+<h2 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h2><h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">list.append(x)</span><br><span class="line">把一个元素添加到链表的结尾，相当于 a[len(a):] = [x]。</span><br><span class="line"></span><br><span class="line">list.extend(L)</span><br><span class="line">将一个给定列表中的所有元素都添加到另一个列表中，相当于 a[len(a):] = L。</span><br><span class="line"></span><br><span class="line">list.insert(i, x)</span><br><span class="line">在指定位置插入一个元素。第一个参数是准备插入到其前面的那个元素的索引。</span><br><span class="line">例如 a.insert(<span class="number">0</span>, x) 会插入到整个链表之前，而 a.insert(len(a), x) 相当于 a.append(x)。</span><br><span class="line"></span><br><span class="line">list.remove(x)</span><br><span class="line">删除链表中值为 x 的第一个元素。如果没有这样的元素，就会返回一个错误。</span><br><span class="line"></span><br><span class="line">list.pop([i])</span><br><span class="line">从链表的指定位置删除元素，并将其返回。</span><br><span class="line">如果没有指定索引，a.pop()返回最后一个元素。元素随即从链表中被删除。</span><br><span class="line"><span class="string">"方法中 i 两边的方括号表示这个参数是可选的，而不是要求你输入一对方括号。"</span></span><br><span class="line"></span><br><span class="line">list.index(x)</span><br><span class="line">返回链表中第一个值为 x 的元素的索引。如果没有匹配的元素就会返回一个错误。</span><br><span class="line"></span><br><span class="line">list.count(x)</span><br><span class="line">返回 x 在链表中出现的次数。</span><br><span class="line"></span><br><span class="line">list.sort(cmp=<span class="keyword">None</span>, key=<span class="keyword">None</span>, reverse=<span class="keyword">False</span>)</span><br><span class="line">对链表中的元素就地进行排序（参数可以用来自定义排序方法）。</span><br><span class="line"></span><br><span class="line">list.reverse()</span><br><span class="line">就地倒排链表中的元素。</span><br></pre></td></tr></table></figure>
+<h3 id="函数式编程工具"><a href="#函数式编程工具" class="headerlink" title="函数式编程工具"></a>函数式编程工具</h3><h4 id="filter"><a href="#filter" class="headerlink" title="filter()"></a>filter()</h4><p><code>filter(function, sequence)</code>返回一个 sequence(序列)，包括了给定序列中所有调用 function(item) 后返回值为 true 的元素(如果可能的话，会返回相同的类型)。<br>如果该序列 (sequence)是一个 str, unicode 或者 tuple，返回值必定是同一类型，否则，它总是 list。</p>
+<h4 id="map"><a href="#map" class="headerlink" title="map()"></a>map()</h4><p><code>map(function, sequence)</code>为每一个元素依次调用 function(item) 并将返回值组成一个链表返回。</p>
+<p>可以传入多个序列，函数也必须要有对应数量的参数，执行时会依次用各序列上对应的元素来调用函数(如果某些序列比其它的短，就用 None 来代替)。如果把 None 做为一个函数传入，则直接返回参数做为替代。</p>
+<h4 id="reduce"><a href="#reduce" class="headerlink" title="reduce()"></a>reduce()</h4><p><code>reduce(function, sequence)</code>返回一个单值，它是这样构造的：首先以序列的前两个元素调用函数 function，再以返回值和第三个参数调用，依次执行下去。</p>
+<p>如果序列中只有一个元素，就返回它，如果序列是空的，就抛出一个异常。</p>
+<p>可以传入第三个参数作为初始值。如果序列是空的，就返回初始值，否则函数会先接收初始值和序列的第一个元素，然后是返回值和下一个元素，依此类推。</p>
+<h3 id="列表推导式"><a href="#列表推导式" class="headerlink" title="列表推导式"></a>列表推导式</h3><p>列表推导式由包含一个表达式的括号组成，表达式后面跟随一个 for 子句，之后可以有零或多个 for 或 if 子句。结果是一个列表，由表达式依据其后面的 for 和 if 子句上下文计算而来的结果构成。</p>
+<p>例如：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">squares = [x**<span class="number">2</span> <span class="keyword">for</span> x <span class="keyword">in</span> range(<span class="number">10</span>)]</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>[(x, y) <span class="keyword">for</span> x <span class="keyword">in</span> [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>] <span class="keyword">for</span> y <span class="keyword">in</span> [<span class="number">3</span>,<span class="number">1</span>,<span class="number">4</span>] <span class="keyword">if</span> x != y]</span><br><span class="line">[(<span class="number">1</span>, <span class="number">3</span>), (<span class="number">1</span>, <span class="number">4</span>), (<span class="number">2</span>, <span class="number">3</span>), (<span class="number">2</span>, <span class="number">1</span>), (<span class="number">2</span>, <span class="number">4</span>), (<span class="number">3</span>, <span class="number">1</span>), (<span class="number">3</span>, <span class="number">4</span>)]</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> math <span class="keyword">import</span> pi</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>[str(round(pi, i)) <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, <span class="number">6</span>)]</span><br><span class="line">[<span class="string">'3.1'</span>, <span class="string">'3.14'</span>, <span class="string">'3.142'</span>, <span class="string">'3.1416'</span>, <span class="string">'3.14159'</span>]</span><br></pre></td></tr></table></figure></p>
+<p>列表推导式可以嵌套。</p>
+<p>例如：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>matrix = [</span><br><span class="line"><span class="meta">... </span>    [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>],</span><br><span class="line"><span class="meta">... </span>    [<span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>],</span><br><span class="line"><span class="meta">... </span>    [<span class="number">9</span>, <span class="number">10</span>, <span class="number">11</span>, <span class="number">12</span>],</span><br><span class="line"><span class="meta">... </span>]</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>[[row[i] <span class="keyword">for</span> row <span class="keyword">in</span> matrix] <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">4</span>)]</span><br><span class="line">[[<span class="number">1</span>, <span class="number">5</span>, <span class="number">9</span>], [<span class="number">2</span>, <span class="number">6</span>, <span class="number">10</span>], [<span class="number">3</span>, <span class="number">7</span>, <span class="number">11</span>], [<span class="number">4</span>, <span class="number">8</span>, <span class="number">12</span>]]</span><br></pre></td></tr></table></figure></p>
+<h3 id="del语句"><a href="#del语句" class="headerlink" title="del语句"></a>del语句</h3><p><code>del</code>语句可以从列表中按给定的索引而不是值来删除一个子项。<br>它不同于有返回值的 pop() 方法。语句 del 还可以从列表中删除切片或清空整个列表(我们以前介绍过一个方法是将空列表赋值给列表的切片)。</p>
+<p>del 也可以删除整个变量。</p>
+<h2 id="元组和序列"><a href="#元组和序列" class="headerlink" title="元组和序列"></a>元组和序列</h2><p>一个元组由数个逗号分隔的值组成。</p>
+<p>元组在输出时总是有括号的，以便于正确表达嵌套结构。在输入时可以有或没有括号，不过经常括号都是必须的(如果元组是一个更大的表达式的一部分)。</p>
+<p>不能给元组的一个独立的元素赋值(尽管你可以通过联接和切割来模拟)。还可以创建包含可变对象的元组，例如链表。</p>
+<p>元组是<strong>不可变的</strong>，通常包含不同种类的元素并通过分拆或索引访问（如果是 namedtuples，甚至可以通过属性）。列表是<strong>可变的</strong>，它们的元素通常是相同的类型并通过迭代访问。</p>
+<p>构造包含零个或一个元素的元组：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>empty = ()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>singleton = <span class="string">'hello'</span>,    <span class="comment"># &lt;-- note trailing comma</span></span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>可变参数(multiple assignment)其实只是元组封装和序列拆封的一个结合。</p>
+</blockquote>
+<h2 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h2><p>集合是一个无序不重复元素的集。集合对象还支持union(联合)，intersection(交)，difference(差)和 sysmmetric difference(对称差集)等数学运算。</p>
+<p>大括号或set()函数可以用来创建集合。注意：想要创建空集合，你必须使用 set() 而不是 {}。后者用于创建空字典。</p>
+<p>类似列表推导式，集合也有推导式语法：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = &#123;x <span class="keyword">for</span> x <span class="keyword">in</span> <span class="string">'abracadabra'</span> <span class="keyword">if</span> x <span class="keyword">not</span> <span class="keyword">in</span> <span class="string">'abc'</span>&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="字典"><a href="#字典" class="headerlink" title="字典"></a>字典</h2><p>字典以 关键字 为索引，关键字可以是任意<strong>不可变类型</strong>，通常用字符串或数值。如果元组中只包含字符串和数字，它可以作为关键字，如果它直接或间接地包含了可变对象，就不能当做关键字。</p>
+<p>字典的主要操作是依据键来存储和析取值。也可以用<code>del</code>来删除键：值对(key:value)。</p>
+<p>对一个字典执行<code>keys()</code>将返回一个字典中所有关键字组成的无序列表(如果你想要排序，只需使用 sorted())。</p>
+<p>dict() 构造函数可以直接从 key-value 对中创建字典:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dict([(<span class="string">'sape'</span>, <span class="number">4139</span>), (<span class="string">'guido'</span>, <span class="number">4127</span>), (<span class="string">'jack'</span>, <span class="number">4098</span>)])</span><br></pre></td></tr></table></figure></p>
+<p>字典推导式可以从任意的键值表达式中创建字典:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;x: x**<span class="number">2</span> <span class="keyword">for</span> x <span class="keyword">in</span> (<span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span>)&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果关键字都是简单的字符串，有时通过关键字参数指定 key-value 对更为方便:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dict(sape=<span class="number">4139</span>, guido=<span class="number">4127</span>, jack=<span class="number">4098</span>)</span><br></pre></td></tr></table></figure></p>
+<h2 id="模块"><a href="#模块" class="headerlink" title="模块"></a>模块</h2><p>模块可以包含执行语句，一般用来初始化模块，仅在第一次被导入的地方执行一次。</p>
+<p>每个模块都有自己私有的符号表，被模块内所有的函数定义作为全局符号表使用。因此，模块的作者可以在模块内部使用全局变量，而无需担心它与某个用户的全局变量意外冲突。也可以引用模块函数的表示法访问模块的全局变量，<code>modname.itemname</code>。</p>
+<blockquote>
+<p>出于性能考虑，每个模块在每个解释器会话中只导入一遍。因此，如果修改了模块，需要重启解释器或者如果想交互式的测试这么一个模块，可以用<code>reload()</code>重新加载，例如 reload(modulename)。</p>
+</blockquote>
+<p>如果调用python module.py执行某个模块，此时改模块的<code>__name__</code>被设置为<code>__main__</code>。如果在模块后加入代码：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure></p>
+<p>就可以让此文件像作为模块导入时一样作为脚本执行。此代码只有在模块作为 “main” 文件执行时才被调用。如果模块被导入，则不会执行这段代码。</p>
+<p>当导入一个叫<code>module</code>的模块时，解释器现在当前的目录中搜索名为<code>module.py</code>的文件，如果没有找到的话，接着会到sys.path变量中给出的目录列表中查找。</p>
+<p>sys.path变量的初始值：</p>
+<ol>
+<li>输入脚本的目录(当前目录)。</li>
+<li>环境变量<code>PYTHONPATH</code>表示的目录列表中搜索</li>
+<li>Python 默认安装路径中搜索。</li>
+</ol>
+<p>如果在<code>name.py</code>所在的目录下存在一个名为<code>name.pyc</code>的文件，它会被视为<code>name</code>模块的预编译(<code>byte-compiled</code>,二进制编译版本)，对于引用了大量标准模块的短程序，可以提高启动速度。用于创建<code>name.pyc</code>的这一版<code>spam.py</code>的修改时间记录在<code>spam.pyc</code>文件中，如果两者不匹配，<code>.pyc</code>文件就被忽略。</p>
+<h2 id="包"><a href="#包" class="headerlink" title="包"></a>包</h2><p>为了让 Python 将目录当做内容包，目录中必须包含<code>__init__.py</code>文件。这是为了避免一个含有烂俗名字的目录无意中隐藏了稍后在模块搜索路径中出现的有效模块，比如<code>string</code>。最简单的情况下，只需要一个空的<code>__init__.py</code>文件即可。当然它也可以执行包的初始化代码，或者定义<code>__all__</code>变量。</p>
+<p>执行<code>from package import *</code>时，如果包中的<code>__init__.py</code>代码定义了一个名为<code>__all__</code>的列表，就会按照列表中给出的模块名进行导入。</p>
+<p>显式或隐式相对位置导入都基于当前模块的命名。因为主模块的名字总是 <code>__main__</code>，Python 应用程序的主模块应该总是用绝对导入。</p>
+<h2 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h2><p>try 语句按如下方式工作：</p>
+<ul>
+<li>首先，执行 try 子句(在 try 和 except 关键字之间的部分)。</li>
+<li>如果没有异常发生，except 子句在 try 语句执行完毕后就被忽略了。</li>
+<li><p>如果在 try 子句执行过程中发生了异常，那么该子句其余的部分就会被忽略。<br>如果异常匹配于 except 关键字后面指定的异常类型，<br>就执行对应的 except 子句。<br>然后继续执行 try 语句之后的代码。</p>
+</li>
+<li><p>如果发生了一个异常，在 except 子句中没有与之匹配的分支，<br>它就会传递到上一级 try 语句中。<br>如果最终仍找不到对应的处理语句，它就成为一个 未处理异常，终止程序运行，显示提示信息。</p>
+</li>
+</ul>
+<p>一个 try 语句可能包含多个 except 子句，分别指定处理不同的异常。至多只会有一个分支被执行。异常处理程序只会处理对应的 try 子句中发生的异常，在同一个 try 语句中，其他子句中发生的异常则不作处理。一个 except 子句可以在括号中列出多个异常的名字，例如:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">except</span> (RuntimeError, TypeError, NameError):</span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure></p>
+<p>最后一个 except 子句可以省略异常名称，以作为通配符使用。你需要慎用此法，因为它会轻易隐藏一个实际的程序错误！可以使用这种方法打印一条错误信息，然后重新抛出异常(允许调用者处理这个异常):<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">except</span> IOError <span class="keyword">as</span> e:</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"><span class="keyword">except</span> ValueError:</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">    <span class="keyword">raise</span></span><br></pre></td></tr></table></figure></p>
+<p>try … except 语句可以带有一个 else子句 ，该子句只能出现在所有 except 子句之后。当 try 语句没有抛出异常时，需要执行一些代码，可以使用这个子句。</p>
+<p><code>raise</code>语句允许程序员强制抛出一个指定的异常。要抛出的异常由<code>raise</code>的唯一参数标识。它必需是一个异常实例或异常类(继承自 Exception 的类)。<br>如果你需要明确一个异常是否抛出，但不想处理它，<code>raise</code>语句可以让你很简单的重新抛出该异常。</p>
+<p>不管有没有发生异常，finally子句 在程序离开 try 后都一定会被执行。当 try 语句中发生了未被 except 捕获的异常(或者它发生在 except 或 else 子句中)，在 finally 子句执行完后它会被重新抛出。try 语句经由 break，continue 或 return 语句退出也一样会执行 finally 子句。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    <span class="keyword">raise</span> KeyboardInterrupt</span><br><span class="line"><span class="keyword">finally</span>:</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'Goodbye, world!'</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="类"><a href="#类" class="headerlink" title="类"></a>类</h2><h3 id="命名空间和作用域"><a href="#命名空间和作用域" class="headerlink" title="命名空间和作用域"></a>命名空间和作用域</h3><p>命名空间 是从命名到对象的映射。当前命名空间主要是通过 Python 字典实现的。</p>
+<p>不同命名空间中的命名没有任何联系。</p>
+<p>不同的命名空间在不同的时刻创建，有不同的生存期。包含内置命名的命名空间在 Python 解释器启动时创建，会一直保留，不被删除。模块的全局命名空间在模块定义被读入时创建，通常，模块命名空间也会一直保存到解释器退出。由解释器在最高层调用执行的语句，不管它是从脚本文件中读入还是来自交互式输入，都是<code>__main__</code>模块的一部分，所以它们也拥有自己的命名空间(内置命名也同样被包含在一个模块中，它被称作<code>__builtin__</code>)。</p>
+<p>当调用函数时，就会为它创建一个局部命名空间，并且在函数返回或抛出一个并没有在函数内部处理的异常时被删除。每个递归调用都有自己的局部命名空间。</p>
+<h4 id="作用于访问顺序："><a href="#作用于访问顺序：" class="headerlink" title="作用于访问顺序："></a>作用于访问顺序：</h4><p>包含局部命名的使用域在最里面，首先被搜索；其次搜索的是中层的作用域，这里包含了同级的函数；最后搜索最外面的作用域，它包含内置命名。</p>
+<ul>
+<li>首先搜索最内层的作用域，它包含局部命名任意函数包含的作用域，是内层嵌套作用域搜索起点，包含非局部，但是也非全局的命名</li>
+<li>接下来的作用域包含当前模块的全局命名</li>
+<li>最外层的作用域(最后搜索)是包含内置命名的命名空间。</li>
+</ul>
+<p>一个定义于某模块中的函数的全局作用域是该模块的命名空间，而不是该函数的别名被定义或调用的位置。</p>
+<h3 id="类对象"><a href="#类对象" class="headerlink" title="类对象"></a>类对象</h3><p>类对象支持两种操作：属性引用和实例化。</p>
+<p>类定义了<code>__init__()</code>方法的话，类的实例化操作会自动为新创建的类实例调用<code>__init__()</code>方法。</p>
+<p>和局部变量一样，数据属性不需要声明，第一次使用时它们就会生成。</p>
+<p>类中所有(用户定义)的函数对象对应它的实例中的方法。实例中的函数是方法对象，不是函数对象。</p>
+<p>例子：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span>:</span></span><br><span class="line">    <span class="string">"""A simple example class"""</span></span><br><span class="line">    i = <span class="number">12345</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">f</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">'hello world'</span></span><br><span class="line">x = MyClass()</span><br></pre></td></tr></table></figure></p>
+<p>方法的特别之处在于实例对象作为函数的第一个参数传给了函数。</p>
+<p>调用<code>x.f()</code>相当于<code>MyClass.f(x)</code></p>
+<blockquote>
+<p>引用非数据属性的实例属性时，会搜索它的类。如果这个命名确认为一个有效的函数对象类属性，就会将实例对象和函数对象封装进一个抽象对象：这就是方法对象。以一个参数列表调用方法对象时，它被重新拆 封，用实例对象和原始的参数列表构造一个新的参数列表，然后函数对象调用这个新的参数列表。</p>
+</blockquote>
+<p>一般来说，<code>实例变量</code>用于对每一个实例都是唯一的数据，<code>类变量</code>用于类的所有实例共享的属性和方法。</p>
+<p>数据属性会覆盖同名的方法属性。</p>
+<p>方法可以像引用普通的函数那样引用全局命名。与方法关联的全局作用域是包含类定义的模块(类本身永远不会做为全局作用域使用)。</p>
+<blockquote>
+<p>对于 C++ 程序员来说，Python 中的所有方法本质上都是虚方法</p>
+</blockquote>
+<p>派生类中的覆盖方法可能是想要扩充而不是简单的替代基类中的重名方法。有一个简单的方法可以直接调用基类方法，只要调用：<code>BaseClassName.methodname(self, arguments)</code>。</p>
+<h2 id="实用技巧"><a href="#实用技巧" class="headerlink" title="实用技巧"></a>实用技巧</h2><ul>
+<li><p>在Python源文件中可以使用非 ASCII 编码。最好的方法是在 #! 行的后面再增加一行特殊的注释来定义源文件的编码:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: encoding -*-</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="http://www.pythondoc.com/pythontutorial27/classes.html#tut-iterators" target="_blank" rel="noopener">迭代器</a></p>
+</li>
+<li><p><a href="http://www.pythondoc.com/pythontutorial27/classes.html#tut-generators" target="_blank" rel="noopener">生成器</a></p>
+</li>
+<li><p><a href="http://www.pythondoc.com/pythontutorial27/inputoutput.html" target="_blank" rel="noopener">格式化输入和输出</a></p>
+</li>
+<li><p><a href="http://www.pythondoc.com/pythontutorial27/inputoutput.html#tut-files" target="_blank" rel="noopener">文件读写</a></p>
+</li>
+<li><p>序列中循环时，索引位置和对应值可以使用<code>enumerate()</code>函数同时得到:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">for</span> i, v <span class="keyword">in</span> enumerate([<span class="string">'tic'</span>, <span class="string">'tac'</span>, <span class="string">'toe'</span>]):</span><br><span class="line"><span class="meta">... </span>    print(i, v)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>同时循环两个或更多的序列，可以使用 zip() 整体打包:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>questions = [<span class="string">'name'</span>, <span class="string">'quest'</span>, <span class="string">'favorite color'</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>answers = [<span class="string">'lancelot'</span>, <span class="string">'the holy grail'</span>, <span class="string">'blue'</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">for</span> q, a <span class="keyword">in</span> zip(questions, answers):</span><br><span class="line"><span class="meta">... </span>    <span class="keyword">print</span> <span class="string">'What is your &#123;0&#125;?  It is &#123;1&#125;.'</span>.format(q, a)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>需要逆向循环序列的话，先正向定位序列，然后调用 reversed() 函数:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">for</span> i <span class="keyword">in</span> reversed(xrange(<span class="number">1</span>, <span class="number">10</span>, <span class="number">2</span>)):</span><br><span class="line"><span class="meta">... </span>    print(i)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>sorted() 函数不改动原序列，而是生成一个新的已排序的序列。</p>
+</li>
+<li><p>遍历字典时，使用 iteritems() 方法可以同时得到键和对应的值：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>knights = &#123;<span class="string">'gallahad'</span>: <span class="string">'the pure'</span>, <span class="string">'robin'</span>: <span class="string">'the brave'</span>&#125;</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">for</span> k, v <span class="keyword">in</span> knights.iteritems():</span><br><span class="line"><span class="meta">... </span>    <span class="keyword">print</span> k, v</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在循环内部修改正在遍历的序列，应首先制作副本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">words = [<span class="string">'cat'</span>, <span class="string">'window'</span>, <span class="string">'defenestrate'</span>]</span><br><span class="line"><span class="keyword">for</span> w <span class="keyword">in</span> words[:]:  <span class="comment"># Loop over a slice copy of the entire list.</span></span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>print 用一个逗号结尾就可以禁止输出换行</p>
+</li>
+</ul>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ol>
+<li><code>is</code> 用来判断两个对象是否是同一个对象，<code>==</code> 用来判断两个对象是否相等</li>
+</ol>
+<h2 id="编码风格"><a href="#编码风格" class="headerlink" title="编码风格"></a>编码风格</h2><ul>
+<li>使用 4 空格缩进，而非 TAB。</li>
+<li>在小缩进(可以嵌套更深)和大缩进(更易读)之间，4 空格是一个很好的折中。TAB 引发了一些混乱，最好弃用。</li>
+<li>折行以确保其不会超过 79 个字符。</li>
+<li>这有助于小显示器用户阅读，也可以让大显示器能并排显示几个代码文件。</li>
+<li>使用空行分隔函数和类，以及函数中的大块代码。</li>
+<li>可能的话，注释独占一行</li>
+<li>使用文档字符串</li>
+<li>把空格放到操作符两边，以及逗号后面，但是括号里侧不加空格：a = f(1, 2) + g(3, 4)。</li>
+<li>统一函数和类命名。</li>
+<li>推荐类名用 驼峰命名，函数和方法名用小写<em>和</em>下划线。总是用self作为方法的第一个参数(关于类和方法的知识详见 初识类)。</li>
+<li>不要使用花的编码，如果你的代码的目的是要在国际化环境。Python的默认情况下，UTF-8，甚至普通的 ASCII 总是工作的最好。</li>
+<li>同样，也不要使用非 ASCII 字符的标识符，除非是不同语种的会阅读或者维护代码。</li>
+</ul>
+<h2 id="深入理解"><a href="#深入理解" class="headerlink" title="深入理解"></a>深入理解</h2><h3 id="tuple-和-list的异同"><a href="#tuple-和-list的异同" class="headerlink" title="tuple 和 list的异同"></a>tuple 和 list的异同</h3><ol>
+<li>tuple是不可变的，list是可变的。</li>
+<li>tuple表示的是结构，list表示的是顺序。</li>
+<li>list不能当作dict的key，tuple可以。</li>
+<li>由于元组支持的操作比列表小，所以元组的操作相对于list会快上一点点。(除非有巨量的数据需要去处理，否则这一点不需要特别强调)</li>
+</ol>
+<p>tuple所谓的不可变指的是指向的位置不可变。如果tuple中含有一个list，这个list的内容是可以变化的，因为list本身在内存中的分配不是连续的。</p>
+<h3 id="while-else-和-for-else"><a href="#while-else-和-for-else" class="headerlink" title="while/else 和 for/else"></a>while/else 和 for/else</h3><p>循环可以有一个<code>else</code>子句<br>在循环迭代完整个列表(对于<code>for</code>)后或执行条件为<code>false</code>(对于<code>while</code>)时执行，但循环被<code>break</code>中止的情况下不会执行。</p>
+<h3 id="三元运算符"><a href="#三元运算符" class="headerlink" title="三元运算符"></a>三元运算符</h3><p>value if condition else other_value</p>
+<p>e.g.<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">is_fat = <span class="keyword">True</span></span><br><span class="line">state = <span class="string">"fat"</span> <span class="keyword">if</span> is_fat <span class="keyword">else</span> <span class="string">"not fat"</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="嵌套函数和闭包-Closure"><a href="#嵌套函数和闭包-Closure" class="headerlink" title="嵌套函数和闭包(Closure)"></a>嵌套函数和闭包(Closure)</h3><p>函数不仅可以定义在模块的最外层，还可以定义在另一个函数的内部，像这种定义在函数里面的函数称之为<code>嵌套函数</code>。</p>
+<p>嵌套函数可以访问到其外层作用域中声明的非局部变量。</p>
+<p>闭包却可以即使脱离函数本身的作用范围，局部变量还是可以被访问得到。</p>
+<p>闭包的定义：<br>在一些语言中，在函数中可以（嵌套）定义另一个函数时，如果内部的函数引用了外部的函数的变量， 则可能产生闭包。运行时，一旦外部的 函数被执行，一个闭包就形成了， 闭包中包含了内部函数的代码，以及所需外部函数中的变量的引用。</p>
+<p>闭包可以用来在一个函数与一组“私有”变量之间创建关联关系。 在给定函数被多次调用的过程中，这些私有变量能够保持其持久性。</p>
+<blockquote>
+<p>注意：python闭包必须通过嵌套函数定义实现，但是嵌套函数不一定是闭包。</p>
+</blockquote>
+<p>当一个函数在执行完以后，访问了嵌套作用域的局部变量，闭包就产生了。假如嵌套函数没有访问嵌套作用域的局部变量，它就不是闭包。</p>
+<p>产生闭包必须具备三个条件：</p>
+<ol>
+<li>需要定义嵌套函数</li>
+<li>嵌套函数需要引用enclosing function中的变量</li>
+<li>enclosing function需要返回嵌套函数</li>
+</ol>
+<p>闭包的作用：<br>闭包可以避免全局变量的使用，并且可以隐藏一些数据的格式。同时也可以提供面向对象的方法。</p>
+<p><a href="https://www.programiz.com/python-programming/closure" target="_blank" rel="noopener">Python Closures</a></p>
+<h3 id="迭代器-Iterators"><a href="#迭代器-Iterators" class="headerlink" title="迭代器(Iterators)"></a>迭代器(Iterators)</h3><p>python中的迭代器是一个可以被迭代的对象，每次迭代返回一个数据元素。</p>
+<p>python的迭代器对象必须要实现两个特殊的方法：<code>__iter()__</code>和<code>__next()__</code>，被称为<strong>iterator protocol</strong></p>
+<p>如果我们可以从一个对象获取<code>iterator</code>，则把这个对象成为<code>iterable</code>。很多python内置的容器都是可迭代的，像list, tuple, string。</p>
+<p>可以通过<code>next()</code>函数人工的迭代遍历迭代器中所有的元素，当没有数据返回时，函数会抛出<code>StopIteration</code>异常。</p>
+<p>一个更优雅的使用迭代器的方式是使用<code>for</code>循环，<code>for</code>可以迭代任何能够返回迭代器的对象。</p>
+<h4 id="for-的内部实现"><a href="#for-的内部实现" class="headerlink" title="for 的内部实现"></a>for 的内部实现</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> element <span class="keyword">in</span> iterable:</span><br><span class="line">    <span class="comment"># do something with element</span></span><br></pre></td></tr></table></figure>
+<p>实际实现：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># create an iterator object from that iterable</span></span><br><span class="line">iter_obj = iter(iterable)</span><br><span class="line"></span><br><span class="line"><span class="comment"># infinite loop</span></span><br><span class="line"><span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="comment"># get the next item</span></span><br><span class="line">        element = next(iter_obj)</span><br><span class="line">        <span class="comment"># do something with element</span></span><br><span class="line">    <span class="keyword">except</span> StopIteration:</span><br><span class="line">        <span class="comment"># if StopIteration is raised, break from loop</span></span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure></p>
+<p><code>for</code>语句首先通过调用<code>iter()</code>创建了一个迭代器对象：<code>iter_obj</code>。</p>
+<p>在循环内部通过调用<code>next()</code>函数去获取下一个元素。在所有元素都处理完之后，<code>StopIteration</code>被抛出，并在循环内部被捕获，并保证其他类型的异常不被捕获。</p>
+<h4 id="实现迭代器对象"><a href="#实现迭代器对象" class="headerlink" title="实现迭代器对象"></a>实现迭代器对象</h4><p>实现迭代器对象只需要实现两个方法：<code>__iter()__</code>和<code>__next()__</code></p>
+<p><code>__iter()__</code>方法返回迭代器对象本身。如果需要的话，可以进行初始化的操作。</p>
+<p><code>__next()__</code>方法返回序列中的下一个元素。当达到最后一个元素的下一个调用时必须抛出<code>StopIteration</code>异常。</p>
+<p>for example：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PowTwo</span>:</span></span><br><span class="line">    <span class="string">"""Class to implement an iterator</span></span><br><span class="line"><span class="string">    of powers of two"""</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, max = <span class="number">0</span>)</span>:</span></span><br><span class="line">        self.max = max</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__iter__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.n = <span class="number">0</span></span><br><span class="line">        <span class="keyword">return</span> self</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__next__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.n &lt;= self.max:</span><br><span class="line">            result = <span class="number">2</span> ** self.n</span><br><span class="line">            self.n += <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> result</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">raise</span> StopIteration</span><br></pre></td></tr></table></figure></p>
+<p><a href="https://www.programiz.com/python-programming/iterator" target="_blank" rel="noopener">Python Interators</a></p>
+<h3 id="生成器-Generators"><a href="#生成器-Generators" class="headerlink" title="生成器(Generators)"></a>生成器(Generators)</h3><p>生成器是创建迭代器的一种简单的方式。简单的说，生成器就是可以返回一个可迭代对象的函数（每次返回一个元素）</p>
+<p>生成器的创建非常简单，只需要把函数定义中的<code>return</code>替换为<code>yeild</code>即可。</p>
+<p>如果一个函数中包含了至少一个<code>yeild</code>语句，这个函数就是生成器。<code>yeild</code>和<code>return</code>都会从函数中返回值。</p>
+<p>不同的是，<code>return</code>语句会终止整个函数的执行，<code>yeild</code>语句会暂停函数的执行并且储存函数的状态，在下一次成功调用后继续执行。</p>
+<p>生成器函数和普通函数的异同：</p>
+<ol>
+<li>生成器函数包含了一个或者多个<code>yelid</code>语句</li>
+<li>当被调用时，生成器函数返回一个迭代器对象，但是函数不会立即开始执行。</li>
+<li><code>__iter()__</code>方法和<code>__next()__</code>方法会被自动的实现，所以可以调用<code>next()</code>函数获取下一个元素。</li>
+<li>当函数执行<code>yelid</code>语句时，函数会被暂停执行，控制权会返还给调用者</li>
+<li>局部变量和他们的状态在成功的调用之间会被保存</li>
+<li>当函数结束时，<code>StopIteration</code>会在下一次的调用时被自动抛出。</li>
+</ol>
+<p>每个生成器只能被调用一次，要重新开始生成器的调用可以创建一个新的生成器对象，像:<code>a = my_gen()</code></p>
+<blockquote>
+<p>可以直接在for循环中使用生成器</p>
+</blockquote>
+<h4 id="生成器表达式-Generator-Expression"><a href="#生成器表达式-Generator-Expression" class="headerlink" title="生成器表达式(Generator Expression)"></a>生成器表达式(Generator Expression)</h4><p>生成器表达式(generateor expression)的语法和列表推导式(list comprehension)的结构很像，只需要把方括号替换为圆括号。</p>
+<p>generator expression和list comprehension最主要的区别就是list comprehension每次生成整个列表，但是generator expression每次生成一个元素。</p>
+<p>genreator expression只有每次被调用的时候才会输出元素，所以generator expression比list comprehension在内存的使用上跟高效。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Initialize the list</span></span><br><span class="line">my_list = [<span class="number">1</span>, <span class="number">3</span>, <span class="number">6</span>, <span class="number">10</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># square each term using list comprehension</span></span><br><span class="line"><span class="comment"># Output: [1, 9, 36, 100]</span></span><br><span class="line">[x**<span class="number">2</span> <span class="keyword">for</span> x <span class="keyword">in</span> my_list]</span><br><span class="line"></span><br><span class="line"><span class="comment"># same thing can be done using generator expression</span></span><br><span class="line"><span class="comment"># Output: &lt;generator object &lt;genexpr&gt; at 0x0000000002EBDAF8&gt;</span></span><br><span class="line">(x**<span class="number">2</span> <span class="keyword">for</span> x <span class="keyword">in</span> my_list)</span><br></pre></td></tr></table></figure>
+<p>generator expression可以被函数调用，这种情况下圆括号可以省去。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>sum(x**<span class="number">2</span> <span class="keyword">for</span> x <span class="keyword">in</span> my_list)</span><br><span class="line"><span class="number">146</span></span><br></pre></td></tr></table></figure></p>
+<p><a href="https://www.programiz.com/python-programming/generator" target="_blank" rel="noopener">Python Generators</a></p>
+<h3 id="装饰器-decorator"><a href="#装饰器-decorator" class="headerlink" title="装饰器(decorator)"></a>装饰器(decorator)</h3><p>装饰器可以向已经写好的代码中添加功能，程序的一部分可以在编译时修改程序的另一部分。</p>
+<blockquote>
+<p>everything in python are objects.</p>
+</blockquote>
+<p>python函数的一些特性：</p>
+<ol>
+<li>同一个函数对象可以绑定不同的函数名称</li>
+<li>函数可以作为参数传递给另一个函数(这些函数也被称为higher order functions)</li>
+<li>函数可以把函数当作返回值</li>
+</ol>
+<p>函数和方法被称为可调用的(called)。在python中任何实现<code>__call__()</code>方法的对象都称为可调用的(called)。</p>
+<p>装饰器就是<code>callable</code>并返回<code>callable</code>的对象。</p>
+<p>装饰器一般读取一个函数，为其添加功能然后返回。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">make_pretty</span><span class="params">(func)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">inner</span><span class="params">()</span>:</span></span><br><span class="line">        print(<span class="string">"I got decorated"</span>)</span><br><span class="line">        func()</span><br><span class="line">    <span class="keyword">return</span> inner</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ordinary</span><span class="params">()</span>:</span></span><br><span class="line">    print(<span class="string">"I am ordinary"</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>ordinary()</span><br><span class="line">I am ordinary</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="comment"># let's decorate this ordinary function</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>pretty = make_pretty(ordinary)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>pretty()</span><br><span class="line">I got decorated</span><br><span class="line">I am ordinary</span><br></pre></td></tr></table></figure>
+<p>可以使用@符号和装饰器名称一起使用，放在函数定义前，表示该函数使用该装饰器<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@make_pretty</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ordinary</span><span class="params">()</span>:</span></span><br><span class="line">    print(<span class="string">"I am ordinary"</span>)</span><br></pre></td></tr></table></figure></p>
+<p>等价于<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ordinary</span><span class="params">()</span>:</span></span><br><span class="line">    print(<span class="string">"I am ordinary"</span>)</span><br><span class="line">ordinary = make_pretty(ordinary)</span><br></pre></td></tr></table></figure></p>
+<p>带参数的装饰器需要保证inner function的参数和被修饰的函数参数保持一致。可以用一种通用的装饰器的实现方法：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">works_for_all</span><span class="params">(func)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">inner</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">        print(<span class="string">"I can decorate any function"</span>)</span><br><span class="line">        <span class="keyword">return</span> func(*args, **kwargs)</span><br><span class="line">    <span class="keyword">return</span> inner</span><br></pre></td></tr></table></figure></p>
+<p><code>args</code>是位置参数的元组，<code>kwargs</code>是默认参数的字典。</p>
+<p>同一个函数可以被多个装饰器装饰多次（可以是同一个装饰器）。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2018/01/30/Lua-Table-Parser/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1647,7 +2053,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-count">7</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
