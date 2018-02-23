@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="network," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="客户端端口号客户端通常使用短期存活的临时端口（ephemeral port）。这些端口号通常由传输层协议自动赋予客户端。客户通常不关心其临时端口的具体值，只需要确定该端口号在所在主机中是唯一的就行。传输协议代码要确保这种唯一性。 MTUmaximum transmission unit, 最大传输单元。 许多网络有一个">
+<meta name="keywords" content="network">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络知识">
+<meta property="og:url" content="https://uyouii.github.io/2018/02/23/网络知识/index.html">
+<meta property="og:site_name" content="Uyouii&#39;s Blogs">
+<meta property="og:description" content="客户端端口号客户端通常使用短期存活的临时端口（ephemeral port）。这些端口号通常由传输层协议自动赋予客户端。客户通常不关心其临时端口的具体值，只需要确定该端口号在所在主机中是唯一的就行。传输协议代码要确保这种唯一性。 MTUmaximum transmission unit, 最大传输单元。 许多网络有一个硬件规定的MTU。例如，以太网的MTU是1500字节。 在两个主机之间的路径最下">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-02-23T09:25:14.246Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="网络知识">
+<meta name="twitter:description" content="客户端端口号客户端通常使用短期存活的临时端口（ephemeral port）。这些端口号通常由传输层协议自动赋予客户端。客户通常不关心其临时端口的具体值，只需要确定该端口号在所在主机中是唯一的就行。传输协议代码要确保这种唯一性。 MTUmaximum transmission unit, 最大传输单元。 许多网络有一个硬件规定的MTU。例如，以太网的MTU是1500字节。 在两个主机之间的路径最下">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://uyouii.github.io/2018/02/23/网络知识/"/>
+
+
+
+
+
+  <title>网络知识 | Uyouii's Blogs</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Uyouii's Blogs</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">There are many things need to learn.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2018/02/23/网络知识/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Uyouii">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Uyouii's Blogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">网络知识</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-23T17:16:20+08:00">
+                2018-02-23
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Post modified</span>
+              
+              <time title="Post modified" itemprop="dateModified" datetime="2018-02-23T17:25:14+08:00">
+                2018-02-23
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Unix-Network-Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Unix Network Programming</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="客户端端口号"><a href="#客户端端口号" class="headerlink" title="客户端端口号"></a>客户端端口号</h2><p>客户端通常使用短期存活的<strong>临时端口（ephemeral port）</strong>。这些端口号通常由传输层协议自动赋予客户端。客户通常不关心其临时端口的具体值，只需要确定该端口号在所在主机中是唯一的就行。传输协议代码要确保这种唯一性。</p>
+<h2 id="MTU"><a href="#MTU" class="headerlink" title="MTU"></a>MTU</h2><p>maximum transmission unit, 最大传输单元。</p>
+<p>许多网络有一个硬件规定的MTU。例如，以太网的MTU是1500字节。</p>
+<p>在两个主机之间的路径最下的MTU称为<strong>路径MTU(path MTU)</strong>。两个主机相反方向上路径MTU可以不一致，因为在因特网中路由选择往往是不对称的，也就是说从A到B的路径和从B到A的路径可以不相同。</p>
+<p>当一个IP数据报从某个接口送出时，如果它的大小超过相应链路的MTU，IPv4和IPv6都将执行<strong>分片(fragmentation)</strong>。这些片段在到达目的地之前通常不会被<strong>重组（reassembling）</strong>。IPv4主机对其产生的数据报执行分片，IPv4路由器对其转发的数据包执行分片。然而IPv6只有主机对其产生的数据报执行分片，IPv6路由器不对其转发的数据报执行分片。</p>
+<p>IPv4和IPv6都定义了<strong>最小重组缓冲区大小（minimum reassembly buffer size）</strong>，它是IPv4或IPv6的任何实现都必须保证支持的最小数据报大小。其值对于IPv4是576字节，对于IPv6是1500字节。</p>
+<p>TCP中有一个<strong>MSS（maximum segment size，最大分片大小）</strong>，用于向对端TCP通告对端在每个分节中能发送的最大TCP数据量。MSS的目的是告诉对端其重组缓冲区大小的实际值，从而避免试图分片。MSS经常设置成MTU减去IP和TCP首部固定长度。</p>
+<p>在以太网中使用IPv4的MSS值为1460，使用IPv6的MSS值为</p>
+<h2 id="PDU-协议数据单元-protocol-data-unit"><a href="#PDU-协议数据单元-protocol-data-unit" class="headerlink" title="PDU(协议数据单元 protocol data unit)"></a>PDU(协议数据单元 protocol data unit)</h2><p>计算机网络各层对等实体间交换的单位信息称为<strong>协议数据单元(PDU)</strong>，按照协议与服务之间的关系，除了最底层（物理层）外，每层的PDU通过紧邻下层提供给本层的服务接口，作为下层的<strong>服务数据单元</strong>(<strong>service data unit, SDU</strong>)传递给下层，并由下层完成本层的PDU交换。如果本层的PDU大小超过紧临下层的最大SDU限制，那么本层需要实现把SDU划分为若干个合适的片段让下层分开载送，再在相反的方向把这些碎片重组成PDU。</p>
+<p>应用层实体(如客户或者服务器进程)间交换的PDU称为<strong>应用数据(application data)</strong>，其中在应用进程之间交换的时没有长度限制的单个双向字节流，在UDP应用进程之间交换的是其长度不超过UDP发送缓冲区大小的<strong>单个记录(record)</strong>，在SCTP应用进程之间交换的是没有总长度限制的单个或多个双向记录流。</p>
+<p>传输层实体间交换的PDU称为<strong>消息(message)</strong>，其中TCP的PDU称为<strong>分节(segment)</strong>。消息或分节的长度是有限的。</p>
+<p>在TCP传输中，发送端TCP把来自应用进程的字节流数据按顺序经分割后封装在各个分节中传送给接收端TCP，其中每个分节所封装的数据即可能是发送端应用进程单次输出操作的结果，也可能是连续数次输出操作的结果，而且每个分节所封装的单次输出操作的结果或者首尾两次输出操作的结果既可能是完整的，也可能是不完整的，具体取决于连接建立阶段由对端通告的<strong>最大分节大小(MSS, maximum segment size)</strong>，以及外出接口的<strong>最大传输单元(maximum transmission unit, MTU)</strong>。</p>
+<p>UDP传输层相当简单，发送端UDP就把来自应用进程的单个记录整个封装在UDP消息中传送给接收端UDP。</p>
+<p>SCTP引入了称为<strong>块</strong>(<strong>chunk</strong>)的数据单元，SCTP消息就由一个公共首部加上一个或多个块构成：公共首部类似UDP消息的首部，仅仅给出源目的端口号和整个SCTP消息的校验和；块既可以承载数据，也可以承载控制信息。发送端SCTP把来自应用进程的（一个或多个）记录流数据按照数据流内顺序和记录边界封装在各个DATA块中，并在DATA块首部记上各自的流ID。</p>
+<p>一个记录通常对应一个DATA块，对于过长的记录，发送端SCTP既可以像UDP那样拒绝发送，也可以把他们拆分到多个DATA块中以便发送，接收端SCTP收取后把他们组合成单个记录上传。</p>
+<p>网络成实体间交换的PDU称为<strong>IP数据报(IP datagram)</strong>，其长度有限：IPV4数据报最大65535字节，IPv6数据报最大65575字节。发送端IP把来自传输层的消息（或TCP分节）整个封装在IP数据报中传送。</p>
+<p>链路层实体间交换的PDU称为<strong>帧（frame）</strong>，其长度取决于具体的接口。</p>
+<p>IP数据报由IP首部和所承载的传输层数据构成。过长的IP数据报无法封装在单个帧中，需要首先对其SDU进行<strong>分片（fragementation）</strong>，再把分成对得各个<strong>片段（fragement）</strong>冠以新的IP首部封装到多个帧中。在一个IP数据包从源端传送到目的端的传送过程中，分片操作既可能发生在源端，也可能发生在途中。</p>
+<p>T<strong>CP/IP协议族为提高效率会尽可能避免IP分片/重组操作</strong>：TCP根据MSS和MTU限定每个分节的大小以及SCTP根据MTU分片/重组过长记录都是这个目的（STCP的块捆绑这是为了避免IP分片/重组操作的前提下提高块传输效率）；另外，IPv6禁止在途中的分片操作（基于其路径MTU发现功能），IPv4也尽量避免这种操作。</p>
+<p>不论是否分片，都由IP作为链路层的SDU传入链路层，并由链路层封装再帧中的数据称为<strong>分组（packet，俗称包）</strong>。一个分组既可能是一个完整的IP数据报，也可能是某个IP数据报的SDU的一个片段冠以新的IP首部的结果。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/network/" rel="tag"># network</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/23/socket-编程/" rel="next" title="socket 编程">
+                <i class="fa fa-chevron-left"></i> socket 编程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/23/TCP/" rel="prev" title="TCP">
+                TCP <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Uyouii" />
+          <p class="site-author-name" itemprop="name">Uyouii</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Uyouii" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#客户端端口号"><span class="nav-number">1.</span> <span class="nav-text">客户端端口号</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MTU"><span class="nav-number">2.</span> <span class="nav-text">MTU</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PDU-协议数据单元-protocol-data-unit"><span class="nav-number">3.</span> <span class="nav-text">PDU(协议数据单元 protocol data unit)</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Uyouii</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
