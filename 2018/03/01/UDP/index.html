@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="network,IO multiplexing,c," />
+  <meta name="keywords" content="network,c,socket,udp," />
 
 
 
@@ -94,18 +94,22 @@
 
 
 
-<meta name="description" content="使用I/O复用的经典场合 当客户处理多个描述符（通常是交互式输入和网络套接字）时，必须使用I/O复用。 当一个客户端同时处理多个套接字时可能的。 如果一个TCP服务器既要处理监听套接字，又要处理已连接套接字。 如果一个服务器既要处理TCP，又要处理UDP，一般就要使用I/O复用。 如果一个服务器要处理多个服务器或者多个">
-<meta name="keywords" content="network,IO multiplexing,c">
+<meta name="description" content="UDP是无连接不可靠的数据报协议，使用UDP编写的一些常见的应用程序有：DNS（域名系统），NFS（网络文件系统）和SNMP（简单网络管理协议）。 UDP客户/服务器程序所有套接字函数 recvfrom 和 sendto 函数123#include &amp;lt;sys/socket.h&amp;gt;ssize_t">
+<meta name="keywords" content="network,c,socket,udp">
 <meta property="og:type" content="article">
-<meta property="og:title" content="IO复用：select和poll">
-<meta property="og:url" content="https://uyouii.github.io/2018/02/23/IO复用：select和poll/index.html">
+<meta property="og:title" content="UDP">
+<meta property="og:url" content="https://uyouii.github.io/2018/03/01/UDP/index.html">
 <meta property="og:site_name" content="Uyouii&#39;s Blogs">
-<meta property="og:description" content="使用I/O复用的经典场合 当客户处理多个描述符（通常是交互式输入和网络套接字）时，必须使用I/O复用。 当一个客户端同时处理多个套接字时可能的。 如果一个TCP服务器既要处理监听套接字，又要处理已连接套接字。 如果一个服务器既要处理TCP，又要处理UDP，一般就要使用I/O复用。 如果一个服务器要处理多个服务器或者多个协议，一般要使用I/O复用。  select 函数该函数允许进程指示内核等待多个">
+<meta property="og:description" content="UDP是无连接不可靠的数据报协议，使用UDP编写的一些常见的应用程序有：DNS（域名系统），NFS（网络文件系统）和SNMP（简单网络管理协议）。 UDP客户/服务器程序所有套接字函数 recvfrom 和 sendto 函数123#include &amp;lt;sys/socket.h&amp;gt;ssize_t recvfrom(int sockfd, void* buff, size_t nbytes,">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2018-02-23T09:22:38.182Z">
+<meta property="og:image" content="https://github.com/Uyouii/Uyouii.github.io/raw/master/images/UDP%20socket%20function.JPG">
+<meta property="og:image" content="https://github.com/Uyouii/Uyouii.github.io/raw/master/images/UDP%20in%20clinet.JPG">
+<meta property="og:image" content="https://github.com/Uyouii/Uyouii.github.io/raw/master/images/UDP%20in%20server.JPG">
+<meta property="og:updated_time" content="2018-03-01T09:13:15.080Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="IO复用：select和poll">
-<meta name="twitter:description" content="使用I/O复用的经典场合 当客户处理多个描述符（通常是交互式输入和网络套接字）时，必须使用I/O复用。 当一个客户端同时处理多个套接字时可能的。 如果一个TCP服务器既要处理监听套接字，又要处理已连接套接字。 如果一个服务器既要处理TCP，又要处理UDP，一般就要使用I/O复用。 如果一个服务器要处理多个服务器或者多个协议，一般要使用I/O复用。  select 函数该函数允许进程指示内核等待多个">
+<meta name="twitter:title" content="UDP">
+<meta name="twitter:description" content="UDP是无连接不可靠的数据报协议，使用UDP编写的一些常见的应用程序有：DNS（域名系统），NFS（网络文件系统）和SNMP（简单网络管理协议）。 UDP客户/服务器程序所有套接字函数 recvfrom 和 sendto 函数123#include &amp;lt;sys/socket.h&amp;gt;ssize_t recvfrom(int sockfd, void* buff, size_t nbytes,">
+<meta name="twitter:image" content="https://github.com/Uyouii/Uyouii.github.io/raw/master/images/UDP%20socket%20function.JPG">
 
 
 
@@ -134,13 +138,13 @@
 
 
 
-  <link rel="canonical" href="https://uyouii.github.io/2018/02/23/IO复用：select和poll/"/>
+  <link rel="canonical" href="https://uyouii.github.io/2018/03/01/UDP/"/>
 
 
 
 
 
-  <title>IO复用：select和poll | Uyouii's Blogs</title>
+  <title>UDP | Uyouii's Blogs</title>
   
 
 
@@ -273,7 +277,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2018/02/23/IO复用：select和poll/">
+    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2018/03/01/UDP/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Uyouii">
@@ -290,7 +294,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">IO复用：select和poll</h1>
+          <h1 class="post-title" itemprop="name headline">UDP</h1>
         
 
         <div class="post-meta">
@@ -302,8 +306,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-23T17:17:07+08:00">
-                2018-02-23
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-01T17:11:24+08:00">
+                2018-03-01
               </time>
             
 
@@ -318,8 +322,8 @@
               
                 <span class="post-meta-item-text">Post modified</span>
               
-              <time title="Post modified" itemprop="dateModified" datetime="2018-02-23T17:22:38+08:00">
-                2018-02-23
+              <time title="Post modified" itemprop="dateModified" datetime="2018-03-01T17:13:15+08:00">
+                2018-03-01
               </time>
             
           </span>
@@ -374,29 +378,53 @@
       
 
       
-        <h2 id="使用I-O复用的经典场合"><a href="#使用I-O复用的经典场合" class="headerlink" title="使用I/O复用的经典场合"></a>使用I/O复用的经典场合</h2><ul>
-<li>当客户处理多个描述符（通常是交互式输入和网络套接字）时，必须使用I/O复用。</li>
-<li>当一个客户端同时处理多个套接字时可能的。</li>
-<li>如果一个TCP服务器既要处理监听套接字，又要处理已连接套接字。</li>
-<li>如果一个服务器既要处理TCP，又要处理UDP，一般就要使用I/O复用。</li>
-<li>如果一个服务器要处理多个服务器或者多个协议，一般要使用I/O复用。</li>
-</ul>
-<h2 id="select-函数"><a href="#select-函数" class="headerlink" title="select 函数"></a>select 函数</h2><p>该函数允许进程指示内核等待多个事件中的任何一个发生，并只在有一个或多个事件发生或经历一段指定的时间后才唤醒它。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/select.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> maxfdpl, fd_set *readset, fd_set *writeset, fd_set *exceptset, <span class="keyword">const</span> struct timeval *timeout)</span></span>;</span><br></pre></td></tr></table></figure>
-<p>select函数修改由指针readset、writeset和exceptset所指向的描述符集，因而这三个参数都是值-结果参数。调用该函数时，我们所指定所关心的描述符的值，该函数返回时，结果将指示哪些描述符已就绪。该函数返回后，我们使用FD_ISSET宏来测试fd_set数据类型中的描述符。描述符集内任何与未就绪描述符对应的位返回时均清成0。每次重新调用select函数时，我们都得再次把所有描述符集内所关心的位置均置为1。</p>
-<h2 id="描述符就绪条件"><a href="#描述符就绪条件" class="headerlink" title="描述符就绪条件"></a>描述符就绪条件</h2><h3 id="套接字准备好读"><a href="#套接字准备好读" class="headerlink" title="套接字准备好读"></a>套接字准备好读</h3><ol>
-<li>该套接字接收缓冲区中的数据字节数大于等于套接字接收缓冲区低水位标记的当前大小。对这样的套接字执行读操作不会阻塞并将返回一个大于0的值。可以使用SO_RCVLOWAT套接字选项设置该套接字的低水位标记。对于TCP和UDP套接字，其默认值为1。</li>
-<li>该连接的读半部关闭（也就是接收了FIN的TCP连接）。对于这样的套接字的读操作将不阻塞并返回0(也就是返回EOF)。</li>
-<li>该套接字是一个监听套接字且已完成的连接数不为0。对这样的套接字的accept通常不会阻塞。</li>
-<li>其上有一个套接字错误待处理。对这样的套接字的读操作将不阻塞并返回-1（也就是返回一个错误），同时把errno设置成确切的错误条件。这些待处理错误（pending error）也可以通过指定SO_ERROR套接字选项调用getsockopt获取并清除。</li>
+        <p>UDP是无连接不可靠的数据报协议，使用UDP编写的一些常见的应用程序有：DNS（域名系统），NFS（网络文件系统）和SNMP（简单网络管理协议）。</p>
+<h2 id="UDP客户-服务器程序所有套接字函数"><a href="#UDP客户-服务器程序所有套接字函数" class="headerlink" title="UDP客户/服务器程序所有套接字函数"></a>UDP客户/服务器程序所有套接字函数</h2><p><img src="https://github.com/Uyouii/Uyouii.github.io/raw/master/images/UDP%20socket%20function.JPG" alt="image"></p>
+<h2 id="recvfrom-和-sendto-函数"><a href="#recvfrom-和-sendto-函数" class="headerlink" title="recvfrom 和 sendto 函数"></a>recvfrom 和 sendto 函数</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="keyword">ssize_t</span> recvfrom(<span class="keyword">int</span> sockfd, <span class="keyword">void</span>* buff, <span class="keyword">size_t</span> nbytes, <span class="keyword">int</span> flags, struct sockaddr* from, <span class="keyword">socklen_t</span>* addrlen);</span><br><span class="line"><span class="keyword">ssize_t</span> sendto(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> <span class="keyword">void</span> *buff, <span class="keyword">size_t</span> nbytes, <span class="keyword">int</span> flags, <span class="keyword">const</span> struct sockaddr *to, <span class="keyword">socklen_t</span> addrlen);</span><br></pre></td></tr></table></figure>
+<p>前三个参数sockfd、buff和nbytes等同于read和write函数的三个参数：描述符、指向读入或写出缓冲区的指针和读写字节数。</p>
+<p>sendto的to参数指向一个含有数据报接收者的协议地址的套接字地址结构，其大小由addrlen参数指定。recvfrom的from参数指向一个将由该函数在返回时填写数据报发送者的协议地址的套接字结构，而在该套接字地址结构中填写的字节数则放在addrlen参数所指向的整数中返回给调用者。</p>
+<p>注意:sendto的最后一个参数是一个整数值，而recvfrom的最后一个参数是一个指向整数的指针。</p>
+<p>则两个函数都把所读写数据的长度作为函数返回值。在recvfrom使用数据报协议的典型用途中，返回值就是所接收数据报中的用户数据量。</p>
+<p>写一个长度为0的数据报是可行的。在UDP情况下，这会形成一个只包含IP首部和一个8字节UDP首部而没有数据的IP数据报。对于数据报协议，recvfrom返回0是可以接受的：它并不像TCP套接字上read返回0值那样表示对端已关闭连接。既然UDP是无连接的，因此也就没有诸如关闭一个UDP连接之类的事情。</p>
+<p>对于一个UDP套接字，如果进程首次调用sendto时它没有绑定一个本地端口，那么内核就在此时为它选择一个临时端口。同TCP一样，客户也可以显示地调用bind，不过很少这样做。</p>
+<h2 id="接收缓冲区"><a href="#接收缓冲区" class="headerlink" title="接收缓冲区"></a>接收缓冲区</h2><p>每个UDP套接字都有一个接受缓冲区，到达该套接字的每个数据报都进入这个套接字的接收缓冲区。当进程调用recvfrom时，接收缓冲区中的下一个数据报以FIFO的顺序返回给进程。</p>
+<p>在进程能够取该套接字中任何已排好队的数据报之前，如果有多个数据报达到该套接字，那么相继到达的数据报仅仅加到该套接字的接收缓冲区中。然而这个缓冲区的大小是有限的。</p>
+<h2 id="UDP-从客户端和服务端角度"><a href="#UDP-从客户端和服务端角度" class="headerlink" title="UDP 从客户端和服务端角度"></a>UDP 从客户端和服务端角度</h2><p><img src="https://github.com/Uyouii/Uyouii.github.io/raw/master/images/UDP%20in%20clinet.JPG" alt="image"></p>
+<p>客户端必须给sendto调用指定服务器地IP地址和端口号。一般来说，客户端地IP地址和端口号均由内核自动选择。</p>
+<p>客户端地临时端口是在第一次调用sendto时一次性选定，不能改变；然而客户地IP地址却可以随客户端发送地每个UDP数据报而变动。</p>
+<p>如果客户端捆绑了一个IP地址到其套接字上，但是内核决定外出数据报必须从另一个数据链路发出，这种情形下，IP数据报将包含一个不同于外出链路IP地址地源IP地址。</p>
+<p><img src="https://github.com/Uyouii/Uyouii.github.io/raw/master/images/UDP%20in%20server.JPG" alt="image"></p>
+<p>UDP套接字目的IP地址只能通过为IPv4设置IP_RECVDSTADDR套接字选项（或为IPv6设置IPV6_PKTINFO套接字选项）然后调用recvmsg（而不是recvfrom）取得。</p>
+<p>由于UDP是无连接地，因此目的IP地址可随发送到服务器地每个数据报而改变。UDP服务器也可接收目的服务器主机地某个广播地址或多播地址地数据报。</p>
+<h2 id="UDP-connect函数"><a href="#UDP-connect函数" class="headerlink" title="UDP connect函数"></a>UDP connect函数</h2><p>对于一个UDP套接字，由它引发地异步错误并不返回给它，除非它已连接。</p>
+<p>UDP调用connect，内核只是检查是否存在立即可知的错误，记录对端的IP地址和端口号，然后立即返回到调用进程。</p>
+<p>对于已连接UDP套接字与默认的未连接UDP套接字相比，发生了三个变化：</p>
+<ol>
+<li>不能该输出操作指定目的IP地址和端口号。也就是说，我们不使用sendto，而改用write或send。写到已连接UDP套接字上的任何内容都自动发送到由connect指定的协议地址。（其实sendto也可以用，但是不能指定目的地址，snedto的第五个参数必须为空指针，第六个参数为0）。</li>
+<li>不必使用recvfrom获悉数据报的发送者，而改用read、recv或recvmsg。在一个已连接UDP套接字上，由内核为输入操作返回的数据报只有那些来自connect所指定协议地址的数据报。目的地为这个已连接UDP套接字的本地协议地址，发源地却不是该套接字早先connect到的协议地址的数据报，不会投递到该套接字。这样就限制一个已连接UDP套接字能且仅能与一个对端交换数据报。</li>
+<li>由已连接UDP套接字引发的异步错误会返回给他们所在的进程，而未连接UDP套接字不会接收任何异步错误。</li>
 </ol>
-<h3 id="套接字准备好写"><a href="#套接字准备好写" class="headerlink" title="套接字准备好写"></a>套接字准备好写</h3><ol>
-<li>该套接字发送缓冲区中的可用空间字节数大于等于套接字发送缓冲区低水位标记的当前大小，并且u后者该套接字已连接，或者该套接字不需要连接（如UDP套接字）。这意味着如果我们把这样的套接字设置为非阻塞，写操作将不阻塞并返回一个正值。可以使用SO_SNDLOWAT套接字选项来设置该套接字的低水位标记。对于TCP和UDP套接字而言，其默认值是2048。</li>
-<li>该连接的写半部关闭，对这样的套接字的写操作将产生SIGPIPE信号。</li>
-<li>使用非阻塞式connect的套接字已建立连接，或者connect已经以失败告终。</li>
-<li>其上有一个套接字错误待处理。对这样的套接字的写操作将不阻塞并返回-1(也就是返回一个错误)，同时把errno设置成确切的错误条件。这些待处理的错误也可以通过指定的SO_ERROR套接字选项调用getsockopt获取并清除。</li>
+<h3 id="给一个UDP套接字多次调用-connect"><a href="#给一个UDP套接字多次调用-connect" class="headerlink" title="给一个UDP套接字多次调用 connect"></a>给一个UDP套接字多次调用 connect</h3><ol>
+<li>指定新的ip地址和端口号</li>
+<li>断开套接字</li>
 </ol>
-<p>当某个套接字发生错误时，它将由select标记为即可读又可写。</p>
+<p>给一个已连接的UDP套接字指定新的对端不同于TCP套接字中connect的使用：对于TCP套接字，connect只能调用一次。</p>
+<p>为了断开一个已连接UDP套接字，再次调用connect时把套接字地址结构的地址族改成员设置为AF_UNSPEC。这么做可能返回一个EAFNOSUPPORT错误。</p>
+<h3 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h3><p>当应用进程在一个未连接的UDP套接字上调用sendto时，源自Berkeley的内核暂时连接该套接字，发送数据报，然后断开连接。通常涉及内核执行下列6个步骤：</p>
+<ol>
+<li>连接告戒之</li>
+<li>输出第一个数据报</li>
+<li>断开套接字连接</li>
+<li>连接套接字</li>
+<li>输出第二个数据报</li>
+<li>断开套接字连接</li>
+</ol>
+<p>如果应用进程知道自己要给同一目的地址发送多个数据报时，显示连接套接字效率更高。调用connect后调用两次write设计内核执行如下步骤：</p>
+<ol>
+<li>连接套接字</li>
+<li>输出第一个数据报</li>
+<li>输出第二个数据报</li>
+</ol>
 
       
     </div>
@@ -416,9 +444,11 @@
           
             <a href="/tags/network/" rel="tag"># network</a>
           
-            <a href="/tags/IO-multiplexing/" rel="tag"># IO multiplexing</a>
-          
             <a href="/tags/c/" rel="tag"># c</a>
+          
+            <a href="/tags/socket/" rel="tag"># socket</a>
+          
+            <a href="/tags/udp/" rel="tag"># udp</a>
           
         </div>
       
@@ -431,8 +461,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/02/23/TCP/" rel="next" title="TCP">
-                <i class="fa fa-chevron-left"></i> TCP
+              <a href="/2018/02/23/IP/" rel="next" title="IP">
+                <i class="fa fa-chevron-left"></i> IP
               </a>
             
           </div>
@@ -440,10 +470,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/02/23/IP/" rel="prev" title="IP">
-                IP <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -590,7 +616,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用I-O复用的经典场合"><span class="nav-number">1.</span> <span class="nav-text">使用I/O复用的经典场合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#select-函数"><span class="nav-number">2.</span> <span class="nav-text">select 函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#描述符就绪条件"><span class="nav-number">3.</span> <span class="nav-text">描述符就绪条件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#套接字准备好读"><span class="nav-number">3.1.</span> <span class="nav-text">套接字准备好读</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#套接字准备好写"><span class="nav-number">3.2.</span> <span class="nav-text">套接字准备好写</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#UDP客户-服务器程序所有套接字函数"><span class="nav-number">1.</span> <span class="nav-text">UDP客户/服务器程序所有套接字函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#recvfrom-和-sendto-函数"><span class="nav-number">2.</span> <span class="nav-text">recvfrom 和 sendto 函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#接收缓冲区"><span class="nav-number">3.</span> <span class="nav-text">接收缓冲区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UDP-从客户端和服务端角度"><span class="nav-number">4.</span> <span class="nav-text">UDP 从客户端和服务端角度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UDP-connect函数"><span class="nav-number">5.</span> <span class="nav-text">UDP connect函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#给一个UDP套接字多次调用-connect"><span class="nav-number">5.1.</span> <span class="nav-text">给一个UDP套接字多次调用 connect</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#性能"><span class="nav-number">5.2.</span> <span class="nav-text">性能</span></a></li></ol></li></ol></div>
             
 
           </div>
