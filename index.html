@@ -270,6 +270,232 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2018/11/05/The-Graphics-Rendering-Pipeline/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Uyouii">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Uyouii's Blogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/05/The-Graphics-Rendering-Pipeline/" itemprop="url">The Graphics Rendering Pipeline</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-05T23:51:23+08:00">
+                2018-11-05
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Post modified</span>
+              
+              <time title="Post modified" itemprop="dateModified" datetime="2018-11-05T23:53:30+08:00">
+                2018-11-05
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Real-Time-Rendering/" itemprop="url" rel="index">
+                    <span itemprop="name">Real Time Rendering</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>coarse division of the real-time rendering pipeline into four main stages:</p>
+<ul>
+<li>application  [CPU]</li>
+<li>geometry processing [GPU]</li>
+<li>rasterization [GPU]</li>
+<li>pixel processing [GPU]</li>
+</ul>
+<p><img src="https://github.com/Uyouii/LearnOpenGL/raw/master/Real%20Time%20Rending%20Image/rendering%20pipeline.PNG" alt=""></p>
+<h2 id="The-Application-Stage"><a href="#The-Application-Stage" class="headerlink" title="The Application Stage"></a>The Application Stage</h2><ul>
+<li><strong>collision detection</strong> is commonly implemented in this stage.</li>
+<li>the application stage is also the place to take care of input from other sources, such as the keyboard, the mouse, or a head-mounted display</li>
+<li>Acceleration algorithms, such as particular culling algorithms are also implemented here, along with whatever else the rest of the pipeline cannot handle.</li>
+</ul>
+<h2 id="Geometry-Processing"><a href="#Geometry-Processing" class="headerlink" title="Geometry Processing"></a>Geometry Processing</h2><p>The geometry processing stage on the GPU is responsible for most of the per-triangle and per-vertex operations. It is further divided into the following functional stages:</p>
+<ul>
+<li>vertex shading</li>
+<li>projection</li>
+<li>clipping</li>
+<li>screen mapping</li>
+</ul>
+<h3 id="Vertex-Shading"><a href="#Vertex-Shading" class="headerlink" title="Vertex Shading"></a>Vertex Shading</h3><ul>
+<li>two main tasks:<ul>
+<li>compute the position for a vertex</li>
+<li>evaluate whatever the programmer may like to have as vertex output data</li>
+</ul>
+</li>
+</ul>
+<p>Traditionally much of the shade of an object was computed by applying lights to each vertex’s location and normal and storing only the resulting color at the vertex. These colors were then interpolated across the triangle. For this reason, this programmable vertex processing unit was named the <strong>vertex shader</strong>.</p>
+<p><img src="https://github.com/Uyouii/LearnOpenGL/raw/master/Real%20Time%20Rending%20Image/veiw%20space.PNG" alt=""></p>
+<p><strong>shading</strong>: the operation of determining the effect of a light on a material.</p>
+<h3 id="Projection"><a href="#Projection" class="headerlink" title="Projection"></a>Projection</h3><ul>
+<li>orthographic projection</li>
+<li>perspective projection</li>
+</ul>
+<p>Although these matrices transform one volume into another, they are called projections because after display, the z-coordinate is not stored in the image generated but is stored in a z-buﬀer. In this way, the models are projected from three to two dimensions.</p>
+<h3 id="Clipping"><a href="#Clipping" class="headerlink" title="Clipping"></a>Clipping</h3><ul>
+<li>A primitive that lies fully inside the view volume will be passed on to the next stage as is. </li>
+<li>Primitives entirely outside the view volume are not passed on further, since they are not rendered. </li>
+<li>It is the primitives that are partially inside the view volume that require clipping.</li>
+</ul>
+<h3 id="Screen-Mapping"><a href="#Screen-Mapping" class="headerlink" title="Screen Mapping"></a>Screen Mapping</h3><p>The x- and y-coordinates of each primitive are transformed to form <strong>screen coordinates</strong>.</p>
+<p>Screen coordinates together with the z-coordinates are also called <strong>window coordinates</strong>.</p>
+<h2 id="Rasterization"><a href="#Rasterization" class="headerlink" title="Rasterization"></a>Rasterization</h2><p>Rasterization process is split up into two functional substages:</p>
+<ul>
+<li>triangle setup (primitive assembly)<ul>
+<li>In this stage the diﬀerentials, edge equations, and other data for the triangle are computed.</li>
+</ul>
+</li>
+<li>triangle traversal<ul>
+<li>Finding which samples or pixels are inside a triangle is often called triangle traversal</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://github.com/Uyouii/LearnOpenGL/raw/master/Real%20Time%20Rending%20Image/rasterization%20and%20pixel%20processing.PNG" alt=""></p>
+<h2 id="Pixel-Processing"><a href="#Pixel-Processing" class="headerlink" title="Pixel Processing"></a>Pixel Processing</h2><p> Pixel processing is the stage where per-pixel or per-sample computations and operations are performed on pixels or samples that are inside a primitive.</p>
+<p> The pixel stage is divided into :</p>
+<ul>
+<li>pixel shading</li>
+<li>merging</li>
+</ul>
+<h3 id="Pixel-Shading"><a href="#Pixel-Shading" class="headerlink" title="Pixel Shading"></a>Pixel Shading</h3><p>Any per-pixel shading computations are performed here, using the interpolated shading data as input. The end result is one or more colors to be passed on to the next stage. </p>
+<p><strong>texturing</strong> is employed here.</p>
+<h3 id="Merging"><a href="#Merging" class="headerlink" title="Merging"></a>Merging</h3><p>A <strong>z-buﬀer</strong> is the same size and shape as the color buﬀer, and for each pixel it stores the z-value to the currently closest primitive. </p>
+<p>This means that when a primitive is being rendered to a certain pixel, the z-value on that primitive<br>at that pixel is being computed and compared to the contents of the z-buﬀer at the same pixel. </p>
+<ul>
+<li>If the new z-value is smaller than the z-value in the z-buﬀer, then the primitive that is being rendered is closer to the camera than the primitive that was previously closest to the camera at that pixel. </li>
+<li>If the computed z-value is greater than the z-value in the z-buﬀer, then the color buﬀer and the z-buﬀer are left untouched. </li>
+</ul>
+<p>However, the z-buﬀer stores only a single depth at each point on the screen, so it cannot be used for partially transparent primitives. These must be rendered after all opaque primitives, and in back-to-front<br>order, or using a separate order-independent algorithm (Section 5.5). Transparency is one of the major weaknesses of the basic z-buﬀer.</p>
+<p>The <strong>alpha channel</strong> is associated with the color buﬀer and stores a related opacity value for each pixel.</p>
+<p>The <strong>stencil buﬀer</strong> is an oﬀscreen buﬀer used to record the locations of the rendered primitiveIt typically contains 8 bits per pixel. Primitives can be rendered into the stencil buﬀer using various functions, and the buﬀer’s contents can then be used to control rendering into the color buﬀer and z-buﬀer.</p>
+<p>To avoid allowing the human viewer to see the primitives as they are being rasterized and sent to the screen, <strong>double buﬀering</strong> is used. This means that the rendering of a scene takes place oﬀ screen, in a back buﬀer. </p>
+<p>Once the scene has been rendered in the back buﬀer, the contents of the back buﬀer are swapped with the contents of the front buﬀer that was previously displayed on the screen. The swapping often occurs during <strong>vertical retrace</strong>, a time when it is safe to do so.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2018/07/05/读书摘要/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -317,8 +543,8 @@
               
                 <span class="post-meta-item-text">Post modified</span>
               
-              <time title="Post modified" itemprop="dateModified" datetime="2018-07-05T16:44:29+08:00">
-                2018-07-05
+              <time title="Post modified" itemprop="dateModified" datetime="2018-11-05T23:49:08+08:00">
+                2018-11-05
               </time>
             
           </span>
@@ -406,7 +632,47 @@
 </li>
 <li><p>胆小鬼连幸福都会害怕，碰到棉花都会受伤，有时还会被幸福所伤。</p>
 </li>
-<li></li>
+</ol>
+<h2 id="天才在左，疯子在右"><a href="#天才在左，疯子在右" class="headerlink" title="天才在左，疯子在右"></a>天才在左，疯子在右</h2><ol>
+<li>人之所以会产生一些妄想或者说是幻觉，主要是因为大脑不听使唤，左脑接受了来自右脑的错误指令，因而产生了歪曲的理解和判断。</li>
+<li>缺乏安全感和孤独寂寞的人最容易出现妄想症，他们最初觉得“没人关系我”，后来演变为“有人要害我”。</li>
+<li>视觉对于外界光线的感应能偶帮助我们维持生物钟的正常运转。但如果用光线照射我们的双眼，大脑便会由此“上当”，从而加速或者减缓我们的生理时钟的运转。</li>
+<li>“马太效应”是社会心理学的经典效应，他向我们证明了强者恒强、弱者越弱的道理。如果一个人获得了成功，那么随之而来，各种好事情都会发生在他的身上。同样，如果一个人很衰，他就会遇到各种各样衰的事情。</li>
+<li>心理学家认为，人的幸或者不幸，并不是上帝在天空中决定并安排好的，实际上一个人的运气好坏是由这个人的行为和思想决定的。<br>  幸运的人通常乐观积极，活力四射，这样的心态让他们对未知的恐惧低于阈值，因为更容易接受新的挑战，更容易抓住新的机遇。<pre><code>而那些不幸的人则相反，他们多半性格孤僻，反应也不够敏捷。他们的情感关注点更多地集中于自己身上，因此很害怕周遭发生的会让自己感受到不舒服的改变。对他们而言，“未知”便是最大的恐惧和不安，处于恐惧中时，他们便会与大好的机会擦肩而过。
+</code></pre></li>
+<li>自我监控能力强的人显然更容易成为撒谎高手，而这种能力较弱的人，似乎用撒谎来掩饰自己的意识较差。</li>
+<li>六度分隔假说，其含义是世界上任意两个欲取得联系的陌生人之间，最多只隔着六个人，便能够达成联系。</li>
+<li>越是急于证明自己，就越是证明不了。因为没有人愿意跟着你的思路去思考问题。</li>
+<li>车尔尼雪夫斯基说：“在人间有什么会更有诗意，更为迷人，胜于那怀着欢乐的爱，对自己觉得像自己本身一样崇高、纯洁和美妙的一切东西都发生共鸣的纯真的纯真的少年心灵呢？”</li>
+<li>童年对一个作家的影响是深入骨髓的，是融贯在灵魂中的，同年是我们的精神故乡，同年所遭受的创伤会让人铭记在心。创伤在灵魂的深处生了根，就好像在土地中播撒了种子般，在岁月流逝中，种子逐渐发芽、长出了树枝，成长为参天大树，然而其根基仍然是当初的种子，是由幼时的创伤繁衍出来的。创伤及由此而形成的思想就由此成为作家作品的内核。</li>
+<li>有人曾这样描述弗吉尼亚.伍尔夫：“她的记忆有着隐秘的两面——一面澄清，一面黑暗；一面寒冷，一面温热；一面创造，一面是毁灭；一面铺洒着天堂之光，一面燃烧着地狱之火。</li>
+</ol>
+<h2 id="解忧杂货店"><a href="#解忧杂货店" class="headerlink" title="解忧杂货店"></a>解忧杂货店</h2><ol>
+<li>他们内心都破了个洞，重要的东西正从那个破洞中流失。人的心声是绝对不能无视的。</li>
+<li>很多时候，咨询的人心里已经有个答案，来咨询只是想确认自己的决定是对的。所以有些人读过回信后，会再次写信过来，大概就是因为回答的内容和他的想法不一样吧。</li>
+<li>如果自己不想积极乐观的生活，不管得到什么样的回答都没有用。</li>
+<li>虽然至今为止的道路绝非一片坦途，但想到正因为或者才有机会感受到痛楚，我就成功克服了种种困难。</li>
+<li>人与人之间请以断绝，并不需要什么具体的理由。就算表面上有，也很可能只是心已经离开的结果，事后才编造出的借口而已。因为倘若心没有离开，当将会导致关系破裂的师太发生时，理应有人努力去挽救。如果没有，说明其实关系早已破裂。</li>
+<li>可是换个角度来看，正因为是一张白纸，才可以随心所欲地描绘地图。一切全在你自己。对你来说，一切都是自由的，在你面前是无限的可能。这可是很棒的事呀。我衷心祈祷你可以相信自己，无悔地燃烧自己的人生。</li>
+<li>话语教给我们很多，但善恶还是可以自明。话语想要教给我们，人与人生来就不平等。在人间，尊卑有序是永恒的真理，但你也可以不听。</li>
+</ol>
+<h2 id="无人生还"><a href="#无人生还" class="headerlink" title="无人生还"></a>无人生还</h2><ol>
+<li>直到现在我才明白，艺术家永远不会只满足于创造艺术。他渴望自己的艺术得到世人的青睐，是人性使然。</li>
+</ol>
+<h2 id="小王子"><a href="#小王子" class="headerlink" title="小王子"></a>小王子</h2><ol>
+<li>如果有一个人爱上在这亿万颗星星中仅有的一朵花，这人望着星空的时候，就会觉得幸福。</li>
+<li>审判自己，比审判别人难得多。你若是能够公正地审判自己，那你就是一个真正地贤士。</li>
+<li>在我看来，你只不过是一个小男孩，跟成千上万地男孩毫无两样。我不需要你，你也不需要我。对你来说我只不过是一只狐狸，跟成千上万的狐狸毫无两样。但是，你如果驯养了我，那么我们俩就彼此相互需要。对我来说，你是世界上独一无二的；我在你看来，也是世界上独一无二的……</li>
+<li>只有用心看，才能看的清楚；本质的东西，眼睛是看不见的。</li>
+<li>正是因为你为你的玫瑰，花费了时间，才使你的花儿变得那么重要。</li>
+<li>对你驯养的东西，你要永远负责。你必须对你的玫瑰花负责……</li>
+<li>“沙漠美丽”，小王子说，“是因为在某个地方藏着一口水井……”</li>
+<li>无论是房子、星星或沙漠，使它们美丽的东西是看不见的。</li>
+<li>这水，不只是一种饮料，它是从披星戴月地长途跋涉、轱辘的歌声、我的双臂的力量产生出来的。这水，像是一份礼物，使心田得到慰藉。在我小的时候，只有圣诞树的光、子夜弥撒的音乐、甜蜜的微笑，这一切才使得我的圣诞礼物光芒四射。</li>
+<li>眼睛是什么也看不见的。应该用心灵去找。</li>
+<li>你倘若爱上一朵生长在星星上的花，那么，在夜间，你看看天空就会感到愉快。所有的星星都像盛开的鲜花。</li>
+<li>“每个人都有星星，“小王子说，”但在不同的人眼里就是不一样。对旅行者，星星是指引路的。对另一些人，星星只是一些小亮光。对学者，星星是探讨的问题。对我的那个商人，星星是黄金。但是，所有的星星都是一声不响的。你有的那些星星，是别人得不到的！“</li>
+<li>”你夜间仰望星空时，由于我就住在其中的一颗星星上，由于我在其中的一颗星上笑，那么，对你来说，所有的星星仿佛都在笑。唯有你，有一些会笑的星星。“</li>
 </ol>
 
           
@@ -2604,184 +2870,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2018/02/23/socket-编程/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Uyouii">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Uyouii's Blogs">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/02/23/socket-编程/" itemprop="url">socket 编程</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-23T17:16:07+08:00">
-                2018-02-23
-              </time>
-            
-
-            
-              <span class="post-meta-divider">|</span>
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Post modified</span>
-              
-              <time title="Post modified" itemprop="dateModified" datetime="2018-02-23T17:22:05+08:00">
-                2018-02-23
-              </time>
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Unix-Network-Programming/" itemprop="url" rel="index">
-                    <span itemprop="name">Unix Network Programming</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="套接字"><a href="#套接字" class="headerlink" title="套接字"></a>套接字</h2><p>标识每个端点的两个值（IP地址和端口号）通常称为一个套接字。</p>
-<p>TCP无法仅仅通过查看端口号来分离外来的分节到不同的端点。它必须查看套接字对的所有4个元素才能确定由哪个端点接收某个到达的分节。</p>
-<h2 id="不同套接字地址结构比较"><a href="#不同套接字地址结构比较" class="headerlink" title="不同套接字地址结构比较"></a>不同套接字地址结构比较</h2><p><img src="https://github.com/Uyouii/Uyouii.github.io/raw/master/images/different%20address%20struct.JPG" alt="image"></p>
-<h2 id="getsockopt-和-setsockopt-函数"><a href="#getsockopt-和-setsockopt-函数" class="headerlink" title="getsockopt 和 setsockopt 函数"></a>getsockopt 和 setsockopt 函数</h2><p>这两个函数仅用于套接字<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">getsockopt</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">int</span> level, <span class="keyword">int</span> optname, <span class="keyword">void</span> *optval, <span class="keyword">socklen_t</span> *optlen)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">setsockopt</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">int</span> level, <span class="keyword">int</span> optname, <span class="keyword">const</span> <span class="keyword">void</span>* optval, <span class="keyword">socklen_t</span> optlen)</span></span>;</span><br></pre></td></tr></table></figure></p>
-<p>optval是一个指向某个变量的指针，setsockopt从<code>*optval</code>中取得选项待设置的新值，getsockopt则把已获取的选项当前值存放到<code>*optval</code>中。</p>
-<p>套接字选项粗分为两大基本类型：一是启用或者禁止某个特性的二元选项（称为标志选项），二是取得并返回我们可以设置或检查的特定值选项（称为值选项）。</p>
-<p>当给这些标志选项调用getsockopt函数时，<code>*optval</code>是一个整数。<code>*optval</code>中返回的值为0表示相应选项被禁止，不为0表示相应选项被启用。</p>
-<p>setsockopt函数需要一个不为0的<code>*optva</code>值来启用选项，一个为0的<code>*optval</code>值来禁止选项。</p>
-<h2 id="套接字选项"><a href="#套接字选项" class="headerlink" title="套接字选项"></a>套接字选项</h2><h3 id="SO-KEEPALIVE-套接字选项"><a href="#SO-KEEPALIVE-套接字选项" class="headerlink" title="SO_KEEPALIVE 套接字选项"></a>SO_KEEPALIVE 套接字选项</h3><p>给一个TCP套接字设置保持存活（keep-alive）选项后，如果在2小时内在该套接字的任一方向上都没有数据交换，TCP就自动给对端发送一个保持存活探测分节(keep-alive probe)。这是一个对端必须响应的TCP分节。</p>
-<p>发送该分节后：</p>
-<ol>
-<li>对端以期望的ACK响应。应用进程得不到通知（因为一切正常）。在又经过仍无动静的2小时后，TCP将发出另一个探测分节。</li>
-<li>对端以rst响应，它告知本端TCP：对端已崩溃且已重新启动。该套接字的待处理错误被置为ECONNRESET，套接字本身则被关闭。</li>
-<li>对端对保持存活探测分节没有任何响应。源自Berkeley的TCP将另外发送8个探测分节，两两相隔75秒，试图得到一个响应。TCP在发出第一个探测分节后11分15秒内若没有得到任何响应则放弃。</li>
-</ol>
-<p>如果根本没有对TCP的探测分节的响应，该套接字的待处理错误就被置为ETIMEOUT，套接字本身则被关闭，然而如果该套接字收到一个ICMP错误作为某个探测分节的响应，那就返回相应的错误，套接字本身也被关闭。</p>
-<p>本选项的功能是检测对端主机是否崩溃或变得不可达。如果对端进程崩溃，它的TCP将跨连接发送一个FIN，这可以通过调用select很容易的检测到。同时也要认识到，即使对任何保持存活探测分节均无响应（第三种情况），我们也不能肯定对端主机已经崩溃，因而TCP可能会终止一个有效连接。</p>
-<p>本选项一本由服务器调用，不过客户端也可以使用。服务器使用本选项是因为它们花大部分时间阻塞在等待穿越TCP的连接输入上，也就是说在等待客户端的请求。然而如果客户主机连接掉线、电源掉线或系统崩溃，服务器进程将永远不会知道，并将继续等待永远不会到达的输入。这种情况称为半开连接（half-open connection）。保持存活选项将检测出这些半开连接并终止他们。</p>
-<h3 id="SO-RCVBUF-和-SO-SNDBUF-套接字选项"><a href="#SO-RCVBUF-和-SO-SNDBUF-套接字选项" class="headerlink" title="SO_RCVBUF 和 SO_SNDBUF 套接字选项"></a>SO_RCVBUF 和 SO_SNDBUF 套接字选项</h3><p>每个套接字都有一个发送缓冲区和一个接收缓冲区。</p>
-<p>接收缓冲区被TCP、UDP和SCTP用来保存接收到的数据，知道由应用进程来读取。对于TCP来说，套接字接收缓冲区中可用空间的大小限定了TCP通告对端的窗口大小。TCP套接字接收缓冲区不可能溢出，因为不允许对端发出超过本端所通告窗口大小的数据。这就是TCP的流量控制，如果对端无视窗口大大小而发出了超过该窗口大小的数据，本端TCP将丢弃他们。UDP是没有流量控制的：较快的发送端可以很容易地淹没较慢的接收端，导致接收端的UDP丢弃数据报。事实上较快的发送端甚至可以淹没本机的网络接口，导致数据报被本机丢弃。</p>
-<p>当设置TCP套接字接收缓冲区的大小时，函数调用的顺序很重要。这是因为TCP的窗口规模选项是在建立连接时用SYN分节与对端互换得到的。对于客户，这意味着SO_RCVBUF选项必须在调用connect之前设置；对于服务器，这意味着该选项必须在调用listen之前给监听套接字设置。给已连接套接字设置该选项对于可能存在的窗口规模选项没有任何影响，因为accept直到TCP的三路握手完成才会创建并返回已连接套接字。这就是必须给监听套接字设置本选项的原因。（套接字缓冲区的大小总是由新创建的已连接套接字从监听套接字继承而来）。</p>
-<p>TCP套接字缓冲区的大小至少应该是相应连接的MSS值的四倍。这一点的依据是TCP快速恢复算法的工作机制。TCP发送端使用三个重复的确认来检测某个分节是否丢失。发现某个分节丢失后，接收端将给新收到的每个分节发送一个重复的确认，如果窗口大小不足以存放4个这样的分节，那就不可能连发三个重复的确认，从而无法激活快速恢复算法。</p>
-<h3 id="TCP-NODELAY套接字选项"><a href="#TCP-NODELAY套接字选项" class="headerlink" title="TCP_NODELAY套接字选项"></a>TCP_NODELAY套接字选项</h3><p>开启TCP_NODELAY选项将禁止TCP的Nagle算法。</p>
-<p>Nagle算法的目的在于减少广域网（WAN）上小分组的数目。该算法指出：如果某个给定连接上有待确认数据（outstanding dataa），那么原本应该作为用户写操作相应的在该连接上立即发送相应小分组的行为就不会发生，直到现有数据被确认为止。这里“小”的定义就是小于MSS的任何分组。TCP总是尽可能地发送最大大小的分组，Nagle算法的目的在于防止一个连接在任何时刻有多个小分组待确认。</p>
-<p>Nalge算法常常与另一个TCP算法联合使用：ACK延滞算法（delayed ACK algorithm）。该算法使得TCP在收到数据后不立即发送ACK，而是等待一小段时间(典型值为50~200ms)，然后才发送ACK。TCP期待在这一小段时间内自身有数据发送回对端，被延滞的ACK就可以由这些数据捎带，从而省掉一个TCP分节。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2832,7 +2920,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -2843,7 +2931,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">categories</span>
               </a>
             </div>
@@ -2854,7 +2942,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>

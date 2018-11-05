@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="network,ip," />
+  <meta name="keywords" content="graphics,real time rendering," />
 
 
 
@@ -94,21 +94,22 @@
 
 
 
-<meta name="description" content="IPv4头部 IPv6头部">
-<meta name="keywords" content="network,ip">
+<meta name="description" content="coarse division of the real-time rendering pipeline into four main stages:  application  [CPU] geometry processing [GPU] rasterization [GPU] pixel processing [G">
+<meta name="keywords" content="graphics,real time rendering">
 <meta property="og:type" content="article">
-<meta property="og:title" content="IP">
-<meta property="og:url" content="https://uyouii.github.io/2018/02/23/IP/index.html">
+<meta property="og:title" content="The Graphics Rendering Pipeline">
+<meta property="og:url" content="https://uyouii.github.io/2018/11/05/The-Graphics-Rendering-Pipeline/index.html">
 <meta property="og:site_name" content="Uyouii&#39;s Blogs">
-<meta property="og:description" content="IPv4头部 IPv6头部">
+<meta property="og:description" content="coarse division of the real-time rendering pipeline into four main stages:  application  [CPU] geometry processing [GPU] rasterization [GPU] pixel processing [GPU]   The Application Stage collision de">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https://github.com/Uyouii/Uyouii.github.io/raw/master/images/IPv4%20header.jpg">
-<meta property="og:image" content="https://github.com/Uyouii/Uyouii.github.io/raw/master/images/IPv6%20header.jpg">
-<meta property="og:updated_time" content="2018-02-23T09:23:27.439Z">
+<meta property="og:image" content="https://github.com/Uyouii/LearnOpenGL/raw/master/Real%20Time%20Rending%20Image/rendering%20pipeline.PNG">
+<meta property="og:image" content="https://github.com/Uyouii/LearnOpenGL/raw/master/Real%20Time%20Rending%20Image/veiw%20space.PNG">
+<meta property="og:image" content="https://github.com/Uyouii/LearnOpenGL/raw/master/Real%20Time%20Rending%20Image/rasterization%20and%20pixel%20processing.PNG">
+<meta property="og:updated_time" content="2018-11-05T15:53:30.382Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="IP">
-<meta name="twitter:description" content="IPv4头部 IPv6头部">
-<meta name="twitter:image" content="https://github.com/Uyouii/Uyouii.github.io/raw/master/images/IPv4%20header.jpg">
+<meta name="twitter:title" content="The Graphics Rendering Pipeline">
+<meta name="twitter:description" content="coarse division of the real-time rendering pipeline into four main stages:  application  [CPU] geometry processing [GPU] rasterization [GPU] pixel processing [GPU]   The Application Stage collision de">
+<meta name="twitter:image" content="https://github.com/Uyouii/LearnOpenGL/raw/master/Real%20Time%20Rending%20Image/rendering%20pipeline.PNG">
 
 
 
@@ -137,13 +138,13 @@
 
 
 
-  <link rel="canonical" href="https://uyouii.github.io/2018/02/23/IP/"/>
+  <link rel="canonical" href="https://uyouii.github.io/2018/11/05/The-Graphics-Rendering-Pipeline/"/>
 
 
 
 
 
-  <title>IP | Uyouii's Blogs</title>
+  <title>The Graphics Rendering Pipeline | Uyouii's Blogs</title>
   
 
 
@@ -276,7 +277,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2018/02/23/IP/">
+    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2018/11/05/The-Graphics-Rendering-Pipeline/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Uyouii">
@@ -293,7 +294,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">IP</h1>
+          <h1 class="post-title" itemprop="name headline">The Graphics Rendering Pipeline</h1>
         
 
         <div class="post-meta">
@@ -305,8 +306,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-23T17:17:17+08:00">
-                2018-02-23
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-05T23:51:23+08:00">
+                2018-11-05
               </time>
             
 
@@ -321,8 +322,8 @@
               
                 <span class="post-meta-item-text">Post modified</span>
               
-              <time title="Post modified" itemprop="dateModified" datetime="2018-02-23T17:23:27+08:00">
-                2018-02-23
+              <time title="Post modified" itemprop="dateModified" datetime="2018-11-05T23:53:30+08:00">
+                2018-11-05
               </time>
             
           </span>
@@ -340,8 +341,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Unix-Network-Programming/" itemprop="url" rel="index">
-                    <span itemprop="name">Unix Network Programming</span>
+                  <a href="/categories/Real-Time-Rendering/" itemprop="url" rel="index">
+                    <span itemprop="name">Real Time Rendering</span>
                   </a>
                 </span>
 
@@ -377,8 +378,79 @@
       
 
       
-        <h2 id="IPv4头部"><a href="#IPv4头部" class="headerlink" title="IPv4头部"></a>IPv4头部</h2><p><img src="https://github.com/Uyouii/Uyouii.github.io/raw/master/images/IPv4%20header.jpg" alt="image"></p>
-<h2 id="IPv6头部"><a href="#IPv6头部" class="headerlink" title="IPv6头部"></a>IPv6头部</h2><p><img src="https://github.com/Uyouii/Uyouii.github.io/raw/master/images/IPv6%20header.jpg" alt="image"></p>
+        <p>coarse division of the real-time rendering pipeline into four main stages:</p>
+<ul>
+<li>application  [CPU]</li>
+<li>geometry processing [GPU]</li>
+<li>rasterization [GPU]</li>
+<li>pixel processing [GPU]</li>
+</ul>
+<p><img src="https://github.com/Uyouii/LearnOpenGL/raw/master/Real%20Time%20Rending%20Image/rendering%20pipeline.PNG" alt=""></p>
+<h2 id="The-Application-Stage"><a href="#The-Application-Stage" class="headerlink" title="The Application Stage"></a>The Application Stage</h2><ul>
+<li><strong>collision detection</strong> is commonly implemented in this stage.</li>
+<li>the application stage is also the place to take care of input from other sources, such as the keyboard, the mouse, or a head-mounted display</li>
+<li>Acceleration algorithms, such as particular culling algorithms are also implemented here, along with whatever else the rest of the pipeline cannot handle.</li>
+</ul>
+<h2 id="Geometry-Processing"><a href="#Geometry-Processing" class="headerlink" title="Geometry Processing"></a>Geometry Processing</h2><p>The geometry processing stage on the GPU is responsible for most of the per-triangle and per-vertex operations. It is further divided into the following functional stages:</p>
+<ul>
+<li>vertex shading</li>
+<li>projection</li>
+<li>clipping</li>
+<li>screen mapping</li>
+</ul>
+<h3 id="Vertex-Shading"><a href="#Vertex-Shading" class="headerlink" title="Vertex Shading"></a>Vertex Shading</h3><ul>
+<li>two main tasks:<ul>
+<li>compute the position for a vertex</li>
+<li>evaluate whatever the programmer may like to have as vertex output data</li>
+</ul>
+</li>
+</ul>
+<p>Traditionally much of the shade of an object was computed by applying lights to each vertex’s location and normal and storing only the resulting color at the vertex. These colors were then interpolated across the triangle. For this reason, this programmable vertex processing unit was named the <strong>vertex shader</strong>.</p>
+<p><img src="https://github.com/Uyouii/LearnOpenGL/raw/master/Real%20Time%20Rending%20Image/veiw%20space.PNG" alt=""></p>
+<p><strong>shading</strong>: the operation of determining the effect of a light on a material.</p>
+<h3 id="Projection"><a href="#Projection" class="headerlink" title="Projection"></a>Projection</h3><ul>
+<li>orthographic projection</li>
+<li>perspective projection</li>
+</ul>
+<p>Although these matrices transform one volume into another, they are called projections because after display, the z-coordinate is not stored in the image generated but is stored in a z-buﬀer. In this way, the models are projected from three to two dimensions.</p>
+<h3 id="Clipping"><a href="#Clipping" class="headerlink" title="Clipping"></a>Clipping</h3><ul>
+<li>A primitive that lies fully inside the view volume will be passed on to the next stage as is. </li>
+<li>Primitives entirely outside the view volume are not passed on further, since they are not rendered. </li>
+<li>It is the primitives that are partially inside the view volume that require clipping.</li>
+</ul>
+<h3 id="Screen-Mapping"><a href="#Screen-Mapping" class="headerlink" title="Screen Mapping"></a>Screen Mapping</h3><p>The x- and y-coordinates of each primitive are transformed to form <strong>screen coordinates</strong>.</p>
+<p>Screen coordinates together with the z-coordinates are also called <strong>window coordinates</strong>.</p>
+<h2 id="Rasterization"><a href="#Rasterization" class="headerlink" title="Rasterization"></a>Rasterization</h2><p>Rasterization process is split up into two functional substages:</p>
+<ul>
+<li>triangle setup (primitive assembly)<ul>
+<li>In this stage the diﬀerentials, edge equations, and other data for the triangle are computed.</li>
+</ul>
+</li>
+<li>triangle traversal<ul>
+<li>Finding which samples or pixels are inside a triangle is often called triangle traversal</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://github.com/Uyouii/LearnOpenGL/raw/master/Real%20Time%20Rending%20Image/rasterization%20and%20pixel%20processing.PNG" alt=""></p>
+<h2 id="Pixel-Processing"><a href="#Pixel-Processing" class="headerlink" title="Pixel Processing"></a>Pixel Processing</h2><p> Pixel processing is the stage where per-pixel or per-sample computations and operations are performed on pixels or samples that are inside a primitive.</p>
+<p> The pixel stage is divided into :</p>
+<ul>
+<li>pixel shading</li>
+<li>merging</li>
+</ul>
+<h3 id="Pixel-Shading"><a href="#Pixel-Shading" class="headerlink" title="Pixel Shading"></a>Pixel Shading</h3><p>Any per-pixel shading computations are performed here, using the interpolated shading data as input. The end result is one or more colors to be passed on to the next stage. </p>
+<p><strong>texturing</strong> is employed here.</p>
+<h3 id="Merging"><a href="#Merging" class="headerlink" title="Merging"></a>Merging</h3><p>A <strong>z-buﬀer</strong> is the same size and shape as the color buﬀer, and for each pixel it stores the z-value to the currently closest primitive. </p>
+<p>This means that when a primitive is being rendered to a certain pixel, the z-value on that primitive<br>at that pixel is being computed and compared to the contents of the z-buﬀer at the same pixel. </p>
+<ul>
+<li>If the new z-value is smaller than the z-value in the z-buﬀer, then the primitive that is being rendered is closer to the camera than the primitive that was previously closest to the camera at that pixel. </li>
+<li>If the computed z-value is greater than the z-value in the z-buﬀer, then the color buﬀer and the z-buﬀer are left untouched. </li>
+</ul>
+<p>However, the z-buﬀer stores only a single depth at each point on the screen, so it cannot be used for partially transparent primitives. These must be rendered after all opaque primitives, and in back-to-front<br>order, or using a separate order-independent algorithm (Section 5.5). Transparency is one of the major weaknesses of the basic z-buﬀer.</p>
+<p>The <strong>alpha channel</strong> is associated with the color buﬀer and stores a related opacity value for each pixel.</p>
+<p>The <strong>stencil buﬀer</strong> is an oﬀscreen buﬀer used to record the locations of the rendered primitiveIt typically contains 8 bits per pixel. Primitives can be rendered into the stencil buﬀer using various functions, and the buﬀer’s contents can then be used to control rendering into the color buﬀer and z-buﬀer.</p>
+<p>To avoid allowing the human viewer to see the primitives as they are being rasterized and sent to the screen, <strong>double buﬀering</strong> is used. This means that the rendering of a scene takes place oﬀ screen, in a back buﬀer. </p>
+<p>Once the scene has been rendered in the back buﬀer, the contents of the back buﬀer are swapped with the contents of the front buﬀer that was previously displayed on the screen. The swapping often occurs during <strong>vertical retrace</strong>, a time when it is safe to do so.</p>
 
       
     </div>
@@ -396,9 +468,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/network/" rel="tag"># network</a>
+            <a href="/tags/graphics/" rel="tag"># graphics</a>
           
-            <a href="/tags/ip/" rel="tag"># ip</a>
+            <a href="/tags/real-time-rendering/" rel="tag"># real time rendering</a>
           
         </div>
       
@@ -411,8 +483,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/02/23/IO复用：select和poll/" rel="next" title="IO复用：select和poll">
-                <i class="fa fa-chevron-left"></i> IO复用：select和poll
+              <a href="/2018/07/05/读书摘要/" rel="next" title="读书摘要">
+                <i class="fa fa-chevron-left"></i> 读书摘要
               </a>
             
           </div>
@@ -420,10 +492,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/03/01/UDP/" rel="prev" title="UDP">
-                UDP <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -570,7 +638,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#IPv4头部"><span class="nav-number">1.</span> <span class="nav-text">IPv4头部</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IPv6头部"><span class="nav-number">2.</span> <span class="nav-text">IPv6头部</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#The-Application-Stage"><span class="nav-number">1.</span> <span class="nav-text">The Application Stage</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Geometry-Processing"><span class="nav-number">2.</span> <span class="nav-text">Geometry Processing</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Vertex-Shading"><span class="nav-number">2.1.</span> <span class="nav-text">Vertex Shading</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Projection"><span class="nav-number">2.2.</span> <span class="nav-text">Projection</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Clipping"><span class="nav-number">2.3.</span> <span class="nav-text">Clipping</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Screen-Mapping"><span class="nav-number">2.4.</span> <span class="nav-text">Screen Mapping</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rasterization"><span class="nav-number">3.</span> <span class="nav-text">Rasterization</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pixel-Processing"><span class="nav-number">4.</span> <span class="nav-text">Pixel Processing</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Pixel-Shading"><span class="nav-number">4.1.</span> <span class="nav-text">Pixel Shading</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Merging"><span class="nav-number">4.2.</span> <span class="nav-text">Merging</span></a></li></ol></li></ol></div>
             
 
           </div>
