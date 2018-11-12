@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="graphics,real time rendering," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="The display is the computer ​        —— Jen-Hsun Huang  Data-Parallel ArchitecturesMuch of a GPU’s chip area is dedicated to a large set of processors, called s">
+<meta name="keywords" content="graphics,real time rendering">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Chapter3 The Graphics Processing Unit">
+<meta property="og:url" content="https://uyouii.github.io/2018/11/12/Chapter3-The-Graphics-Processing-Unit/index.html">
+<meta property="og:site_name" content="Uyouii&#39;s Blogs">
+<meta property="og:description" content="The display is the computer ​        —— Jen-Hsun Huang  Data-Parallel ArchitecturesMuch of a GPU’s chip area is dedicated to a large set of processors, called shader cores, often numbering in the tho">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://github.com/Uyouii/LearnOpenGL/raw/master/Real%20Time%20Rending%20Image/Simpli%EF%AC%81ed%20shader%20execution%20example.PNG">
+<meta property="og:image" content="https://github.com/Uyouii/LearnOpenGL/raw/master/Real%20Time%20Rending%20Image/GPU%20implementation%20of%20the%20rendering%20pipeline.PNG">
+<meta property="og:image" content="https://github.com/Uyouii/LearnOpenGL/raw/master/Real%20Time%20Rending%20Image/Uni%EF%AC%81ed%20virtual%20machine%20architecture%20and%20register%20layout.PNG">
+<meta property="og:image" content="https://github.com/Uyouii/LearnOpenGL/raw/master/Real%20Time%20Rending%20Image/The%20tessellation%20stage.PNG">
+<meta property="og:updated_time" content="2018-11-12T13:51:05.419Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter3 The Graphics Processing Unit">
+<meta name="twitter:description" content="The display is the computer ​        —— Jen-Hsun Huang  Data-Parallel ArchitecturesMuch of a GPU’s chip area is dedicated to a large set of processors, called shader cores, often numbering in the tho">
+<meta name="twitter:image" content="https://github.com/Uyouii/LearnOpenGL/raw/master/Real%20Time%20Rending%20Image/Simpli%EF%AC%81ed%20shader%20execution%20example.PNG">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://uyouii.github.io/2018/11/12/Chapter3-The-Graphics-Processing-Unit/"/>
+
+
+
+
+
+  <title>Chapter3 The Graphics Processing Unit | Uyouii's Blogs</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Uyouii's Blogs</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">There are many things need to learn.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2018/11/12/Chapter3-The-Graphics-Processing-Unit/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Uyouii">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Uyouii's Blogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Chapter3 The Graphics Processing Unit</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-12T21:49:28+08:00">
+                2018-11-12
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Post modified</span>
+              
+              <time title="Post modified" itemprop="dateModified" datetime="2018-11-12T21:51:05+08:00">
+                2018-11-12
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Real-Time-Rendering/" itemprop="url" rel="index">
+                    <span itemprop="name">Real Time Rendering</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>The display is the computer</p>
+<p>​        —— Jen-Hsun Huang</p>
+</blockquote>
+<h2 id="Data-Parallel-Architectures"><a href="#Data-Parallel-Architectures" class="headerlink" title="Data-Parallel Architectures"></a>Data-Parallel Architectures</h2><p>Much of a GPU’s chip area is dedicated to a large set of processors, called <strong>shader cores</strong>, often numbering in the thousands.</p>
+<p>The GPU is a stream processor, in which ordered sets of similar data are processed in turn. Because<br>of this similarity the GPU can process these data in a massively <strong>parallel fashion</strong>. </p>
+<p>The GPU is optimized for <strong>throughput</strong>, deﬁned as the maximum rate at which data can be processed. However, this rapid processing has a cost. With less chip area dedicated to cache memory and control logic, <strong>latency</strong> for each shader core is generally considerably higher than what a CPU processor encounters.</p>
+<p>GPUs separate the instruction execution logic from the data. Called <strong>single instruction, multiple data (SIMD)</strong>. The advantage of SIMD is that considerably less silicon (and power) needs to be dedicated to processing data and switching, compared to using an individual logic and dispatch unit to run each program. </p>
+<h4 id="Warp"><a href="#Warp" class="headerlink" title="Warp"></a>Warp</h4><p>in modern GPU terms, each pixel shader invocation for a fragment is called a <strong>thread</strong>. This type of thread is unlike a CPU thread. It consists of a bit of memory for the input values to the shader, along with any register space needed for the shader’s execution. </p>
+<p>Threads that use the same shader program are bundled into groups, called <strong>warps</strong> by NVIDIA and <strong>wavefronts</strong> by AMD. A warp/wavefront is scheduled for execution by some number GPU shader cores, anywhere from 8 to 64, using SIMD-processing. </p>
+<h4 id="Occupancy"><a href="#Occupancy" class="headerlink" title="Occupancy"></a>Occupancy</h4><p>The shader program’s structure is an important characteristic that inﬂuences eﬃciency. A major factor is the amount of register use for each thread. The more registers needed by the shader program associated with each thread, the fewer threads, and thus the fewer warps, can be resident in the GPU. A shortage of warps can mean that a stall cannot be mitigated by swapping. </p>
+<p>Warps that are resident are said to be “in ﬂight,” and this number is called the <strong>occupancy</strong>. </p>
+<ul>
+<li>High occupancy means that there are many warps available for processing, so that idle processors are less likely. </li>
+<li>Low occupancy will often lead to poor performance.</li>
+</ul>
+<p>The frequency of memory fetches also aﬀects how much latency hiding is needed.</p>
+<p>Another factor aﬀecting overall eﬃciency is <strong>dynamic branching</strong>, caused by “if” statements and loops. </p>
+<p>if some threads, or even one thread, take the alternate path, then the warp must execute both branches, throwing away the results not needed by each particular thread. This problem is called <strong>thread divergence</strong>, where a few threads may need to execute a loop iteration or perform an “if” path that the other threads in the warp do not, leaving them idle during this time.</p>
+<p><img src="https://github.com/Uyouii/LearnOpenGL/raw/master/Real%20Time%20Rending%20Image/Simpli%EF%AC%81ed%20shader%20execution%20example.PNG" alt=""></p>
+<blockquote>
+<p>Simpliﬁed shader execution example. A triangle’s fragments, called threads, are gathered into warps. Each warp is shown as four threads but have 32 threads in reality. The shader program to be executed is ﬁve instructions long. The set of four GPU shader processors executes these instructions for the ﬁrst warp until a stall condition is detected on the “txr” command, which needs time to fetch its data. The second warp is swapped in and the shader program’s ﬁrst three instructions are applied to it, until a stall is again detected. After the third warp is swapped in and stalls, execution continues by swapping in the ﬁrst warp and continuing execution. If its “txr” command’s data are not yet returned at this point, execution truly stalls until these data are available. Each warp ﬁnishes in turn.</p>
+</blockquote>
+<h2 id="GPU-Pipeline-Overview"><a href="#GPU-Pipeline-Overview" class="headerlink" title="GPU Pipeline Overview"></a>GPU Pipeline Overview</h2><p><img src="https://github.com/Uyouii/LearnOpenGL/raw/master/Real%20Time%20Rending%20Image/GPU%20implementation%20of%20the%20rendering%20pipeline.PNG" alt=""></p>
+<blockquote>
+<p>GPU implementation of the rendering pipeline. The stages are color coded according to the degree of user control over their operation. Green stages are fully programmable. Dashed lines show optional stages. Yellow stages are conﬁgurable but not programmable, e.g., various blend modes can be set for the merge stage. Blue stages are completely ﬁxed in their function.</p>
+</blockquote>
+<p>The <strong>vertex shader</strong> is a fully programmable stage that is used to implement the geometry processing stage. </p>
+<p>The <strong>geometry shader</strong> is a fully programmable stage that operates on the vertices of a primitive (point, line, or triangle). It can be used to perform per-primitive shading operations, to destroy primitives, or to create new ones.</p>
+<p>The <strong>tessellation stage</strong> and <strong>geometry shader</strong> are both optional, and not all GPUs support them, especially on mobile devices.</p>
+<p>The <strong>clipping</strong>, <strong>triangle setup</strong>, and <strong>triangle traversal</strong> stages are implemented by ﬁxed-function hardware. </p>
+<p><strong>Screen mapping</strong> is aﬀected by window and viewport settings, internally forming a simple scale and repositioning. </p>
+<p>The <strong>pixel shader</strong> stage is fully programmable. </p>
+<p>Although the <strong>merger</strong> stage is not programmable, it is highly conﬁgurable and can be set to perform a wide variety of operations. It implements the “merging” functional stage, in charge of modifying the color, z-buﬀer, blend, stencil, and any other output-related buﬀers. </p>
+<p>pixel shader execution together with the merger stage form the conceptual pixel processing stage.</p>
+<h2 id="The-Programmable-Shader-Stage"><a href="#The-Programmable-Shader-Stage" class="headerlink" title="The Programmable Shader Stage"></a>The Programmable Shader Stage</h2><p>shader languages:</p>
+<ul>
+<li><p>HLSL:  <em>DirectX’s High-Level Shading Language</em></p>
+</li>
+<li><p>GLSL: <em>OpenGL Shading Language</em></p>
+</li>
+</ul>
+<p>DirectX’s HLSL can be compiled to virtual machine bytecode, also called the <strong>intermediate language</strong> (<strong>IL</strong> or <strong>DXIL</strong>), to provide hardware independence.</p>
+<p>A <strong>draw call</strong> invokes the graphics API to draw a group of primitives, so causing the graphics pipeline to execute and run its shaders.</p>
+<p>Each programmable shader stage has two types of inputs:</p>
+<ul>
+<li>uniform inputs, with values that remain constant throughout a draw call (but can be changed between draw calls)</li>
+<li>varying inputs, data that come from the triangle’s vertices or from rasterization. </li>
+</ul>
+<h4 id="Shader-Virtual-Machine-Register"><a href="#Shader-Virtual-Machine-Register" class="headerlink" title="Shader Virtual Machine Register"></a>Shader Virtual Machine Register</h4><p>The underlying virtual machine provides special <strong>registers</strong> for the diﬀerent types of inputs and outputs. The number of available <strong>constant registers</strong> for uniforms is much larger than those registers available for varying inputs or outputs. </p>
+<p>This happens because:</p>
+<ul>
+<li>the varying inputs and outputs need to be stored separately for each vertex or pixel, so there is a natural limit as to how many are needed.  </li>
+<li>The uniform inputs are stored once and reused across all the vertices or pixels in the draw call.</li>
+</ul>
+<p>The virtual machine also has general-purpose <strong>temporary registers</strong>, which are used for scratch space.</p>
+<p>All types of registers can be array-indexed using integer values in temporary registers.</p>
+<p><img src="https://github.com/Uyouii/LearnOpenGL/raw/master/Real%20Time%20Rending%20Image/Uni%EF%AC%81ed%20virtual%20machine%20architecture%20and%20register%20layout.PNG" alt=""></p>
+<blockquote>
+<p>Uniﬁed virtual machine architecture and register layout, under Shader Model 4.0. The maximum available number is indicated next to each resource. Three numbers separated by slashes refer to the limits for vertex, geometry, and pixel shaders (from left to right).</p>
+</blockquote>
+<h4 id="flow-control"><a href="#flow-control" class="headerlink" title="flow control"></a>flow control</h4><p>Instructions related to <strong>ﬂow control</strong> are used to implement high-level language constructs such as “if” and “case” statements, as well as various types of loops.</p>
+<p>Shaders support two types of ﬂow control: </p>
+<ul>
+<li><strong>Static ﬂow control</strong> branches are based on the values of uniform inputs.  This means that the ﬂow of the code is constant over the draw call. </li>
+<li><strong>Dynamic ﬂow control</strong> is based on the values of varying inputs, meaning that each fragment can execute the code diﬀerently.</li>
+</ul>
+<p>The primary beneﬁt of <strong>static ﬂow control</strong> is to allow the same shader to be used in a variety of diﬀerent situations (e.g., a varying numbers of lights). There is no thread divergence, since all invocations take the same code path.</p>
+<p>Dynamic flow control is much more powerful than static ﬂow control but can cost performance, especially if the code ﬂow changes erratically between shader invocations.</p>
+<h2 id="The-Vertex-Shader"><a href="#The-Vertex-Shader" class="headerlink" title="The Vertex Shader"></a>The Vertex Shader</h2><p>A triangle mesh is represented by a set of vertices, each associated with a speciﬁc <strong>position</strong> on the model surface. Besides position, there are other optional properties associated with each vertex, such as a <strong>color or texture coordinates</strong>. Surface <strong>normals</strong> are deﬁned at mesh vertices as well.</p>
+<p>The vertex shader provides a way to modify, create, or ignore values associated with each triangle’s vertex, such as its color, normal, texture coordinates, and position.</p>
+<p>Normally the vertex shader program transforms vertices from <strong>model space</strong> to <strong>homogeneous clip space</strong> . At a minimum, a vertex shader must always output this <strong>location</strong>.</p>
+<p>Since each vertex is treated independently, any number of shader processors on the GPU can be applied <strong>in parallel</strong> to the incoming stream of vertices.</p>
+<h4 id="Shader-Effects"><a href="#Shader-Effects" class="headerlink" title="Shader Effects"></a>Shader Effects</h4><ul>
+<li>vertex blending for animating joints(动画关节的定点混合)</li>
+<li>silhouette rendering（轮廓渲染）</li>
+<li>Object generation, by creating a mesh only once and having it be deformed by the vertex shader.</li>
+<li>Animating character’s bodies and faces using skinning and morphing（蒙皮） techniques.</li>
+<li>Procedural deformations（程序变形）, such as the movement of ﬂags, cloth, or water</li>
+<li>Particle creation, by sending degenerate (no area) meshes down the pipeline and having these be given an area as needed.</li>
+<li>Lens distortion（镜头扭曲）, heat haze（热雾）, water ripples（水波纹）, page curls（页面卷曲）, and other eﬀects, by using the entire framebuﬀer’s contents as a texture on a screen-aligned mesh undergoing procedural deformation.</li>
+<li>Applying terrain height ﬁelds by using vertex texture fetch</li>
+</ul>
+<h2 id="The-Tessellation-Stage-曲面细分阶段"><a href="#The-Tessellation-Stage-曲面细分阶段" class="headerlink" title="The Tessellation Stage (曲面细分阶段)"></a>The Tessellation Stage (曲面细分阶段)</h2><p>The tessellation stage allows us to render curved surfaces. The GPU’s task is to take each surface description and turn it into a representative set of triangles. This stage is an optional GPU feature .</p>
+<p>Advantages:</p>
+<ul>
+<li>Memory Savings</li>
+<li>Keep the bus between CPU and GPU from becoming the bottleneck for an animated character or object whose shape is changing each frame</li>
+<li>surface can be rendered efficiently by having an appropriate number of triangles generated for the given view. This ability to control the <strong>level of detail</strong> can also allow an application to control its performance</li>
+</ul>
+<p>The tessellation stage always consists of three elements:</p>
+<ul>
+<li>hull shader: in OpenGL is the tessellation control shader</li>
+<li>tesssellator: in OpenGL is primitive genearator</li>
+<li>domain shader: in OpenGL is the tessellation evaluation shader</li>
+</ul>
+<p><img src="https://github.com/Uyouii/LearnOpenGL/raw/master/Real%20Time%20Rending%20Image/The%20tessellation%20stage.PNG" alt=""></p>
+<blockquote>
+<p>The tessellation stage. The hull shader takes in a patch deﬁned by control points. It sends the tessellation factors (TFs 曲面细分因子) and type to the ﬁxed-function tessellator. The control point set is transformed as desired by the hull shader and sent on to the domain shader, along with TFs and related patch constants. The tessellator creates the set of vertices along with their barycentric coordinates. These are then processed by the domain shader, producing the triangle mesh (control points shown for reference).</p>
+</blockquote>
+<h3 id="Hull-Shader"><a href="#Hull-Shader" class="headerlink" title="Hull Shader"></a>Hull Shader</h3><p>The input to the hull shader is a special patch primitive. This consists of several control points deﬁning a subdivision surface（细分曲面）, B´ezier patch, or other type of curved element.</p>
+<p>Hull Shader has two functions:</p>
+<ul>
+<li>First, it tells the tessellator how many triangles should be generated, and in what conﬁguration. </li>
+<li><p>Second, it performs processing on each of the control points.</p>
+</li>
+<li><p>Also, optionally, the hull shader can modify the incoming patch description, adding or removing control points as desired.</p>
+</li>
+</ul>
+<p>The hull shader outputs its set of control points, along with the tessellation control data, to the domain<br>shader.</p>
+<h3 id="Tessellator"><a href="#Tessellator" class="headerlink" title="Tessellator"></a>Tessellator</h3><p>The tessellator is a fixed-function stage in the pipeline, only used with tessellation shaders. It has the task of adding several new vertices for the domain shader to process.</p>
+<p>The hull shader sends the tessellator information about what type of tessellation surface is desired: triangle, quadrilateral, or isoline.( Isolines are sets of line strips, sometimes used for hair rendering.)</p>
+<p>The other important values sent by the hull shader are the <strong>tessellation factors</strong> (tessellation levels in OpenGL). These are of two types: <strong>inner and outer edge</strong>.  </p>
+<ul>
+<li>The two inner factors determine how much tessellation occurs inside the triangle or quadrilateral.</li>
+<li>The outer factors determine how much each exterior edge is split</li>
+</ul>
+<h3 id="Domain-Shader"><a href="#Domain-Shader" class="headerlink" title="Domain Shader"></a>Domain Shader</h3><p>The control points for the curved surface from the hull shader are used by each invocation of the domain shader to compute the output values for each vertex. </p>
+<p>The domain shader has a data ﬂow pattern like that of a vertex shader, with each input vertex from the tessellator being processed and generating a corresponding output vertex. The triangles formed are then passed on down the pipeline.</p>
+<p>The domain shader takes the barycentric coordinates（重心坐标） generated for each point and uses these in the patch’s evaluation equation to generate the position, normal（法线）, texture coordinates（纹理坐标）, and other vertex information desired.</p>
+<h2 id="The-Geometry-Shader"><a href="#The-Geometry-Shader" class="headerlink" title="The Geometry Shader"></a>The Geometry Shader</h2><p>Note that no output at all can be generated by the geometry shader. </p>
+<p>The geometry shader is designed for modifying incoming data or making a limited number of copies. </p>
+<p>The geometry shader is guaranteed to output results from primitives in the same order that they are input. This aﬀects performance, because if several shader cores run in parallel, results must be saved and ordered. </p>
+<h2 id="The-Pixel-Shader"><a href="#The-Pixel-Shader" class="headerlink" title="The Pixel Shader"></a>The Pixel Shader</h2><p>This piece of a triangle partially or fully overlapping the pixel is called a <strong>fragment</strong>.</p>
+<p>In OpenGL the <strong>pixel shader</strong> is known as the <strong>fragment shader</strong>, which is perhaps a better name. </p>
+<p>In programming terms, the vertex shader program’s outputs, interpolated across the triangle (or line), eﬀectively become the pixel shader program’s inputs.</p>
+<p>With inputs in hand, typically the pixel shader computes and outputs a fragment’s color. It can also possibly produce an opacity value and optionally modify its z-depth.</p>
+<p>A pixel shader also has the unique ability to discard an incoming fragment, i.e., generate no output. </p>
+<h3 id="MRT-multiple-render-targets"><a href="#MRT-multiple-render-targets" class="headerlink" title="MRT  multiple render targets"></a>MRT  multiple render targets</h3><p>Instead of sending results of a pixel shader’s program to just the color and z-buﬀer, multiple sets of values could be generated for each fragment and saved to diﬀerent buﬀers, each called a <strong>render target</strong>.</p>
+<p>A single rendering pass could generate a color image in one target, object identiﬁers in another, and world-space distances in a third. This ability has also given rise to a diﬀerent type of rendering pipeline, called <strong>deferred shading</strong>, where visibility and shading are done in separate passes. The ﬁrst pass stores<br>data about an object’s location and material at each pixel. Successive passes can then eﬃciently apply illumination and other eﬀects. </p>
+<h3 id="limitation"><a href="#limitation" class="headerlink" title="limitation"></a>limitation</h3><p>The pixel shader’s limitation is that it can normally write to a render target at only the fragment location handed to it, and cannot read current results from neighboring pixels. That is, when a pixel shader program executes, it cannot send its output directly to neighboring pixels, nor can it access others’ recent changes. Rather, it computes results that aﬀect only its own pixel. </p>
+<p>But  an output image created in one pass can have any of its data accessed by a pixel shader in a later pass. </p>
+<h4 id="Exception"><a href="#Exception" class="headerlink" title="Exception"></a>Exception</h4><p>There are exceptions to the rule that a pixel shader cannot know or aﬀect neighboring pixels’ results. </p>
+<ul>
+<li>One is that the pixel shader can immediately access information for adjacent fragments (albeit indirectly) during the computation of gradient or derivative information.</li>
+</ul>
+<h2 id="The-Merging-Stage"><a href="#The-Merging-Stage" class="headerlink" title="The Merging Stage"></a>The Merging Stage</h2><p>The <strong>merging stage</strong> is where the depths and colors of the individual fragments (generated in the pixel shader) are combined with the framebuﬀer. </p>
+<p>The merging stage occupies the middle ground between ﬁxed-function stages, such as triangle setup, and the fully programmable shader stages. Although it is <strong>not programmable</strong>, its operation is <strong>highly conﬁgurable</strong>.</p>
+<p>On most traditional pipeline diagrams, this stage is where <strong>stencil-buﬀer</strong> and <strong>z-buﬀer</strong> operations occur. If the fragment is visible, another operation that takes place in this stage is <strong>color blending</strong>. </p>
+<ul>
+<li>For <strong>opaque</strong> surfaces there is no real blending involved, as the fragment’s color simply replaces the previously stored color. Actual blending of the fragment and stored color is commonly used for <strong>transparency</strong> and <strong>compositing</strong> operations  </li>
+</ul>
+<p>The fragment is culled if hidden. This functionality is called <strong>early-z</strong>.</p>
+<h2 id="The-Compute-Shader"><a href="#The-Compute-Shader" class="headerlink" title="The Compute Shader"></a>The Compute Shader</h2>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/graphics/" rel="tag"># graphics</a>
+          
+            <a href="/tags/real-time-rendering/" rel="tag"># real time rendering</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/11/100种爱你的表达方式/" rel="next" title="100种爱你的表达方式">
+                <i class="fa fa-chevron-left"></i> 100种爱你的表达方式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Uyouii" />
+          <p class="site-author-name" itemprop="name">Uyouii</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Uyouii" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Data-Parallel-Architectures"><span class="nav-number">1.</span> <span class="nav-text">Data-Parallel Architectures</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Warp"><span class="nav-number">1.0.1.</span> <span class="nav-text">Warp</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Occupancy"><span class="nav-number">1.0.2.</span> <span class="nav-text">Occupancy</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GPU-Pipeline-Overview"><span class="nav-number">2.</span> <span class="nav-text">GPU Pipeline Overview</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-Programmable-Shader-Stage"><span class="nav-number">3.</span> <span class="nav-text">The Programmable Shader Stage</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Shader-Virtual-Machine-Register"><span class="nav-number">3.0.1.</span> <span class="nav-text">Shader Virtual Machine Register</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#flow-control"><span class="nav-number">3.0.2.</span> <span class="nav-text">flow control</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-Vertex-Shader"><span class="nav-number">4.</span> <span class="nav-text">The Vertex Shader</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Shader-Effects"><span class="nav-number">4.0.1.</span> <span class="nav-text">Shader Effects</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-Tessellation-Stage-曲面细分阶段"><span class="nav-number">5.</span> <span class="nav-text">The Tessellation Stage (曲面细分阶段)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Hull-Shader"><span class="nav-number">5.1.</span> <span class="nav-text">Hull Shader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tessellator"><span class="nav-number">5.2.</span> <span class="nav-text">Tessellator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Domain-Shader"><span class="nav-number">5.3.</span> <span class="nav-text">Domain Shader</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-Geometry-Shader"><span class="nav-number">6.</span> <span class="nav-text">The Geometry Shader</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-Pixel-Shader"><span class="nav-number">7.</span> <span class="nav-text">The Pixel Shader</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MRT-multiple-render-targets"><span class="nav-number">7.1.</span> <span class="nav-text">MRT  multiple render targets</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#limitation"><span class="nav-number">7.2.</span> <span class="nav-text">limitation</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Exception"><span class="nav-number">7.2.1.</span> <span class="nav-text">Exception</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-Merging-Stage"><span class="nav-number">8.</span> <span class="nav-text">The Merging Stage</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-Compute-Shader"><span class="nav-number">9.</span> <span class="nav-text">The Compute Shader</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Uyouii</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

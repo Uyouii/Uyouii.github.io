@@ -270,6 +270,264 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2018/02/23/TCP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Uyouii">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Uyouii's Blogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/02/23/TCP/" itemprop="url">TCP</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-23T17:16:50+08:00">
+                2018-02-23
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Post modified</span>
+              
+              <time title="Post modified" itemprop="dateModified" datetime="2018-02-23T17:24:27+08:00">
+                2018-02-23
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Unix-Network-Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Unix Network Programming</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="TCP-状态转换图"><a href="#TCP-状态转换图" class="headerlink" title="TCP 状态转换图"></a>TCP 状态转换图</h2><p><img src="https://github.com/Uyouii/Uyouii.github.io/raw/master/images/TCP%20state.jpg" alt="image"></p>
+<h2 id="TCP连接分组转换"><a href="#TCP连接分组转换" class="headerlink" title="TCP连接分组转换"></a>TCP连接分组转换</h2><p><img src="https://github.com/Uyouii/Uyouii.github.io/raw/master/images/tcp%20connection%20example.jpg" alt="image"></p>
+<h2 id="捎带（piggybacking）"><a href="#捎带（piggybacking）" class="headerlink" title="捎带（piggybacking）"></a>捎带（piggybacking）</h2><p>服务器对于客户端请求的确认可以伴随其应答发生，这种做法称为捎带（piggybacking），它通常在服务器处理请求并产生应答的时间少于200ms时发生。</p>
+<h2 id="TIME-WAIT状态"><a href="#TIME-WAIT状态" class="headerlink" title="TIME_WAIT状态"></a>TIME_WAIT状态</h2><p>在TCP链接中，执行主动关闭的那端会有TIME_WAIT状态。改端点停留在这个状态的持续时间时<strong>最长分节生命期 maximum segment lifetime，MSL</strong>的两倍，有时称为2MSL。</p>
+<p>任何TCP的实现都需要为MSL选择一个值。MSL时任何IP数据报能够在因特网中存活的最长时间。这个时间是有限的，因为每个数据报含有一个称为<strong>跳限 hop limit</strong>的8位字段，它的最大值是255。虽然跳限不是真正的时间限制，但是仍然假设：具有最大跳限的分组在网络中存活的时间不会超过MSL秒。</p>
+<p>分组在网路中的迷途通常是路由异常的结果。某个路由器崩溃或某两个路由器之间的某个链路断开时，路由协议需要花费数秒钟到数分钟的时间才能稳定并找出另一条通路。并且在这段时间内有可能发生路由循环(路由器A把分组发送给路由器B，而B再把他们发送回A)。</p>
+<p>假设迷途的分组是一个TCP分节，在迷途期间，发送端TCP超时并重传该分组，而重传的分组却通过某条候选路径到达最终目的地。不久之后路由器修复，之前迷途的分组也最终被送到目的地。这个原来的分组称为<strong>迷途的重组分组 lost duplicate</strong>或<strong>漫游的重组分组 wandering duplicate</strong>。</p>
+<h3 id="TIME-WAIT状态存在的理由"><a href="#TIME-WAIT状态存在的理由" class="headerlink" title="TIME_WAIT状态存在的理由"></a>TIME_WAIT状态存在的理由</h3><ol>
+<li><strong>可靠地实现TCP全双工连接的终止</strong></li>
+<li><strong>允许老的重复分节在网络中消逝</strong></li>
+</ol>
+<p>对于理由1，在TCP关闭连接的4次握手中，如果最终的ACK丢失了，服务器将重新发送它的最后的那个FIN，因此客户端必须维护状态信息，以允许它重新发送最终那个ACK。如果客户端不维护状态信息，它将相应一个rst，该分节将被服务器解释成一个错误。如果TCP打算执行所有必要的工作以彻底终止某个连接上的两个方向的数据流，那么它必须正确处理连接终止序列4个分节中任何一个分节丢失的情况。</p>
+<p>执行主动关闭的那一端是处于TIME_WAIT状态的那一端，因为可能不得不重传最终的ACK的就是那一端。</p>
+<p>对于理由2：假设服务端和客户端分别在1500端口和21端口之间有一个TCP连接。关闭这个连接之后，在相同的IP地址和端口之间建立另一个连接。后一个连接称为前一个连接的<code>化身 incarnation</code>，因为他们的IP地址和端口号都相同。</p>
+<p>TCP必须防止来自某个连接的老的重复分组在该连接已终止后再现，从而被误解为属于同一连接的某个新的化身。为做到这一点，TCP将不给处于<code>TIME_WAIT</code>状态的连接发起新的化身。<code>TIME_WAIT</code>的持续时间是MSL的2倍，足以让某个方向上的分组最多存活MSL秒被丢弃，另一个方向上的应答最多存活MSL秒也被丢弃。通过这个规则可以保证没成功建立一个TCP连接时，来自该连接先前化身的重复分组都已在网络中消逝了。</p>
+<h2 id="TCP输出"><a href="#TCP输出" class="headerlink" title="TCP输出"></a>TCP输出</h2><p>每一个TCP套接字都有一个发送缓冲区，可以使用<code>SO_SNDBUF</code>套接字选项来更改缓冲区的大小。当某个应用进程调用write时，内核从该应用进程的缓冲区复制所有数据写到套接字的发送缓冲区。</p>
+<p>如果该套接字的发送缓冲区容不下应用进程的所有数据（或是应用进程的缓冲区大于套接字的发送缓冲区，或是套接字的发送缓冲区中已有其他数据），该应用进程将被投入睡眠。这里假设套接字是阻塞的（套接字默认设置是阻塞的）。内核将不从write系统调用返回，知道应用进程缓冲区中的所有数据都复制到套接字的发送缓冲区。</p>
+<p>从写一个TCP套接字的write调用成功返回仅仅表示我们可以从重新使用原来的应用进程缓冲区，并不表明对端的TCP或应用进程已经接收到数据。</p>
+<h2 id="PF-INET和AF-INET的区别"><a href="#PF-INET和AF-INET的区别" class="headerlink" title="PF_INET和AF_INET的区别"></a>PF_INET和AF_INET的区别</h2><p>AF: Address Family，表示地址族</p>
+<p>PF: Protocol Family，表示协议族</p>
+<p>在windows中的Winsock2.h中定义：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> AF_INET 0</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PF_INET AF_INET</span></span><br></pre></td></tr></table></figure></p>
+<p>所以在windows中<code>AF_INET</code>与<code>PF_INET</code>完全一样。</p>
+<p>而在Unix/Linux系统中，不同的版本这两者有微小的差别。对于BSD，是AF，对于POSIX，是PF。</p>
+<p>理论上在建立socket时指定协议，应该用<code>PF_xxxx</code>，设置地址时应该用<code>AF_xxxx</code>。</p>
+<p>当然<code>AF_INET</code>和<code>PF_INET</code>的值是相同的，混用也不会有太大问题。</p>
+<h2 id="RST"><a href="#RST" class="headerlink" title="RST"></a>RST</h2><p>RST是TCP在发生错误时发送的一种TCP分节，产生RST的三个条件是：</p>
+<ol>
+<li>目的地为某端口的SYN到达，然而该端口上并没有正在监听的服务器</li>
+<li>TCP想取消一个已有连接</li>
+<li>TCP接收到一个根本不存在的连接上的分节</li>
+</ol>
+<h2 id="基于TCP客户-服务器程序的套接字函数"><a href="#基于TCP客户-服务器程序的套接字函数" class="headerlink" title="基于TCP客户/服务器程序的套接字函数"></a>基于TCP客户/服务器程序的套接字函数</h2><p><img src="https://github.com/Uyouii/Uyouii.github.io/raw/master/images/TCP%20client_server%20socket%20function.JPG" alt="image"></p>
+<h2 id="connect-函数"><a href="#connect-函数" class="headerlink" title="connect 函数"></a>connect 函数</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">connect</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> struct sockaddr* servaddr, <span class="keyword">socklen_t</span> addrlen)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>客户端在调用函数connect前不必非得调用connect函数，因为如果需要的话，内核会确定源IP地址，并选择一个临时端口作为源端口。</p>
+<p>如果是TCP套接字，调用connect时会激发TCP的三次握手过程，而且仅在连接建立成功或出错时才返回。</p>
+<p>出错有以下几种情况:</p>
+<ol>
+<li>若TCP客户端没有收到SYN分节的响应，则返回<code>ETIMEDOUT</code>错误。</li>
+<li>若对客户的SYN的响应时RST，则表明该服务器主机在我们指定的端口上没有进程在等待与之连接。这是一种硬错误（hard error），客户一接收到RST就马上返回<code>ECONNECTREFUSED</code></li>
+<li>若客户端发出的SYN在中间的某个路由器上引发了一个“destination unreachable”ICMP错误，则认为是一种软错误（soft error）。</li>
+</ol>
+<h2 id="bind函数"><a href="#bind函数" class="headerlink" title="bind函数"></a>bind函数</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">bind</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">const</span> struct sockaddr *myaddr, <span class="keyword">socklen_t</span> addrlen)</span></span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>如果一个TCP客户端或者服务器未曾调用bind捆绑一个端口，当调用connect或者listen时，内核就要为相应的套接字选择一个临时端口。</li>
+</ul>
+<p>这个过程有一个例外：远程过程调用服务器（Remote Procedure Call，RPC）。他们通常由内核为他们的监听套接字选择一个临时端口，而该端口随后通过RPC端口映射器进行注册。客户在connect这个服务器之前，必须与端口映射器联系以获取他们的临时端口。</p>
+<ul>
+<li>进程可以把一个特地的IP地址捆绑到它的套接字上，不过这个IP地址必须属于其所在主机的网络接口之一。对于TCP客户，这就为在该套接字上发送的IP数据报指派了源IP地址。对于TCP服务器，这就限定该套接字只接收那些目的地为这个IP地址的客户连接。</li>
+</ul>
+<p>TCP客户通常不把IP地址捆绑到它的套接字上，当连接套接字时，内核将根据所用外出网络接口来选择源IP地址，而所用外出接口则取决于到达服务器所需的路径。如果TCP服务器没有把IP地址捆绑到它的套接字上，内核就把客户端发送的SYN的目的IP地址作为服务器的源IP地址。</p>
+<p>如果指定端口号为0，那么内核就找bind被调用时选择一个临时端口。然而如果指定IP地址为通配地址，那么内核将等到套接字已连接（TCP）或已在套接字上发出数据报（UDP）时才选择一个本地IP地址。</p>
+<p>如果想要得到内核所选择的临时端口值，必须调用函数getsockname来返回协议地址。</p>
+<p>bind函数返回一个常见错误EADDRINUSE(“Adress already in use”，地址已使用)</p>
+<h2 id="listen函数"><a href="#listen函数" class="headerlink" title="listen函数"></a>listen函数</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">listen</span><span class="params">(<span class="keyword">int</span> sockfd,<span class="keyword">int</span> backlog)</span></span></span><br></pre></td></tr></table></figure>
+<p>listen函数仅由TCP服务器调用，它完成两件事情：</p>
+<ol>
+<li>当socket函数创建一个套接字时，它被假定为一个主动套接字，也就是说，它是一个将调用connect发起连接的客户端套接字。listen函数把一个未连接的套接字转换成一个被动套接字，指示内核应接受指向该套接字的连接请求。调用listen导致套接字从closed状态转换到LISTEN状态。</li>
+<li>第二个参数规定了内核应该为相应套接字排队的最大连接个数。</li>
+</ol>
+<p>内核为任何一个给定的监听套接字维护两个队列：</p>
+<ol>
+<li>未完成连接队列（incomplete connection queue），每个这样的SYN分节对应其中一项：已由某个客户端发出并到达服务器，而服务器正在等待并完成相应的TCP三路握手过程。这些套接字处于SYN_RCVD状态。</li>
+<li>已完成连接队列（complete connection queue），每个已完成三路握手的客户端对应其中一项，这些套接字处于ESTABLISHED状态。</li>
+</ol>
+<p>如果三路握手正常完成，该项就从未完成连接队列移到已完成队列的队尾。当进程调用accept时，已完成连接队列中的队头将返回给进程，如果该队列为空，那么进程将被投入睡眠，知道TCP在该队列中放入一项才唤醒它。</p>
+<p>关于两个队列：</p>
+<ol>
+<li>listen函数的backlog参数曾被规定为这两个队列的总和的最大值。</li>
+<li>源自Berkeley的实现给backlog增设了一个模糊因子（fudge factor）：把它乘以1.5得到未处理队列最大长度。</li>
+<li>不要把backlog定义为0，如果不想让客户端连接到套接字上，可以关掉该监听套接字。</li>
+<li>在三路握手正常完成的前提下（也就是说没有丢失分节，从而没有重传），未完成连接队列中的任何一项在其中的存留时间就是一个RTT，而RTT的值取决于特定的客户与服务器。</li>
+<li>当一个客户SYN到达时，若这些队列是满的，TCP就忽略该分节，也就是不发送RST，这么做是因为：这种情况是暂时的，客户TCP将重发SYN。</li>
+<li>在三路握手完成之后，但在服务器调用accept之前到达的数据应由服务器TCP排队，最大数据量为已连接套接字接收缓冲区大小。</li>
+</ol>
+<h2 id="accept函数"><a href="#accept函数" class="headerlink" title="accept函数"></a>accept函数</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">accept</span><span class="params">(<span class="keyword">int</span> sockfd, struct sockaddr *cliaddr, <span class="keyword">socklen_t</span> *addrlen)</span></span></span><br></pre></td></tr></table></figure>
+<p>accept函数由TCP服务器调用，用于从已完成连接队列头返回下一个已完成连接。如果已完成连接队列为空，那么进程被投入睡眠（假设套接字为默认的阻塞方式）。</p>
+<p>如果accept成功，那么其返回值是由内核自动生成的一个全新描述符，代表与说返回客户的TCP连接。 accept函数的第一个参数为监听套接字（listening socket）描述符（由socket创建，随后用作bind和listen的第一个参数的描述符），称它的返回值为已连接套接字（connected socket）。</p>
+<p>一个服务器通常只创建一个监听套接字，它在该服务器的生命期内一直存在。内核为每个由服务器进程接收的客户连接创建一个已连接套接字（也就是说对于它的TCP三路握手过程已经完成）。当服务器完成对某个给定客户的服务时，相应的已连接套接字就被关闭。</p>
+<h2 id="close函数"><a href="#close函数" class="headerlink" title="close函数"></a>close函数</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">close</span><span class="params">(<span class="keyword">int</span> sockfd)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>close将一个TCP套接字的默认行为是把该套接字标记成已关闭，然后立即返回到调用进程，该套接字不能再由调用进程使用。然而TCP尝试发送已排队等待发送到对端的任何数据，发送完毕后发生的是正常的TCP连接终止序列。</p>
+<p>并发服务器中父进程关闭已连接套接字只是导致相应描述符的引用计数值减1。如果引用计数值仍大于0，这个close调用并不引发TCP的四分组连接终止序列。</p>
+<p>如果确实想在某个TCP连接上发送FIN，那么可以改用shutdown函数以代替close。</p>
+<p>如果父进程对每个accept返回的已连接套接字都不调用close，首先父进程最终将耗尽可用描述符，因为任何进程在任何时刻可拥有的打开着的描述符通常都是有限制的。更重要的是，没有一个客户端连接会被终止。当子进程关闭已连接套接字时，它的引用计数值将由2递减为1且保持为1，因为父进程永不关闭任何已连接的套接字。这将妨碍TCP连接终止序列的发生，导致连接一直打开。</p>
+<h2 id="getsockname-和-getpeername函数"><a href="#getsockname-和-getpeername函数" class="headerlink" title="getsockname 和 getpeername函数"></a>getsockname 和 getpeername函数</h2><p>这两个函数或者返回与某个套接字关联的本地协议地址（getsockname），或者返回与某个套接字关联的外地协议地址（getpeername）。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">getsockname</span><span class="params">(<span class="keyword">int</span> sockfd, struct sockaddr *localaddr, <span class="keyword">socklen_t</span> *addrlen)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">getpeername</span><span class="params">(<span class="keyword">int</span> sockfd, struct sockaddr *peeraddr, <span class="keyword">socklen_t</span> *addrlen)</span></span>;</span><br></pre></td></tr></table></figure></p>
+<h2 id="wait-和-waitpid-函数"><a href="#wait-和-waitpid-函数" class="headerlink" title="wait 和 waitpid 函数"></a>wait 和 waitpid 函数</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt;</span></span></span><br><span class="line"><span class="keyword">pid_t</span> wait(<span class="keyword">int</span> *statloc);</span><br><span class="line"><span class="keyword">pid_t</span> waitpid(<span class="keyword">pid_t</span> pid, <span class="keyword">int</span> *statloc, <span class="keyword">int</span> options);</span><br></pre></td></tr></table></figure>
+<p>函数wait和waitpid均返回两个值：已终止子进程的进程ID号，以及通过statloc指针返回的子进程终止状态（一个整数）。</p>
+<p>如果调用wait的进程没有已终止的子进程，不够有一个或多个子进程仍在执行，那么wait将阻塞到现有子进程第一个终止为止。</p>
+<p>waitpid函数就等待哪个进程以及是否阻塞给了更多的控制。首先，pid参数允许我们指定想等待的进程ID，值-1表示等待第一个终止的子进程。其次，option允许指定附加选项，最常用的选项是WNOHANG，它告知内核在没有已终止的子进程时不要阻塞。</p>
+<h2 id="shutdown函数"><a href="#shutdown函数" class="headerlink" title="shutdown函数"></a>shutdown函数</h2><p>终止网络连接的常用方法是调用close函数。不过close有两个限制，却可以使用shutdown函数来避免。</p>
+<ol>
+<li>close把描述符的引用计数减1，仅在该计数变成0时才关闭套接字。使用shutdown可以不管引用计数就激发TCP的正常连接终止序列。</li>
+<li>close终止读和写两个方向的数据传送。既然TCP连接是全双工的，有时候需要告知对端我们已经完成了数据发送，即使对端仍有数据要发送给我们。</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">shutdown</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">int</span> howto)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>shutdown的行为依赖于howto参数的值：</p>
+<ol>
+<li>SHUT_RD 关闭连接的读这一半————套接字中不再有数据可接收，而且套接字接收缓冲区中的现有数据都被丢弃。进程不能再对这样的套接字调用任何读函数。对一个TCP套接字调用这样的shutdown函数后，由该套接字接收的来自对端的任何数据都被确认，然后丢弃。</li>
+<li>SHUT_WR 关闭连接的写这一半————对于TCP套接字，则成为半关闭（half close）。当前留在套接字发送缓冲区中的数据将被发送掉，后跟TCP的正常的连接终止序列。不管套接字描述符的引用计数是否等于0，这样的写半部分关闭照样执行。进程不能在对这样的套接字调用任何写函数。</li>
+<li>SHUT_RDWR 连接的读半部和写半部都关闭————这与调用shutdown两次等效：第一次调用指定SHUT_RD，第二次调用指定SHUT_WR。</li>
+</ol>
+<h2 id="网络编程时遇到的情况"><a href="#网络编程时遇到的情况" class="headerlink" title="网络编程时遇到的情况"></a>网络编程时遇到的情况</h2><ol>
+<li>当fork子进程时，必须捕获SIGHLD信号。</li>
+<li>当捕获信号时，必须处理被中断的系统调用。</li>
+<li>SIGCHLD的信号处理函数必须正确编写，应使用waitpid函数以面留下僵死进程。</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2018/02/23/网络知识/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2397,245 +2655,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2017/12/12/libevent-服务端客户端-简单实例/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Uyouii">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Uyouii's Blogs">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/12/12/libevent-服务端客户端-简单实例/" itemprop="url">libevent 服务端客户端 简单实例</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-12T11:26:17+08:00">
-                2017-12-12
-              </time>
-            
-
-            
-              <span class="post-meta-divider">|</span>
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Post modified</span>
-              
-              <time title="Post modified" itemprop="dateModified" datetime="2018-01-30T18:19:59+08:00">
-                2018-01-30
-              </time>
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/network/" itemprop="url" rel="index">
-                    <span itemprop="name">network</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近了解了下libevent，简单的实现了一个客户端服务端通信的demo，服务端会转发客户端发送的数据包给其他客户端，并测试每秒转发的数据量和数据包的个数。</p>
-<h2 id="包格式"><a href="#包格式" class="headerlink" title="包格式"></a>包格式</h2><p>简单的定义了数据包头的格式，12个字节，包含三个变量，分别是targetID（目的地的id），sourceID（源id）和length（数据的长度，不包含header的长度）。</p>
-<p>暂时client的id分配由服务器分配，客户端编号从1开始，id为0代表是服务器发送的原始消息，不是转发的其他客户端发送的数据。</p>
-<h2 id="数据发送"><a href="#数据发送" class="headerlink" title="数据发送"></a>数据发送</h2><p>客户端每隔一段时间发送一个数据包给其他客户端，服务器收到数据包后转发给其他客户端。</p>
-<p>为了测试libevent的最大负载，现在设置只要客户端检测到write_buffer为空，则向其中填入<code>SEND_TIMES</code>个packet。</p>
-<p>目前测试结果为再最大负载的情况下，多个client同时向服务器发送packet，平均结果为服务器每秒转发40000个packet</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><h3 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _MESSAGE_H_</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _MESSAGE_H_</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">msg_header</span> &#123;</span></span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> targetID;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> sourceID;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> length;</span><br><span class="line">&#125; Header;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">listener_cb</span><span class="params">(struct evconnlistener *, <span class="keyword">evutil_socket_t</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">	struct sockaddr *, <span class="keyword">int</span> socklen, <span class="keyword">void</span> *)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">conn_writecb</span><span class="params">(struct bufferevent *, <span class="keyword">void</span> *)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">conn_readcb</span><span class="params">(struct bufferevent *, <span class="keyword">void</span> *)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">conn_eventcb</span><span class="params">(struct bufferevent *, <span class="keyword">short</span>, <span class="keyword">void</span> *)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">get_client_id</span><span class="params">(struct bufferevent*)</span></span>;</span><br><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">inttostr</span><span class="params">(<span class="keyword">int</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">write_buffer</span><span class="params">(<span class="built_in">string</span>&amp;, struct bufferevent*, Header&amp;)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">// !_MESSAGE_H_</span></span></span><br></pre></td></tr></table></figure>
-<p><br></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;  </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;  </span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;event2/bufferevent.h&gt;  </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;event2/buffer.h&gt;  </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;event2/listener.h&gt;  </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;event2/util.h&gt;  </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;event2/event.h&gt;  </span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"message.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PORT 1234</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> HEADER_LENGTH 12</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BUFFER_SIZE  (16 * 1024)	</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> READ_SIZE (16 * 1024)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAX_PACKET_SIZE 256</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TIME_INTERVAL 5000</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> ip_address[] = <span class="string">"127.0.0.1"</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">map</span>&lt;<span class="keyword">unsigned</span> <span class="keyword">int</span>, bufferevent*&gt; ClientMap;	<span class="comment">//client id 对应的bufferevent</span></span><br><span class="line"><span class="keyword">int</span> conectNumber = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> dataSize = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> lastTime = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> receiveNumber = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> sendNumber = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span> </span>&#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> WIN32  </span></span><br><span class="line">	WSAData wsaData;</span><br><span class="line">	WSAStartup(MAKEWORD(<span class="number">2</span>, <span class="number">0</span>), &amp;wsaData);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span>  </span></span><br><span class="line"></span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"Server begin running!"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">sin</span>;</span></span><br><span class="line">	<span class="built_in">memset</span>(&amp;<span class="built_in">sin</span>, <span class="number">0</span>, <span class="keyword">sizeof</span>(<span class="built_in">sin</span>));</span><br><span class="line">	<span class="built_in">sin</span>.sin_family = AF_INET;</span><br><span class="line">	<span class="built_in">sin</span>.sin_addr.S_un.S_addr = inet_addr(ip_address);</span><br><span class="line">	<span class="built_in">sin</span>.sin_port = htons(PORT);</span><br><span class="line"></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">evconnlistener</span> *<span class="title">listener</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">event_base</span> *<span class="title">base</span> = <span class="title">event_base_new</span>();</span></span><br><span class="line">	<span class="keyword">if</span> (!base) &#123;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"Could not initialize libevent"</span> &lt;&lt; <span class="built_in">endl</span>;;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//默认情况下，链接监听器接收新套接字后，会将其设置为非阻塞的</span></span><br><span class="line">	listener = evconnlistener_new_bind(base, listener_cb, (<span class="keyword">void</span> *)base,</span><br><span class="line">		LEV_OPT_REUSEABLE | LEV_OPT_CLOSE_ON_FREE, <span class="number">-1</span>,</span><br><span class="line">		(struct sockaddr*)&amp;<span class="built_in">sin</span>,</span><br><span class="line">		<span class="keyword">sizeof</span>(<span class="built_in">sin</span>));</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (!listener) &#123;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"Could not create a listener"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	event_base_dispatch(base);</span><br><span class="line"></span><br><span class="line">	evconnlistener_free(listener);</span><br><span class="line">	event_base_free(base);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">listener_cb</span><span class="params">(struct evconnlistener *listener, <span class="keyword">evutil_socket_t</span> fd, </span></span></span><br><span class="line"><span class="function"><span class="params">	struct sockaddr *sa, <span class="keyword">int</span> socklen, <span class="keyword">void</span> *user_data)</span> </span>&#123;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"Detect an connection"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">event_base</span> *<span class="title">base</span> = (<span class="title">struct</span> <span class="title">event_base</span> *)<span class="title">user_data</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">bufferevent</span> *<span class="title">bev</span>;</span></span><br><span class="line">	</span><br><span class="line">	<span class="comment">//BEV_OPT_CLOSE_ON_FREE close the file descriptor when this bufferevent is freed</span></span><br><span class="line">	bev = bufferevent_socket_new(base, fd, BEV_OPT_CLOSE_ON_FREE);</span><br><span class="line">	<span class="keyword">if</span> (!bev) &#123;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"Could not create a bufferevent"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">		event_base_loopbreak(base);</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	ClientMap[++conectNumber] = bev;</span><br><span class="line">	<span class="comment">//read write event</span></span><br><span class="line">	bufferevent_setcb(bev, conn_readcb, <span class="literal">NULL</span>, conn_eventcb, <span class="literal">NULL</span>);</span><br><span class="line">	bufferevent_enable(bev, EV_READ | EV_WRITE);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//send a message to client when connect is succeeded</span></span><br><span class="line">	<span class="built_in">string</span> msg = <span class="string">"connedted"</span>;</span><br><span class="line">	Header header;</span><br><span class="line">	header.sourceID = <span class="number">0</span>;</span><br><span class="line">	header.targetID = conectNumber;</span><br><span class="line">	header.length = msg.size();</span><br><span class="line">	write_buffer(msg, bev, header);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">conn_writecb</span><span class="params">(struct bufferevent *bev, <span class="keyword">void</span> *user_data)</span> </span>&#123;</span><br><span class="line">	Sleep(<span class="number">2000</span>);</span><br><span class="line">	<span class="keyword">int</span> len = <span class="number">0</span>;</span><br><span class="line">	Header header;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> toID = get_client_id(bev);</span><br><span class="line">	<span class="built_in">string</span> msg = <span class="string">"hello client "</span> + inttostr(toID);</span><br><span class="line"></span><br><span class="line">	header.targetID = toID;</span><br><span class="line">	header.sourceID = <span class="number">0</span>;</span><br><span class="line">	header.length = msg.size();</span><br><span class="line"></span><br><span class="line">	write_buffer(msg, bev, header);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">conn_readcb</span><span class="params">(struct bufferevent *bev, <span class="keyword">void</span> *user_data)</span> </span>&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">evbuffer</span> *<span class="title">input</span> = <span class="title">bufferevent_get_input</span>(<span class="title">bev</span>);</span></span><br><span class="line">	<span class="keyword">size_t</span> sz = evbuffer_get_length(input);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> sourceID = get_client_id(bev);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">while</span> (sz &gt;= MAX_PACKET_SIZE) &#123;</span><br><span class="line">		<span class="keyword">char</span> msg[MAX_PACKET_SIZE] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">		<span class="keyword">char</span> *ptr = msg;</span><br><span class="line">		bufferevent_read(bev, ptr, HEADER_LENGTH);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">		<span class="keyword">unsigned</span> <span class="keyword">int</span> len = ((Header*)ptr)-&gt;length;</span><br><span class="line">		<span class="keyword">unsigned</span> <span class="keyword">int</span> targetID = ((Header*)ptr)-&gt;targetID;</span><br><span class="line">		((Header*)ptr)-&gt;sourceID = sourceID;</span><br><span class="line"></span><br><span class="line">		ptr += HEADER_LENGTH;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (sz &lt; len + HEADER_LENGTH) &#123;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		bufferevent_read(bev, ptr, len);</span><br><span class="line"></span><br><span class="line">		receiveNumber++;</span><br><span class="line">		dataSize += len + HEADER_LENGTH;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (ClientMap.find(targetID) != ClientMap.end()) &#123;</span><br><span class="line">			sendNumber++;</span><br><span class="line">			bufferevent_write(ClientMap[targetID], msg, len + HEADER_LENGTH);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="comment">//can't find</span></span><br><span class="line">		&#125;</span><br><span class="line">		sz = evbuffer_get_length(input);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">//calculate the speed of data and packet</span></span><br><span class="line">	<span class="keyword">clock_t</span> nowtime = clock();</span><br><span class="line">	<span class="keyword">if</span> (lastTime == <span class="number">0</span>) &#123;</span><br><span class="line">		lastTime = nowtime;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"client number: "</span> &lt;&lt; ClientMap.size() &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"data speed: "</span> &lt;&lt; (<span class="keyword">double</span>)dataSize / (nowtime - lastTime) &lt;&lt; <span class="string">"k/s "</span>;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"packet speed: receive "</span> &lt;&lt; (<span class="keyword">double</span>)receiveNumber / (nowtime - lastTime) &lt;&lt; <span class="string">"k/s "</span>;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"send "</span> &lt;&lt; (<span class="keyword">double</span>)sendNumber / (nowtime - lastTime) &lt;&lt; <span class="string">"k/s"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">		<span class="keyword">if</span> (nowtime - lastTime &gt; TIME_INTERVAL) &#123;</span><br><span class="line">			dataSize = <span class="number">0</span>;</span><br><span class="line">			lastTime = nowtime;</span><br><span class="line">			receiveNumber = <span class="number">0</span>;</span><br><span class="line">			sendNumber = <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">conn_eventcb</span><span class="params">(struct bufferevent *bev, <span class="keyword">short</span> events, <span class="keyword">void</span> *user_data)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (events &amp; BEV_EVENT_EOF) &#123;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"Connection closed"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (events &amp; BEV_EVENT_ERROR) &#123;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"Got an error on the connection: "</span> &lt;&lt; strerror(errno) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	bufferevent_free(bev);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">get_client_id</span><span class="params">(struct bufferevent* bev)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">auto</span> p = ClientMap.begin(); p != ClientMap.end(); p++) &#123;</span><br><span class="line">		<span class="keyword">if</span> (p-&gt;second == bev) &#123;</span><br><span class="line">			<span class="keyword">return</span> p-&gt;first;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">write_buffer</span><span class="params">(<span class="built_in">string</span>&amp; msg, struct bufferevent* bev, Header&amp; header)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">char</span> send_msg[BUFFER_SIZE] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">	<span class="keyword">char</span>* ptr = send_msg;</span><br><span class="line">	<span class="keyword">int</span> len = <span class="number">0</span>;</span><br><span class="line">	<span class="built_in">memcpy</span>(ptr, &amp;header, <span class="keyword">sizeof</span>(Header));</span><br><span class="line">	len += <span class="keyword">sizeof</span>(Header);</span><br><span class="line">	ptr += <span class="keyword">sizeof</span>(Header);</span><br><span class="line">	<span class="built_in">memcpy</span>(ptr, msg.c_str(), msg.size());</span><br><span class="line">	len += msg.size();</span><br><span class="line"></span><br><span class="line">	bufferevent_write(bev, send_msg, len);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">inttostr</span><span class="params">(<span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">	<span class="built_in">string</span> result;</span><br><span class="line">	<span class="keyword">bool</span> neg = <span class="literal">false</span>;</span><br><span class="line">	<span class="keyword">if</span> (num &lt; <span class="number">0</span>) &#123;</span><br><span class="line">		neg = <span class="literal">true</span>;</span><br><span class="line">		num = -num;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (num == <span class="number">0</span>) &#123;</span><br><span class="line">		result += <span class="string">'0'</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">while</span> (num &gt; <span class="number">0</span>) &#123;</span><br><span class="line">			<span class="keyword">int</span> rem = num % <span class="number">10</span>;</span><br><span class="line">			result = (<span class="keyword">char</span>)(rem + <span class="string">'0'</span>) + result;</span><br><span class="line">			num /= <span class="number">10</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (neg) &#123;</span><br><span class="line">		result = <span class="string">'-'</span> + result;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _MESSAGE_H_</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _MESSAGE_H_</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">msg_header</span> &#123;</span></span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> targetID;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> sourceID;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> length;</span><br><span class="line">&#125; Header;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">conn_writecb</span><span class="params">(struct bufferevent *, <span class="keyword">void</span> *)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">conn_readcb</span><span class="params">(struct bufferevent *, <span class="keyword">void</span> *)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">conn_eventcb</span><span class="params">(struct bufferevent *, <span class="keyword">short</span>, <span class="keyword">void</span> *)</span></span>;</span><br><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">inttostr</span><span class="params">(<span class="keyword">int</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">write_buffer</span><span class="params">(<span class="built_in">string</span>&amp;, struct bufferevent*, Header&amp;)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">// !_MESSAGE_H_</span></span></span><br></pre></td></tr></table></figure>
-<p><br></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;  </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;  </span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;event2/bufferevent.h&gt;  </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;event2/buffer.h&gt;  </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;event2/listener.h&gt;  </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;event2/util.h&gt;  </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;event2/event.h&gt;  </span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"message.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PORT 1234</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BUFFER_SIZE  (16 * 1024)	</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> READ_SIZE (16 * 1024)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SEND_INTERVAL 0</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CLIENT_NUMBER 2</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SEND_TIMES 10</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAX_PACKET_SIZE 1024</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> HEADER_LENGTH 12</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> DATA_LENGTH 1000</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> ip_address[] = <span class="string">"127.0.0.1"</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"Client running"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> WIN32  </span></span><br><span class="line">	WSAData wsaData;</span><br><span class="line">	WSAStartup(MAKEWORD(<span class="number">2</span>, <span class="number">0</span>), &amp;wsaData);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span>  </span></span><br><span class="line"></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">srv</span>;</span></span><br><span class="line">	<span class="built_in">memset</span>(&amp;srv, <span class="number">0</span>, <span class="keyword">sizeof</span>(srv));</span><br><span class="line">	srv.sin_addr.S_un.S_addr = inet_addr(ip_address);</span><br><span class="line">	srv.sin_family = AF_INET;</span><br><span class="line">	srv.sin_port = htons(PORT);</span><br><span class="line"></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">event_base</span> *<span class="title">base</span> = <span class="title">event_base_new</span>();</span></span><br><span class="line">	<span class="keyword">if</span> (!base) &#123;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"Could not initialize libevent"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">bufferevent</span>* <span class="title">bev</span> = <span class="title">bufferevent_socket_new</span>(<span class="title">base</span>, -1,<span class="title">BEV_OPT_CLOSE_ON_FREE</span>);</span></span><br><span class="line">	bufferevent_setcb(bev, conn_readcb, conn_writecb, conn_eventcb, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//连接，成功返回0，失败返回-1</span></span><br><span class="line">	<span class="keyword">int</span> flag = bufferevent_socket_connect(bev, (struct sockaddr *)&amp;srv, <span class="keyword">sizeof</span>(srv));</span><br><span class="line"></span><br><span class="line">	bufferevent_enable(bev, EV_READ | EV_WRITE);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (<span class="number">-1</span> == flag) &#123;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"Connect failed"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	event_base_dispatch(base);</span><br><span class="line">	event_base_free(base);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">conn_writecb</span><span class="params">(struct bufferevent *bev, <span class="keyword">void</span> *user_data)</span> </span>&#123;</span><br><span class="line">	<span class="comment">//Sleep(SEND_INTERVAL);</span></span><br><span class="line">	<span class="keyword">int</span> len = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">int</span> num[<span class="number">10</span>] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> toID = rand() % CLIENT_NUMBER + <span class="number">1</span>;</span><br><span class="line">	Header header;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="built_in">string</span> <span class="title">msg</span><span class="params">(DATA_LENGTH - HEADER_LENGTH, <span class="string">'0'</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">	header.targetID = toID;</span><br><span class="line">	header.length = msg.size();</span><br><span class="line">	write_buffer(msg, bev, header);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">write_buffer</span><span class="params">(<span class="built_in">string</span>&amp; msg, struct bufferevent* bev, Header&amp; header)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">char</span> send_msg[READ_SIZE] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">	<span class="keyword">char</span>* ptr = send_msg;</span><br><span class="line">	<span class="keyword">int</span> len = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//多发几次，便于测试大量数据</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; SEND_TIMES; i++) &#123;</span><br><span class="line">		<span class="built_in">memcpy</span>(ptr + len, &amp;header, <span class="keyword">sizeof</span>(Header));</span><br><span class="line">		len += <span class="keyword">sizeof</span>(Header);</span><br><span class="line">		<span class="built_in">memcpy</span>(ptr + len, msg.c_str(), msg.size());</span><br><span class="line">		len += msg.size();</span><br><span class="line">	&#125;</span><br><span class="line">	bufferevent_write(bev, send_msg, len);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">conn_readcb</span><span class="params">(struct bufferevent *bev, <span class="keyword">void</span> *user_data)</span> </span>&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">evbuffer</span> *<span class="title">input</span> = <span class="title">bufferevent_get_input</span>(<span class="title">bev</span>);</span></span><br><span class="line">	<span class="keyword">size_t</span> sz = evbuffer_get_length(input);	<span class="comment">//返回evbuffer储存的字节数</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> (sz &gt;= MAX_PACKET_SIZE) &#123;</span><br><span class="line">		<span class="keyword">char</span> msg[MAX_PACKET_SIZE] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">		<span class="keyword">char</span> *ptr = msg;</span><br><span class="line">		bufferevent_read(bev, ptr, HEADER_LENGTH);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">unsigned</span> <span class="keyword">int</span> len = ((Header*)ptr)-&gt;length;</span><br><span class="line">		<span class="keyword">unsigned</span> <span class="keyword">int</span> targetID = ((Header*)ptr)-&gt;targetID;</span><br><span class="line">		<span class="keyword">unsigned</span> <span class="keyword">int</span> sourceID = ((Header*)ptr)-&gt;sourceID;</span><br><span class="line"></span><br><span class="line">		ptr += HEADER_LENGTH;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (sz &lt; len + HEADER_LENGTH) &#123;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		bufferevent_read(bev, ptr, len);</span><br><span class="line">		</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"receive "</span> &lt;&lt; HEADER_LENGTH +  <span class="built_in">strlen</span>(ptr) &lt;&lt; <span class="string">" bytes from client "</span> &lt;&lt; sourceID &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">		sz = evbuffer_get_length(input);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">conn_eventcb</span><span class="params">(struct bufferevent *bev, <span class="keyword">short</span> events, <span class="keyword">void</span> *user_data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (events &amp; BEV_EVENT_EOF) &#123;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"Connection closed"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (events &amp; BEV_EVENT_ERROR) &#123;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"Got an error on the connection: "</span> &lt;&lt; strerror(errno) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (events &amp; BEV_EVENT_CONNECTED) &#123;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"Connect succeed"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">		<span class="built_in">string</span> msg = <span class="string">"connect to server"</span>;</span><br><span class="line">		Header header;</span><br><span class="line">		header.targetID = <span class="number">0</span>;</span><br><span class="line">		header.length = msg.size();</span><br><span class="line"></span><br><span class="line">		write_buffer(msg, bev, header);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	bufferevent_free(bev);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">inttostr</span><span class="params">(<span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">	<span class="built_in">string</span> result;</span><br><span class="line">	<span class="keyword">bool</span> neg = <span class="literal">false</span>;</span><br><span class="line">	<span class="keyword">if</span> (num &lt; <span class="number">0</span>) &#123;</span><br><span class="line">		neg = <span class="literal">true</span>;</span><br><span class="line">		num = -num;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (num == <span class="number">0</span>) &#123;</span><br><span class="line">		result += <span class="string">'0'</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">while</span> (num &gt; <span class="number">0</span>) &#123;</span><br><span class="line">			<span class="keyword">int</span> rem = num % <span class="number">10</span>;</span><br><span class="line">			result = (<span class="keyword">char</span>)(rem + <span class="string">'0'</span>) + result;</span><br><span class="line">			num /= <span class="number">10</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (neg) &#123;</span><br><span class="line">		result = <span class="string">'-'</span> + result;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="效果图片"><a href="#效果图片" class="headerlink" title="效果图片"></a>效果图片</h2><h3 id="普通测试"><a href="#普通测试" class="headerlink" title="普通测试"></a>普通测试</h3><blockquote>
-<p>服务器测试转发速度</p>
-</blockquote>
-<p><img src="/images/libevent server 1.PNG" alt=""></p>
-<blockquote>
-<p>客户端</p>
-</blockquote>
-<p>client1：</p>
-<p><img src="/images/lib event client1.PNG" alt=""></p>
-<p>client2：</p>
-<p><img src="/images/libevent client 2.PNG" alt=""></p>
-<h3 id="最大负载测试"><a href="#最大负载测试" class="headerlink" title="最大负载测试"></a>最大负载测试</h3><blockquote>
-<p>服务器数据</p>
-</blockquote>
-<p><img src="/images/libevent server 2.PNG" alt=""></p>
-<h2 id="测试统计"><a href="#测试统计" class="headerlink" title="测试统计"></a>测试统计</h2><p>libevent 测试结果，本地回环地址测试</p>
-<p>接收的client个数 2，发送的client个数 4</p>
-<p>packet speed代表每秒服务器转发的packet的个数</p>
-<table>
-<thead>
-<tr>
-<th>packet length</th>
-<th>packet speed</th>
-<th>data speed</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>20 bytes</td>
-<td>66  k/s</td>
-<td>1333 k/s</td>
-</tr>
-<tr>
-<td>50 bytes</td>
-<td>36.5 k/s</td>
-<td>1800 k/s</td>
-</tr>
-<tr>
-<td>100 bytes</td>
-<td>20.0 k/s</td>
-<td>2000 k/s</td>
-</tr>
-<tr>
-<td>200 bytes</td>
-<td>11.2 k/s</td>
-<td>2200 k/s</td>
-</tr>
-<tr>
-<td>300 bytes</td>
-<td>8.3 k/s</td>
-<td>2490 k/s</td>
-</tr>
-<tr>
-<td>500 bytes</td>
-<td>5.4 k/s</td>
-<td>2700 k/s</td>
-</tr>
-<tr>
-<td>800 bytes</td>
-<td>3.45 k/s</td>
-<td>2750 k/s</td>
-</tr>
-<tr>
-<td>1000 bytes</td>
-<td>2.65 k/s</td>
-<td>2650 k/s</td>
-</tr>
-</tbody>
-</table>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2681,7 +2705,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
