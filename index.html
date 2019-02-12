@@ -270,6 +270,289 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2019/02/12/Chapter4-Transform/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Uyouii">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Uyouii's Blogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/12/Chapter4-Transform/" itemprop="url">Chapter 4 Transform</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-12T15:30:18+08:00">
+                2019-02-12
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Post modified</span>
+              
+              <time title="Post modified" itemprop="dateModified" datetime="2019-02-12T15:32:28+08:00">
+                2019-02-12
+              </time>
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Real-Time-Rendering/" itemprop="url" rel="index">
+                    <span itemprop="name">Real Time Rendering</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>[TOC]</p>
+<h1 id="线性代数基础"><a href="#线性代数基础" class="headerlink" title="线性代数基础"></a>线性代数基础</h1><h2 id="向量"><a href="#向量" class="headerlink" title="向量"></a>向量</h2><h3 id="向量点乘"><a href="#向量点乘" class="headerlink" title="向量点乘"></a>向量点乘</h3><p>简写为：$a.b = \sum_{i=1}^{n}a_ib_i$<br>$$<br>\begin{bmatrix}<br>a_1\  a<em>2\  …\  a</em>{n-1}\ a_{n}\<br>\end{bmatrix} .<br>\begin{bmatrix}<br>b_1\  b<em>2\  …\  b</em>{n-1}\ b_{n}\<br>\end{bmatrix} =<br>a_1b_1 + a_2b<em>2 + … + a</em>{n-1}b_{n-1} + a_nb_n<br>$$</p>
+<h4 id="几何解释"><a href="#几何解释" class="headerlink" title="几何解释"></a>几何解释</h4><p>点乘结果描述了两个向量的“相似”程度，点乘结果越大，两个向量越接近。</p>
+<p>$a.b = \left | a \right | \left | b \right | cos\theta $</p>
+<p><img src="D:\projects\Learn OpenGL\Real Time Rending Image\向量点乘.PNG" alt=""></p>
+<ul>
+<li>a.b &gt; 0 ,  $ 0 \leq \theta &lt; 90$, a 和 b 同向</li>
+<li>a.b = 0 ,  $ \theta = 90$, a 和 b 正交</li>
+<li>a.b &lt; 0, $90 \leq \theta &lt; 180$, a 和 b 反向</li>
+</ul>
+<h3 id="向量叉乘"><a href="#向量叉乘" class="headerlink" title="向量叉乘"></a>向量叉乘</h3><p>叉乘公式为：<br>$$<br>\begin{bmatrix}<br>x_1\  y_1\  z_1\<br>\end{bmatrix} \times<br>\begin{bmatrix}<br>x_2\  y_2\  z_2\<br>\end{bmatrix} =<br>\begin{bmatrix}<br>y_1z_2 - z_1y_2\<br>z_1x_2 - x_1z_2\<br>x_1y_2 - y_1x_2\<br>\end{bmatrix}<br>$$<br>向量叉乘不满足交换律，但它满足反交换律：$a\times b = -(b \times a)$</p>
+<p>叉乘也不满足结合律： $(a \times b ) \times c \neq  a \times ( b \times c)$</p>
+<h4 id="几何解释-1"><a href="#几何解释-1" class="headerlink" title="几何解释"></a>几何解释</h4><p>叉乘得到的向量垂直于原来的两个向量:</p>
+<p><img src="D:\projects\Learn OpenGL\Real Time Rending Image\向量叉乘.PNG" alt=""></p>
+<p>$\left| a \times b \right| = \left| a \right| \left| b \right| sin\theta$</p>
+<p>可以看到$\left| a \times b \right|$也等于 a 和 b 为两边的平行4边形的面积</p>
+<p><img src="D:\projects\Learn OpenGL\Real Time Rending Image\叉乘和平行四边形面积.PNG" alt=""></p>
+<p>叉乘对零向量的解释为：它平行于任何其他向量，而点乘对零向量的解释为它和其他向量都垂直</p>
+<p>叉乘的方向则和左右手坐标系有关</p>
+<h2 id="矩阵"><a href="#矩阵" class="headerlink" title="矩阵"></a>矩阵</h2><h3 id="矩阵的行列式"><a href="#矩阵的行列式" class="headerlink" title="矩阵的行列式"></a>矩阵的行列式</h3><p>矩阵M的行列式记作|M|</p>
+<p>矩阵行列式的一些性质：</p>
+<ul>
+<li>矩阵积的行列式等于矩阵行列式的积：|AB| = |A||B|</li>
+<li>矩阵转置的行列式等于原矩阵的行列式：$|M^T| = |M|$</li>
+<li>交换矩阵的任意两行或两列，行列式变负</li>
+<li>任意行或列的非零积加到另一行或列上不会改变行列式的值</li>
+</ul>
+<h4 id="几何解释-2"><a href="#几何解释-2" class="headerlink" title="几何解释"></a>几何解释</h4><p>2D中，行列式等于以基向量为两边的平行四边形的有符号面积</p>
+<p>3D中，行列式等于以变换后的基向量为三边的平行六面体的有符号体积</p>
+<h3 id="转置矩阵-Transposed-matrix"><a href="#转置矩阵-Transposed-matrix" class="headerlink" title="转置矩阵 Transposed matrix"></a>转置矩阵 Transposed matrix</h3><p>在线性代数中，矩阵A的转置是另一个矩阵 $A^T$，由下列等价动作建立：</p>
+<ul>
+<li>把A的横列写为$A^T$的纵列</li>
+<li>把A的纵列写为$A^T$的横行</li>
+</ul>
+<p>形式上说，<em>m</em> × <em>n</em>矩阵<em>A</em>的转置是<em>n</em> × <em>m</em>矩阵:</p>
+<p>$ A^T<em>{ij} = A</em>{ij} for 1 \leq i \leq n, 1 \leq j \leq m $</p>
+<p>注：$A^T$ (转置矩阵)与$A^{-1}$(逆矩阵)不同</p>
+<h3 id="矩阵的逆"><a href="#矩阵的逆" class="headerlink" title="矩阵的逆"></a>矩阵的逆</h3><h4 id="逆矩阵-Inverse-matrix"><a href="#逆矩阵-Inverse-matrix" class="headerlink" title="逆矩阵 Inverse matrix"></a>逆矩阵 Inverse matrix</h4><p>在线性代数中，给定一个n阶方阵A，若存在一n阶方阵B，使得$AB=BA=I_n$，其中$I_n$为n阶单位矩阵，则称A是可逆的，且B是A的逆矩阵，记作 $A ^{-1} $。</p>
+<p>只有正方形（n×n）的矩阵，亦即方阵，才可能、但非必然有逆矩阵。</p>
+<p>矩阵的逆有一些重要的性质：</p>
+<ul>
+<li>单位矩阵的逆是它本身：$I^{-1} = I$</li>
+<li>矩阵转置的逆等于它的逆的转置: $(M^T)^{-1} = (M^{-1})^{T} $</li>
+<li>矩阵乘积的逆等于矩阵的逆的相反顺序的乘积: $(AB)^{-1} = B^{-1}A^{-1}$</li>
+</ul>
+<h3 id="正交矩阵-orthogonal-matrix"><a href="#正交矩阵-orthogonal-matrix" class="headerlink" title="正交矩阵 orthogonal matrix"></a>正交矩阵 orthogonal matrix</h3><blockquote>
+<p> 若方阵Q是正交的，当且仅当Q与它转置$Q^T$的乘积等于单位矩阵</p>
+</blockquote>
+<p>在矩阵论中，正交矩阵是一个方块矩阵Q，其元素为实数，而且行与列皆为正交的单位向量（即矩阵的每一行都是单位向量，矩阵的所有行互相垂直），使得该矩阵的转置矩阵为其逆矩阵：<br>$$<br>Q^T = Q^{-1} \Leftrightarrow Q^TQ = QQ^T = I<br>$$<br>其中，I为单位矩阵。正交矩阵的行列式值必定为+1或者-1，因为：<br>$$<br>1 = det(I) = det(Q^TQ) = det(Q^T)det(Q) = (det(Q))^2 \Rightarrow |Q| = \pm1<br>$$<br>伴随矩阵的一些重要性值：</p>
+<ul>
+<li>作为一个线性映射（变换矩阵），正交矩阵保持距离不变，所以它是一个<a href="https://zh.wikipedia.org/wiki/%E7%AD%89%E8%B7%9D%E5%90%8C%E6%9E%84" target="_blank" rel="noopener">保距映射</a>，具体例子为旋转与镜射</li>
+<li>行列式值为+1的正交矩阵，称为<strong>特殊正交矩阵</strong>，它是一个旋转矩阵</li>
+<li>行列式值为-1的正交矩阵，称为<a href="https://zh.wikipedia.org/wiki/%E7%91%95%E6%97%8B%E8%BD%89" target="_blank" rel="noopener">瑕旋转</a>矩阵。瑕旋转是旋转加上镜射。镜射也是一种瑕旋转。</li>
+</ul>
+<p>旋转和镜像矩阵都是正交的</p>
+<h1 id="Transforms"><a href="#Transforms" class="headerlink" title="Transforms"></a>Transforms</h1><blockquote>
+<p>What if angry vectors veer Round your sleeping head, and form.<br>There’s never need to fear Violence of the poor world’s abstract storm.”<br>​        —Robert Penn Warren</p>
+</blockquote>
+<p>A linear transform is one that preserves vector addition and scalar multiplication.<br>$$<br>f(x) + f(y) = f(x+y)<br>$$</p>
+<p>$$<br>kf(x) = f(kx)<br>$$<br>Scaling and rotation transforms, in fact all linear transforms for three-element vectors, can be represented using a 3 × 3 matrix.</p>
+<p>Adding a ﬁxed vector to another vector performs a <strong>translation</strong></p>
+<p>Combining <strong>linear transforms</strong> and <strong>translations</strong> can be done using an <strong>aﬃne transform</strong>（仿射变换）, typically stored as a 4 × 4 matrix. An aﬃne transform is one that performs a linear transform and then a translation. </p>
+<p>A direction vector is represented as  $ v = (v_x\quad v_y\quad v_z \quad 0)^T $ and a point as  $ v = (v_x\quad v_y\quad v_z \quad 1)^T $</p>
+<p>All translation, rotation, scaling, reﬂection, and shearing matrices are aﬃne. The main characteristic of an aﬃne matrix is that it <strong>preserves</strong> the <strong>parallelism of lines</strong>, but not necessarily lengths and angles. </p>
+<h2 id="Basic-Transforms"><a href="#Basic-Transforms" class="headerlink" title="Basic Transforms"></a>Basic Transforms</h2><p><img src="https://github.com/Uyouii/LearnOpenGL/raw/master/Real%20Time%20Rending%20Image/Summary%20of%20most%20of%20the%20transforms.PNG" alt=""></p>
+<blockquote>
+<p> Summary of most of the transform.</p>
+</blockquote>
+<h3 id="Translation"><a href="#Translation" class="headerlink" title="Translation"></a>Translation</h3><p>A change from one location to another is represented by a translation matrix, <strong>T</strong>. This matrix translates an entity by a vector  $ t = (t_x , t_y , t_z ) $</p>
+<p>$$<br>T(t) = T(t_x , t_y , t_z )=<br>\begin{pmatrix}<br> 1 &amp; 0 &amp; 0 &amp; t_x\<br> 0 &amp; 1 &amp; 0 &amp; t_y\<br> 0 &amp; 0 &amp; 1 &amp; t_z\<br> 0 &amp; 0 &amp; 0 &amp; 1\<br>\end{pmatrix}<br>$$<br>the multiplication of a point $ p = (p_x , p_y , p_z , 1 ) $ with <strong>T(t)</strong> yields a new point $ p′ = (p_x +t_x , p_y +t_y , p_z +t_z , 1) $ Notice that a vector $ v = (v_x , v_y , v_z , 0 ) $ is left unaﬀected by a multiplication by T, because a direction vector cannot be translated.</p>
+<p>The <strong>inverse</strong> of a translation matrix is $ T^{-1}(t) = T(-t) $ that is, the vector t is negated.</p>
+<h3 id="Rotation"><a href="#Rotation" class="headerlink" title="Rotation"></a>Rotation</h3><p>it is a <strong>rigid-body transform</strong>, it preserves the distances between points transformed, and preserves<br>handedness.</p>
+<p>In two dimensions, the rotation matrix is simple to derive. Assume that we have a vector,  $ v = (v_x, v_y)=(rcos\theta, rsin\theta) $ if we rotate that vector by φ radians, then we get  $ u = (rcos(\theta + \phi),rsin(\theta + \phi)) $</p>
+<p>This can be rewritten as<br>$$<br>u =<br>\begin{pmatrix}<br> rcos(\theta + \phi)\<br> rsin(\theta + \phi)\<br>\end{pmatrix} =<br>\begin{pmatrix}<br> r(cos\theta cos\phi - sin\theta sin\phi)\<br> r(sin\theta cos\phi + cos\theta sin\phi)\<br>\end{pmatrix} =<br>\begin{pmatrix}<br> cos\phi &amp; -sin\phi\<br> sin\phi &amp; cos\phi \<br>\end{pmatrix}<br>\begin{pmatrix}<br> rcos\theta\<br> rsin\theta\<br>\end{pmatrix} = R(\phi)v<br>$$<br>In three dimensions, commonly used rotation matrices are Rx (φ), Ry (φ), and Rz (φ), which rotate an entity φ radians around the x-, y-, and z-axes, respectively.<br>$$<br>R_x(\phi) =<br>\begin{pmatrix}<br> 1 &amp; 0 &amp; 0 &amp; 0 \<br> 0 &amp; cos\phi &amp; -sin\phi &amp; 0 \<br> 0 &amp; sin\phi &amp; cos\phi &amp; 0 \<br> 0 &amp; 0 &amp; 0 &amp; 1 \<br>\end{pmatrix}<br>$$</p>
+<p>$$<br>R_y(\phi) =<br>\begin{pmatrix}<br> cos\phi &amp; 0 &amp; sin\phi &amp; 0 \<br> 0 &amp; 1 &amp; 0 &amp; 0 \<br> -sin\phi &amp; 0 &amp; cos\phi &amp; 0 \<br> 0 &amp; 0 &amp; 0 &amp; 1 \<br>\end{pmatrix}<br>$$</p>
+<p>$$<br>R_z(\phi) =<br>\begin{pmatrix}<br> cos\phi &amp; -sin\phi &amp; 0 &amp; 0 \<br> sin\phi &amp; cos\phi &amp; 0 &amp; 0 \<br> 0 &amp; 0 &amp; 1 &amp; 0 \<br> 0 &amp; 0 &amp; 0 &amp; 1 \<br>\end{pmatrix}<br>$$</p>
+<p>There is another way to obtain the <strong>inverse</strong>: $ R_i^{-1}(\phi)=R_i(-\phi) $ rotate in the opposite direction around the same axis.</p>
+<h3 id="Scaling"><a href="#Scaling" class="headerlink" title="Scaling"></a>Scaling</h3><p>a scaling matrix , $ S(s) = S(s_x, s_y, s_z) $.  scales an entity with factors sx, sy and sz along the x-, y-, and z-directions.</p>
+<p>$$<br>S(s) =<br>\begin{pmatrix}<br>s_x &amp; 0 &amp; 0 &amp; 0 \<br>0 &amp; s_y &amp; 0 &amp; 0 \<br>0 &amp; 0 &amp; s_z &amp; 0 \<br>0 &amp; 0 &amp; 0 &amp; 1 \<br>\end{pmatrix}<br>$$<br>The scaling operation is called <strong>uniform</strong> if s x = s y = s z and <strong>nonuniform</strong> otherwise.</p>
+<p>The <strong>inverse</strong> is  $ S^{-1}(s) = S(1/s_x, 1/s_y, 1/s_z) $</p>
+<p>A negative value on one or three of the components of s gives a type of <strong>reﬂection matrix</strong>, also called a <strong>mirror matrix</strong>. It should be noted that a rotation matrix concatenated with a reﬂection matrix is also a reﬂection matrix.</p>
+<p>To detect whether a given matrix reﬂects in some manner, compute the determinant of the upper left 3 × 3 elements of the matrix. If the value is negative, the matrix is reﬂective. </p>
+<h3 id="Shearing"><a href="#Shearing" class="headerlink" title="Shearing"></a>Shearing</h3><p>There are six basic shearing matrices, and they are denoted $ H<em>{xy}(s),H</em>{xz}(s),H<em>{yx}(s),H</em>{yz}(s),H<em>{zx}(s),H</em>{zy}(s), $</p>
+<p><img src="https://github.com/Uyouii/LearnOpenGL/raw/master/Real%20Time%20Rending%20Image/The%20e%EF%AC%80ect%20of%20shearing%20the%20unit%20square%20with%20H%20xz%20(s" alt="">.PNG)</p>
+<blockquote>
+<p>The eﬀect of shearing the unit square with H xz (s). Both the y- and z-values are unaﬀected by the transform, while the x-value is the sum of the old x-value and s multiplied by the z-value, causing the square to become slanted. This transform is area-preserving, which can be seen in that the dashed areas are the same.<br>$$<br>H_{xz}(s) =<br>\begin{pmatrix}<br>1 &amp; 0 &amp; s &amp; 0 \<br>0 &amp; 1 &amp; 0 &amp; 0 \<br>0 &amp; 0 &amp; 1 &amp; 0 \<br>0 &amp; 0 &amp; 0 &amp; 1 \<br>\end{pmatrix}<br>$$<br>The eﬀect of multiplying this matrix with a point <strong>p</strong> yields a point: $ (p_x + sp_z \quad p_y \quad p_z) ^ T $</p>
+</blockquote>
+<p>The inverse of Hij(s) is generated by shearing in the opposite direction: $ H<em>{ij}^{-1}(s) = H</em>{ij}(-s)$</p>
+<h3 id="Concatenation-of-Transforms"><a href="#Concatenation-of-Transforms" class="headerlink" title="Concatenation of Transforms"></a>Concatenation of Transforms</h3><p>Due to the <strong>noncommutativity</strong> of the multiplication operation on matrices, the order in which the matrices occur matters. Concatenation of transforms is therefore said to be <strong>order-dependent</strong>.</p>
+<p>This composite matrix is <strong>C = TRS</strong>. Note the order here. The scaling matrix, <strong>S</strong>, should be applied to the vertices ﬁrst, and therefore appears to the right in the composition. </p>
+<h3 id="The-Rigid-Body-Transform"><a href="#The-Rigid-Body-Transform" class="headerlink" title="The Rigid-Body Transform"></a>The Rigid-Body Transform</h3><p> Such a transform, consisting of concatenations of only translations and rotations, is called a <strong>rigid-body transform</strong>. It has the characteristic of preserving lengths, angles, and handedness.</p>
+<p>Any rigid-body matrix, X, can be written as the concatenation of a translation matrix, T(t), and a rotation matrix, R.<br>$$<br>X = T(t)R =<br>\begin{pmatrix}<br>r<em>{00} &amp; r</em>{01} &amp; r_{02} &amp; t<em>x \<br>r</em>{10} &amp; r<em>{11} &amp; r</em>{12} &amp; t<em>y \<br>r</em>{20} &amp; r<em>{21} &amp; r</em>{22} &amp; t<em>z \<br>0 &amp; 0 &amp; 0 &amp; 1 \<br>\end{pmatrix}<br>$$<br>The <strong>inverse</strong> of X is computed as:<br>$$<br>X^{-1} = (T(t)R)^{-1} = R^{-1}T(t)^{-1} = R^TT(-t)<br>$$<br>Another way to compute the inverse of <strong>X</strong> is to consider <strong>R</strong> (making R appear as 3 × 3 matrix) and <strong>X</strong> in the following notation<br>$$<br>\overline R = (r</em>{,0}\quad r<em>{,1}\quad r</em>{,2}) =<br>\begin{pmatrix}<br>r_0^T,\<br>r_1^T,\<br>r_2^T,\<br>\end{pmatrix},<br>X =<br>\begin{pmatrix}<br>\overline R &amp; t\<br>0^T &amp; 1\<br>\end{pmatrix},<br>$$<br>Some calculations yield the inverse in the expression shown:<br>$$<br>X^{-1} =<br>\begin{pmatrix}<br>r_0,&amp; r_1, &amp;r_2, &amp;-{\overline R}^Tt\<br>0 &amp; 0 &amp; 0 &amp; 1<br>\end{pmatrix},<br>$$</p>
+<h3 id="Normal-Transform"><a href="#Normal-Transform" class="headerlink" title="Normal Transform"></a>Normal Transform</h3><p>Instead of multiplying by the matrix itself, the proper method is to use the <strong>transpose of the matrix’s adjoint(伴随矩阵）</strong>.</p>
+<h2 id="Special-Matrix-Transforms-and-Operations"><a href="#Special-Matrix-Transforms-and-Operations" class="headerlink" title="Special Matrix Transforms and Operations"></a>Special Matrix Transforms and Operations</h2><h3 id="The-Euler-Transform"><a href="#The-Euler-Transform" class="headerlink" title="The Euler Transform"></a>The Euler Transform</h3><p>The Euler transform is the multiplication of three matrices, More formally, the transform, denoted E:<br>$$<br>E(h,p,r)=R_z(r)R_x(p)R_y(h)<br>$$</p>
+<p>Since E is a concatenation of rotations, it is also clearly orthogonal(正交的). Therefore its inverse can be expressed as $E^{-1} = E^T = (R_zR_xR_y)^T = R_y^TR_x^TR_z^T$.</p>
+<p>The Euler angles h, p, and r represent in which order and how much the <strong>head</strong>, <strong>pitch</strong>, and <strong>roll</strong> should rotate around their respective axes.  Also, “<strong>head</strong>” is sometimes known as “<strong>yaw</strong>”. </p>
+<p><img src="https://github.com/Uyouii/LearnOpenGL/raw/master/Real%20Time%20Rending%20Image/The%20Euler%20transform.PNG" alt=""></p>
+<h4 id="Limitations"><a href="#Limitations" class="headerlink" title="Limitations"></a>Limitations</h4><p>It is difficult to work with two sets of Euler angles in combination.For example, interpolation between one set and another is not a simple matter of interpolating each angle. In fact, two diﬀerent sets of Euler angles can give the same orientation, so any interpolation should not rotate the object at all. </p>
+<p>When you use Euler transforms, something called <strong>gimbal lock</strong> may occur. This happens when rotations are made so that one degree of freedom is lost.</p>
+<p>关于gimbal lock的通俗解释：</p>
+<blockquote>
+<p>这种现象的原因是 角度为 $\pm90$的第二次旋转使得第一次和第三次的旋转角相同，称作 <strong>万向锁</strong></p>
+<p>是指物体的两个旋转轴指向同一个方向。实际上，当两个旋转轴平行时，我们就说万向节锁现象发生了，换句话说，绕一个轴旋转可能会覆盖住另一个轴的旋转，从而失去一维自由度</p>
+<p>通常说来，万向节锁发生在使用Eular Angles（欧拉角）的旋转操作中，原因是Eular Angles按照一定的顺序依次独立地绕轴旋转。让我们想象一个具体的旋转场景，首先物体先绕转X轴旋转，然后再绕Y轴，最后绕Z轴选择，从而完成一个旋转操作（飘飘白云译注：实际是想绕某一个轴旋转，然而Eular Angle将这个旋转分成三个独立的步骤进行），当你绕Y轴旋转90度之后万向节锁的问题就出现了，因为X轴已经被求值了，它不再随同其他两个轴旋转，这样X轴与Z轴就指向同一个方向（它们相当于同一个轴了）。</p>
+</blockquote>
+<h2 id="Qutaternions"><a href="#Qutaternions" class="headerlink" title="Qutaternions"></a>Qutaternions</h2><p>Quaternions are used to represent rotations and orientations. They are superior to both Euler angles and matrices in several ways. </p>
+<p>一个四元数包含一个标量分量和一个3D向量分量。经常记标量分量为w，记向量分量为单一的v或分开的x，y，z。两种记法分别为[w,v] 和 [w,(x,y,z)]</p>
+<p><strong>Definition</strong>: A quaternion $\hat{q}$ can be deﬁned in the following ways, all equivalent.</p>
+<p>$\hat{\textbf{q}} = (\textbf{q}_v, q_w) = iq_x + jq_y + kq_z + q_w = \textbf{q}_v + q_w$</p>
+<p>$\textbf{q}_v = iq_x + jq_y + kq_z = (q_x, q_y, q_z)$</p>
+<p>$i^2 = j^2 = k^2 = -1, jk = -kj = i, ki = -ik = j, ij = -ji = k$</p>
+<p>The variable $q_w$ is called the <strong>real part</strong> of a quaternion, $\hat{\textbf{q}} $. The imaginary part is $\textbf{q}_v ,$ and i, j, and k are called <strong>imaginary units</strong>.</p>
+<blockquote>
+<p>具体内容看real time rendering4.3 和 3D数学基础：图形与游戏开发 10.4</p>
+</blockquote>
+<h4 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h4><ul>
+<li>平滑插值。slerp和squad提供了方位间的平滑插值，没有其他方法能提供平滑插值。</li>
+<li>快速连接和角位移求逆。四元数叉乘能将角位移序列转换为单个角位移，用矩阵作同样的操作明显会慢一些。</li>
+<li>能和矩阵形式快速转换。四元数和矩阵间的转换比欧拉角与矩阵间的转换稍微快一点。</li>
+<li>仅用四个数。四元数包含4数，而矩阵用了9个数，比矩阵要“经济”的多。</li>
+</ul>
+<h2 id="Vertex-Blending"><a href="#Vertex-Blending" class="headerlink" title="Vertex Blending"></a>Vertex Blending</h2><p><strong>Vertex blending</strong> has several other names, such as <strong>linear-blend skinning</strong>, <strong>enveloping</strong>, or <strong>skeleton-subspace deformation</strong>.</p>
+<p><strong>p</strong> is the original vertex, and <strong>u(t)</strong> is the transformed vertex whose position depends on time t:</p>
+<p>$\textbf u(t) = \sum_{i = 0}^{n - 1}w_iB_i(t)M<em>i^{-1}p$, where $\sum</em>{i = 0}^{n - 1}w_i = 1, w_i  \ge 0$</p>
+<p>There are n bones inﬂuencing the position of <strong>p</strong>, which is expressed in world coordinates. The value w i is the weight of bone i for vertex <strong>p</strong>. The matrix $M_i$ transforms from the initial bone’s coordinate system to world coordinates.</p>
+<p>In practice, the matrices $B_i(t)$ and $M_i^{-1}$ are concatenated for each bone for each frame of animation, and each resulting matrix is used to transform the vertices. The vertex <strong>p</strong> is transformed by the diﬀerent bones’ concatenated matrices, and then blended using the weights $w_i$ — thus the name <em>vertex blending</em>.</p>
+<h2 id="Morphing"><a href="#Morphing" class="headerlink" title="Morphing"></a>Morphing</h2><p>Morphing involves solving two major problems, namely, the <em>vertex correspondence</em> problem and the <em>interpolation</em> problem. </p>
+<p>we have a neutral model, <em>N</em> , and a set of diﬀerence poses, $D<em>i$ . Am orphed model <em>M</em> can then be obtained using the following formula:<br>$$<br>M = N + \sum</em>{i = 1}^kw_iD_i<br>$$</p>
+<h2 id="Projection"><a href="#Projection" class="headerlink" title="Projection"></a>Projection</h2><h3 id="Orthographic-Projection"><a href="#Orthographic-Projection" class="headerlink" title="Orthographic Projection"></a>Orthographic Projection</h3><p>A characteristic of an orthographic projection is that parallel lines remain parallel after the projection.When orthographic projection is used for viewing a scene, objects maintain the same size regardless of distance to the camera.</p>
+<h3 id="Perspective-Projection"><a href="#Perspective-Projection" class="headerlink" title="Perspective Projection"></a>Perspective Projection</h3><p>Here, parallel lines are generally not parallel after projection; rather, they may converge to a single point at their extreme. Perspective more closely matches how we perceive the world, i.e., objects farther away are smaller.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2018/11/12/Chapter3-The-Graphics-Processing-Unit/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2790,182 +3073,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2018/02/23/IO复用：select和poll/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Uyouii">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Uyouii's Blogs">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/02/23/IO复用：select和poll/" itemprop="url">IO复用：select和poll</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-23T17:17:07+08:00">
-                2018-02-23
-              </time>
-            
-
-            
-              <span class="post-meta-divider">|</span>
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-check-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Post modified</span>
-              
-              <time title="Post modified" itemprop="dateModified" datetime="2018-02-23T17:22:38+08:00">
-                2018-02-23
-              </time>
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Unix-Network-Programming/" itemprop="url" rel="index">
-                    <span itemprop="name">Unix Network Programming</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="使用I-O复用的经典场合"><a href="#使用I-O复用的经典场合" class="headerlink" title="使用I/O复用的经典场合"></a>使用I/O复用的经典场合</h2><ul>
-<li>当客户处理多个描述符（通常是交互式输入和网络套接字）时，必须使用I/O复用。</li>
-<li>当一个客户端同时处理多个套接字时可能的。</li>
-<li>如果一个TCP服务器既要处理监听套接字，又要处理已连接套接字。</li>
-<li>如果一个服务器既要处理TCP，又要处理UDP，一般就要使用I/O复用。</li>
-<li>如果一个服务器要处理多个服务器或者多个协议，一般要使用I/O复用。</li>
-</ul>
-<h2 id="select-函数"><a href="#select-函数" class="headerlink" title="select 函数"></a>select 函数</h2><p>该函数允许进程指示内核等待多个事件中的任何一个发生，并只在有一个或多个事件发生或经历一段指定的时间后才唤醒它。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/select.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> maxfdpl, fd_set *readset, fd_set *writeset, fd_set *exceptset, <span class="keyword">const</span> struct timeval *timeout)</span></span>;</span><br></pre></td></tr></table></figure>
-<p>select函数修改由指针readset、writeset和exceptset所指向的描述符集，因而这三个参数都是值-结果参数。调用该函数时，我们所指定所关心的描述符的值，该函数返回时，结果将指示哪些描述符已就绪。该函数返回后，我们使用FD_ISSET宏来测试fd_set数据类型中的描述符。描述符集内任何与未就绪描述符对应的位返回时均清成0。每次重新调用select函数时，我们都得再次把所有描述符集内所关心的位置均置为1。</p>
-<h2 id="描述符就绪条件"><a href="#描述符就绪条件" class="headerlink" title="描述符就绪条件"></a>描述符就绪条件</h2><h3 id="套接字准备好读"><a href="#套接字准备好读" class="headerlink" title="套接字准备好读"></a>套接字准备好读</h3><ol>
-<li>该套接字接收缓冲区中的数据字节数大于等于套接字接收缓冲区低水位标记的当前大小。对这样的套接字执行读操作不会阻塞并将返回一个大于0的值。可以使用SO_RCVLOWAT套接字选项设置该套接字的低水位标记。对于TCP和UDP套接字，其默认值为1。</li>
-<li>该连接的读半部关闭（也就是接收了FIN的TCP连接）。对于这样的套接字的读操作将不阻塞并返回0(也就是返回EOF)。</li>
-<li>该套接字是一个监听套接字且已完成的连接数不为0。对这样的套接字的accept通常不会阻塞。</li>
-<li>其上有一个套接字错误待处理。对这样的套接字的读操作将不阻塞并返回-1（也就是返回一个错误），同时把errno设置成确切的错误条件。这些待处理错误（pending error）也可以通过指定SO_ERROR套接字选项调用getsockopt获取并清除。</li>
-</ol>
-<h3 id="套接字准备好写"><a href="#套接字准备好写" class="headerlink" title="套接字准备好写"></a>套接字准备好写</h3><ol>
-<li>该套接字发送缓冲区中的可用空间字节数大于等于套接字发送缓冲区低水位标记的当前大小，并且u后者该套接字已连接，或者该套接字不需要连接（如UDP套接字）。这意味着如果我们把这样的套接字设置为非阻塞，写操作将不阻塞并返回一个正值。可以使用SO_SNDLOWAT套接字选项来设置该套接字的低水位标记。对于TCP和UDP套接字而言，其默认值是2048。</li>
-<li>该连接的写半部关闭，对这样的套接字的写操作将产生SIGPIPE信号。</li>
-<li>使用非阻塞式connect的套接字已建立连接，或者connect已经以失败告终。</li>
-<li>其上有一个套接字错误待处理。对这样的套接字的写操作将不阻塞并返回-1(也就是返回一个错误)，同时把errno设置成确切的错误条件。这些待处理的错误也可以通过指定的SO_ERROR套接字选项调用getsockopt获取并清除。</li>
-</ol>
-<p>当某个套接字发生错误时，它将由select标记为即可读又可写。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3016,7 +3123,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">22</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
