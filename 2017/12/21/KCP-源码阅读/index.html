@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="network,kcp,coderead,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="KCP项目地址： KCP - A Fast and Reliable ARQ Protocol  版权声明：本文为博主原创文章，转载请注明出处。  作者: Uyouii 简介KCP是一个快速可靠协议，能以比 TCP浪费10%-20%的带宽的代价，换取平均延迟降低 30%-40%，且最大延迟降低三倍的传输效果。纯算法实现，并不负责底层协议（如UDP）的收发，需要使用者自己定义下层数据包的发送方式，以">
+<meta name="keywords" content="network,kcp,coderead">
+<meta property="og:type" content="article">
+<meta property="og:title" content="KCP 源码阅读">
+<meta property="og:url" content="https://uyouii.github.io/2017/12/21/KCP-源码阅读/index.html">
+<meta property="og:site_name" content="Uyouii&#39;s Blogs">
+<meta property="og:description" content="KCP项目地址： KCP - A Fast and Reliable ARQ Protocol  版权声明：本文为博主原创文章，转载请注明出处。  作者: Uyouii 简介KCP是一个快速可靠协议，能以比 TCP浪费10%-20%的带宽的代价，换取平均延迟降低 30%-40%，且最大延迟降低三倍的传输效果。纯算法实现，并不负责底层协议（如UDP）的收发，需要使用者自己定义下层数据包的发送方式，以">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://uyouii.github.io/images/kcp1.png">
+<meta property="og:updated_time" content="2019-08-02T03:28:18.913Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="KCP 源码阅读">
+<meta name="twitter:description" content="KCP项目地址： KCP - A Fast and Reliable ARQ Protocol  版权声明：本文为博主原创文章，转载请注明出处。  作者: Uyouii 简介KCP是一个快速可靠协议，能以比 TCP浪费10%-20%的带宽的代价，换取平均延迟降低 30%-40%，且最大延迟降低三倍的传输效果。纯算法实现，并不负责底层协议（如UDP）的收发，需要使用者自己定义下层数据包的发送方式，以">
+<meta name="twitter:image" content="https://uyouii.github.io/images/kcp1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://uyouii.github.io/2017/12/21/KCP-源码阅读/">
+
+
+
+
+
+  <title>KCP 源码阅读 | Uyouii's Blogs</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Uyouii's Blogs</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">There are many things need to learn.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2017/12/21/KCP-源码阅读/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Uyouii">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Uyouii's Blogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">KCP 源码阅读</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-21T22:01:04+08:00">
+                2017-12-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/network/" itemprop="url" rel="index">
+                    <span itemprop="name">network</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>KCP项目地址： <a href="https://github.com/skywind3000/kcp" target="_blank" rel="noopener">KCP - A Fast and Reliable ARQ Protocol</a></p>
+<blockquote>
+<p>版权声明：本文为博主原创文章，转载请注明出处。</p>
+</blockquote>
+<p>作者: Uyouii</p>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>KCP是一个快速可靠协议，能以比 TCP浪费10%-20%的带宽的代价，换取平均延迟降低 30%-40%，且最大延迟降低三倍的传输效果。纯算法实现，并不负责底层协议（如UDP）的收发，需要使用者自己定义下层数据包的发送方式，以 callback的方式提供给 KCP。 连时钟都需要外部传递进来，内部不会有任何一次系统调用。</p>
+<h1 id="主要数据结构"><a href="#主要数据结构" class="headerlink" title="主要数据结构"></a>主要数据结构</h1><h2 id="IKCPSEG"><a href="#IKCPSEG" class="headerlink" title="IKCPSEG"></a>IKCPSEG</h2><p>IKCPSEG是kcp的数据段结构，即储存需要发送的packet的内容。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">IKCPSEG</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">IQUEUEHEAD</span> <span class="title">node</span>;</span>	<span class="comment">// 双向链表定义的队列</span></span><br><span class="line">	IUINT32 conv;           <span class="comment">// conversation, 会话序号: 接收到的数据包与发送的一致才接收此数据包</span></span><br><span class="line">	IUINT32 cmd;            <span class="comment">// command, 指令类型: 代表这个Segment的类型</span></span><br><span class="line">	IUINT32 frg;            <span class="comment">// fragment, 分段序号</span></span><br><span class="line">	IUINT32 wnd;            <span class="comment">// window, 窗口大小</span></span><br><span class="line">	IUINT32 ts;             <span class="comment">// timestamp, 发送的时间戳</span></span><br><span class="line">	IUINT32 sn;             <span class="comment">// sequence number, segment序号</span></span><br><span class="line">	IUINT32 una;            <span class="comment">// unacknowledged, 当前未收到的序号: 即代表这个序号之前的包均收到</span></span><br><span class="line">	IUINT32 len;            <span class="comment">// length, 数据长度</span></span><br><span class="line">	IUINT32 resendts;		<span class="comment">// 重发的时间戳</span></span><br><span class="line">	IUINT32 rto;			<span class="comment">// 超时重传的时间间隔</span></span><br><span class="line">	IUINT32 fastack;		<span class="comment">// ack跳过的次数，用于快速重传</span></span><br><span class="line">	IUINT32 xmit;			<span class="comment">// 发送的次数(即重传的次数)</span></span><br><span class="line">	<span class="keyword">char</span> data[<span class="number">1</span>];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h2 id="IKCPCB"><a href="#IKCPCB" class="headerlink" title="IKCPCB"></a>IKCPCB</h2><p>IKCPCB是kcp的控制块，用于控制packet的发送，接收，重传等操作。</p>
+<p>buffer的发送和接收均调用外部传入的函数。IKCPCB只负责处理算法层面的逻辑。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">IKCPCB</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	<span class="comment">//conv:会话ID，mtu:最大传输单元，mss:最大分片大小，state:连接状态</span></span><br><span class="line">	IUINT32 conv, mtu, mss, state;			</span><br><span class="line">	<span class="comment">//sun_una：第一个未确认的包，sen_nxt：待发送包的序号，rcv_nxt：待接收消息的序号</span></span><br><span class="line">	IUINT32 snd_una, snd_nxt, rcv_nxt;		</span><br><span class="line">	<span class="comment">//ssthresh:拥塞窗口的阈值</span></span><br><span class="line">	IUINT32 ts_recent, ts_lastack, ssthresh;</span><br><span class="line">	<span class="comment">//rx_rttval：ack接收rtt浮动值，rx_srtt：ack接收rtt平滑值(smoothed)，rx_rto：由ack接收延迟计算出来的复原时间，rx_minrto：最小复原时间</span></span><br><span class="line">	IINT32 rx_rttval, rx_srtt, rx_rto, rx_minrto;	</span><br><span class="line">	<span class="comment">//sen_wnd：发送窗口大小，rcv_wnd：接收窗口大小，rmt_wnd：远端接收窗口大小，cwnd：拥塞窗口大小，probe	探查变量，IKCP_ASK_TELL表示告知远端窗口大小。IKCP_ASK_SEND表示请求远端告知窗口大小。</span></span><br><span class="line">	IUINT32 snd_wnd, rcv_wnd, rmt_wnd, cwnd, probe;	</span><br><span class="line">	<span class="comment">//currunt：当前的时间戳，interval：内部flush刷新间隔，ts_flush：下次flush刷新时间戳</span></span><br><span class="line">	IUINT32 current, interval, ts_flush, xmit;</span><br><span class="line">	IUINT32 nrcv_buf, nsnd_buf;</span><br><span class="line">	IUINT32 nrcv_que, nsnd_que;</span><br><span class="line">	<span class="comment">//nodelay：是否启动无延迟模式，update：是否调用过update函数的标识(kcp需要上层通过不断的ikcp_update和ikcp_check来驱动kcp的收发过程)</span></span><br><span class="line">	IUINT32 nodelay, updated;</span><br><span class="line">	<span class="comment">//ts_probe：下次探查窗口的时间戳，probe_wait：探查窗口需要等待的时间</span></span><br><span class="line">	IUINT32 ts_probe, probe_wait;</span><br><span class="line">	<span class="comment">//dead_link：最大重传次数，incr：可发送的最大数据量</span></span><br><span class="line">	IUINT32 dead_link, incr;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">IQUEUEHEAD</span> <span class="title">snd_queue</span>;</span>	<span class="comment">//发送消息的队列</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">IQUEUEHEAD</span> <span class="title">rcv_queue</span>;</span>	<span class="comment">//接收消息的队列</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">IQUEUEHEAD</span> <span class="title">snd_buf</span>;</span>		<span class="comment">//发送消息的缓存</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">IQUEUEHEAD</span> <span class="title">rcv_buf</span>;</span>		<span class="comment">//接收消息的缓存</span></span><br><span class="line">	IUINT32 *acklist;				<span class="comment">//待发送的ack的列表</span></span><br><span class="line">	IUINT32 ackcount;				<span class="comment">//ack数量</span></span><br><span class="line">	IUINT32 ackblock;				<span class="comment">//acklist的大小</span></span><br><span class="line">	<span class="keyword">void</span> *user;</span><br><span class="line">	<span class="keyword">char</span> *buffer;					<span class="comment">//储存消息字节流的内存</span></span><br><span class="line">	<span class="keyword">int</span> fastresend;					<span class="comment">//触发快速重传的重复ack个数</span></span><br><span class="line">	<span class="keyword">int</span> nocwnd, stream;				<span class="comment">//nocwnd：取消拥塞控制，stream：是否采用流传输模式</span></span><br><span class="line">	<span class="keyword">int</span> logmask;</span><br><span class="line">	<span class="keyword">int</span> (*output)(<span class="keyword">const</span> <span class="keyword">char</span> *buf, <span class="keyword">int</span> len, struct IKCPCB *kcp, <span class="keyword">void</span> *user);	<span class="comment">//发送消息的回调函数</span></span><br><span class="line">	<span class="keyword">void</span> (*writelog)(<span class="keyword">const</span> <span class="keyword">char</span> *<span class="built_in">log</span>, struct IKCPCB *kcp, <span class="keyword">void</span> *user);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="KCP网络包头结构"><a href="#KCP网络包头结构" class="headerlink" title="KCP网络包头结构"></a>KCP网络包头结构</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">|&lt;------------ <span class="number">4</span> bytes ------------&gt;|</span><br><span class="line">+--------+--------+--------+--------+</span><br><span class="line">|               conv                | conv：Conversation, 会话序号，用于标识收发数据包是否一致</span><br><span class="line">+--------+--------+--------+--------+ cmd: command，用于标识指令，例如：push，ack等</span><br><span class="line">|  cmd   |  frg   |       wnd       | frg: Fragment, 分段序号，序号从大到小</span><br><span class="line">+--------+--------+--------+--------+ wnd: 接收窗口大小</span><br><span class="line">|                ts                 | ts: 发送的时间戳</span><br><span class="line">+--------+--------+--------+--------+</span><br><span class="line">|                sn                 | sn: Segment序号</span><br><span class="line">+--------+--------+--------+--------+</span><br><span class="line">|                una                | una: Unacknowledged, 当前未收到的序号，即代表这个序号之前的包均收到</span><br><span class="line">+--------+--------+--------+--------+      </span><br><span class="line">|                len                | len: data数据的长度</span><br><span class="line">+--------+--------+--------+--------+</span><br></pre></td></tr></table></figure>
+<p>kcp包头总共占用了24个字节。给sn分配了4个字节，可以不用考虑序号越界的问题。</p>
+<h1 id="KCP工作流程"><a href="#KCP工作流程" class="headerlink" title="KCP工作流程"></a>KCP工作流程</h1><h2 id="发送数据"><a href="#发送数据" class="headerlink" title="发送数据"></a>发送数据</h2><p>kcp首先将要发送的数据存到kcp-&gt;buffer中，如果需要发送的数据总量的大小大于kcp-&gt;mtu，则将buffer中的数据调用output函数发送出去，output函数由用户传入。</p>
+<p>kcp数据包发送顺序：</p>
+<ol>
+<li><code>IKCP_CMD_ACK</code>(ack)</li>
+<li><code>IKCP_CMD_WASK</code>(请求远程窗口大小)</li>
+<li><code>IKCP_CMD_WINS</code>(发送本地窗口大小)</li>
+<li><code>IKCP_CMD_PUSH</code>(push data)</li>
+</ol>
+<p><img src="/images/kcp1.png" alt></p>
+<p>在发送PUSH类型的数据时，首先需要将数据从sen_que移动到sen_buf中（在移动时会检测拥塞窗口的大小，sen_que可以理解为发送数的缓冲队列）。</p>
+<p>kcp在发送sen_buf队列中的数据时会检测是否是第一次发送：</p>
+<ul>
+<li>如果该segment的发送次数为0，则直接发送。</li>
+<li>如果发送次数大于0并且已经超时，则再次发送并调整rto和下次超时时间</li>
+<li>如果没有超时但是达到了快速重传的条件（被跳过了几个包），则发送并且更新下次超时时间。</li>
+</ul>
+<h1 id="函数解析"><a href="#函数解析" class="headerlink" title="函数解析"></a>函数解析</h1><h2 id="Input"><a href="#Input" class="headerlink" title="Input"></a>Input</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ikcp_input</span><span class="params">(ikcpcb *kcp, <span class="keyword">const</span> <span class="keyword">char</span> *data, <span class="keyword">long</span> size)</span></span></span><br></pre></td></tr></table></figure>
+<p>处理接收到的数据，data即用户传入的数据。kcp不负责网络数据的接收，需要用户将接收到的数据传入。</p>
+<p>在接收到数据后，解析数据得到segment的sn，una等数据包头信息。首先根据una清除掉<code>kcp-&gt;snd_buf</code>中已经确认接收到的segment（una即表示该seg之前数据包均已收到），随后根据<code>kcp-&gt;sen_buf</code>更新<code>kcp-&gt;snd_una</code>。</p>
+<ol>
+<li>ack: <code>IKCP_CMD_ACK</code>，首先根据该segment的rtt更新计算kcp的rtt和rto，删除掉<code>kcp-&gt;snd_buf</code>中相应的segment，更新kcp的sed_una(下一个未确认的segment)。</li>
+<li>push:<code>IKCP_CMD_PUSH</code>，收到push segment后需要发送ack，将该segment的sn和ts放入<code>kcp-&gt;acklist</code>中。 如果该seg符合滑动窗口的范围，则将该segment放入<code>kcp-&gt;rev_buf</code>中。 如果<code>kcp-&gt;queue</code>的大小小于<code>kcp-&gt;rev_wnd</code>(滑动窗口的大小)，则将<code>kcp-&gt;rev_buf</code>符合条件的segment放入<code>kcp-&gt;rcv_queue</code>中(保证序号连续的seg)。</li>
+<li>window ask: <code>IKCP_CMD_WASK</code>,将kcp-&gt;probe中相应位置为1，发送segment时向远端发送相应接收窗口大小。</li>
+<li><code>IKCP_CMD_WINS</code>，对应远端的窗口更新包，无需做额外的操作。</li>
+</ol>
+<p>随后遍历<code>kcp-&gt;sed_buf</code>，更新每个segment的<code>seg-&gt;fastack</code>(被跳过的次数，用于判断是否需要快速重传)。</p>
+<p>如果远端接收状态有更新，则更新本地拥塞窗口的大小。</p>
+<h2 id="Receive"><a href="#Receive" class="headerlink" title="Receive"></a>Receive</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ikcp_recv</span><span class="params">(ikcpcb *kcp, <span class="keyword">char</span> *buffer, <span class="keyword">int</span> len)</span></span></span><br></pre></td></tr></table></figure>
+<p>用户层面的数据读取，从<code>rcv_queue</code>中读取一个packet（如果该packet在发送前分段的话，则将fragement合并后放入buffer中）。input的操作保证了<code>rcv_queue</code>中的segment都是有序且连续的。</p>
+<p>随后如果<code>rcv_queue</code>大小小于<code>rcv_wnd</code>（接收窗口）的大小，则将<code>rcv_buf</code>中合适的segment放入<code>rcv_queue</code>中。</p>
+<p>如果需要告知远端主机窗口大小，则<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kcp-&gt;probe |= IKCP_ASK_TELL</span><br></pre></td></tr></table></figure></p>
+<p>将<code>ICKP_ASK_TELL</code>置为1。</p>
+<h2 id="Send"><a href="#Send" class="headerlink" title="Send"></a>Send</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ikcp_send</span><span class="params">(ikcpcb *kcp, <span class="keyword">const</span> <span class="keyword">char</span> *buffer, <span class="keyword">int</span> len)</span></span></span><br></pre></td></tr></table></figure>
+<p>将buffer中需要发送的数据分片后放入<code>snd_queue</code>中。</p>
+<p>在发送数据时，会首先检测是否开启了流模式。如果开启流模式，在发送数据时，如果上一个segment没有填满mss（最大分片大小），则将这次要发送的数据继续写入上一个segment。如果没有开启流模式，则创建一个新的segment发送。</p>
+<p>如果需要发送的数据大小大于mss，则将其拆分为多个segment发送，如果不是流模式，则将其<code>frg</code>至为其相应的序号，序号从count-1开始递减至0，即count-1表示第一个segment，0表示最后一个segment。</p>
+<h2 id="Flush"><a href="#Flush" class="headerlink" title="Flush"></a>Flush</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ikcp_flush</span><span class="params">(ikcpcb *kcp)</span></span></span><br></pre></td></tr></table></figure>
+<p>flush data，即发送需要发送的数据，ack，win probe，push data等，以及检测<code>snd_buf</code>中的数据是否需要重传。</p>
+<p>将seg的wnd设置为接收窗口的剩余大小<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kcp-&gt;rcv_wnd - kcp-&gt;nrcv_que</span><br></pre></td></tr></table></figure></p>
+<p><code>nrcv_que</code>指接收队列中的segment的数量。</p>
+<p>在发送时将需要发送的数据填充到buffer中，如果buffer下次填入的数据量 &gt; <code>mtu</code>，则调用output函数将buffer中的数据发送出去，ouotput函数由用户定义。</p>
+<h4 id="发送segment"><a href="#发送segment" class="headerlink" title="发送segment"></a>发送segment</h4><p>首先将<code>acklist</code>中需要发送的ack发送出去，kcp在发送时会优先发送ack。</p>
+<p>如果远端接收窗口大小为0且当前时间超过下次发送窗口探测时间，则<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kcp-&gt;probe |= IKCP_ASK_SEND;</span><br></pre></td></tr></table></figure></p>
+<p>并更新窗口探测时间间隔和下次窗口探测时间。</p>
+<p>如果需要探测远端发送窗口大小或者需要告诉远端本机发送窗口大小，则发送相应的probe segment。</p>
+<p>取拥塞窗口的大小为发送窗口和远端接收窗口的最小值。在已经发送的segment的数量不超过拥塞窗口大小时将送<code>sed_queue</code>中的segment放入<code>snd_buf</code>中。</p>
+<p>遍历<code>snd_buf</code>中的数据：</p>
+<ol>
+<li>如果之前没有发送过，则设置其rto和超时重传时间，并将needsend置为1.</li>
+<li>如果<code>snd_buf</code>中的segment超过其超时重传时间，如果启动无延时模式，则将segment的rto<em>1.5，否则将rto </em> 2，并将needsend置为1。</li>
+<li>如果启动了快速重传并且该segment被跳过的次数大于resent，则将needsend置为1，并更新该segment的超时时间。</li>
+</ol>
+<p>如果needsend被置为1，则将该segment发送出去。</p>
+<p>如果segment的重传次数超过kcp的最大重传次数，则更新kcp的连接状态为-1。</p>
+<p>发送之后更新ssthresh(拥塞窗口阈值)和cwnd(拥塞窗口大小)。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/network/" rel="tag"># network</a>
+          
+            <a href="/tags/kcp/" rel="tag"># kcp</a>
+          
+            <a href="/tags/coderead/" rel="tag"># coderead</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/21/剑指offer题解/" rel="next" title="剑指offer题解">
+                <i class="fa fa-chevron-left"></i> 剑指offer题解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/21/合金装备V-幻痛-游戏测评/" rel="prev" title="合金装备V 幻痛 游戏评测">
+                合金装备V 幻痛 游戏评测 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Uyouii</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#主要数据结构"><span class="nav-number">2.</span> <span class="nav-text">主要数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#IKCPSEG"><span class="nav-number">2.1.</span> <span class="nav-text">IKCPSEG</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IKCPCB"><span class="nav-number">2.2.</span> <span class="nav-text">IKCPCB</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#KCP网络包头结构"><span class="nav-number">3.</span> <span class="nav-text">KCP网络包头结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#KCP工作流程"><span class="nav-number">4.</span> <span class="nav-text">KCP工作流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#发送数据"><span class="nav-number">4.1.</span> <span class="nav-text">发送数据</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#函数解析"><span class="nav-number">5.</span> <span class="nav-text">函数解析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Input"><span class="nav-number">5.1.</span> <span class="nav-text">Input</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Receive"><span class="nav-number">5.2.</span> <span class="nav-text">Receive</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Send"><span class="nav-number">5.3.</span> <span class="nav-text">Send</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Flush"><span class="nav-number">5.4.</span> <span class="nav-text">Flush</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#发送segment"><span class="nav-number">5.4.0.1.</span> <span class="nav-text">发送segment</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Uyouii</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

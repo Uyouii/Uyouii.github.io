@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="network,debug,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="背景目前为测试下自己毕业设计实现的网络库，手边没有两台电脑，所以就打算在本机测试实现，方法是通过修改本极路由表，让发向本地ip的网络包不直接通过回环端口，而是先发送到网关，在通过网关返回回来，这样通过丢包模拟软件设置本地网卡的丢包率和延时便可以模拟真实网络环境的波动，进而进行测试。 环境是：Windows 10，丢包模拟软件是：Network Emulator Client 修改本地路由表的命令是">
+<meta name="keywords" content="network,debug">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记一次闹心的网络调试经经历">
+<meta property="og:url" content="https://uyouii.github.io/2018/05/12/记一次闹心的网络调试经历/index.html">
+<meta property="og:site_name" content="Uyouii&#39;s Blogs">
+<meta property="og:description" content="背景目前为测试下自己毕业设计实现的网络库，手边没有两台电脑，所以就打算在本机测试实现，方法是通过修改本极路由表，让发向本地ip的网络包不直接通过回环端口，而是先发送到网关，在通过网关返回回来，这样通过丢包模拟软件设置本地网卡的丢包率和延时便可以模拟真实网络环境的波动，进而进行测试。 环境是：Windows 10，丢包模拟软件是：Network Emulator Client 修改本地路由表的命令是">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-08-02T03:28:18.919Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="记一次闹心的网络调试经经历">
+<meta name="twitter:description" content="背景目前为测试下自己毕业设计实现的网络库，手边没有两台电脑，所以就打算在本机测试实现，方法是通过修改本极路由表，让发向本地ip的网络包不直接通过回环端口，而是先发送到网关，在通过网关返回回来，这样通过丢包模拟软件设置本地网卡的丢包率和延时便可以模拟真实网络环境的波动，进而进行测试。 环境是：Windows 10，丢包模拟软件是：Network Emulator Client 修改本地路由表的命令是">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://uyouii.github.io/2018/05/12/记一次闹心的网络调试经历/">
+
+
+
+
+
+  <title>记一次闹心的网络调试经经历 | Uyouii's Blogs</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Uyouii's Blogs</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">There are many things need to learn.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2018/05/12/记一次闹心的网络调试经历/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Uyouii">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Uyouii's Blogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">记一次闹心的网络调试经经历</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-12T20:26:19+08:00">
+                2018-05-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Personal-Journal/" itemprop="url" rel="index">
+                    <span itemprop="name">Personal Journal</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>目前为测试下自己毕业设计实现的网络库，手边没有两台电脑，所以就打算在本机测试实现，方法是通过修改本极路由表，让发向本地ip的网络包不直接通过回环端口，而是先发送到网关，在通过网关返回回来，这样通过丢包模拟软件设置本地网卡的丢包率和延时便可以模拟真实网络环境的波动，进而进行测试。</p>
+<p>环境是：<code>Windows 10</code>，丢包模拟软件是：<code>Network Emulator Client</code></p>
+<p>修改本地路由表的命令是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">route add [本地ip] mask 255.255.255.255 [网关ip]</span><br></pre></td></tr></table></figure></p>
+<h2 id="问题出现"><a href="#问题出现" class="headerlink" title="问题出现"></a>问题出现</h2><p>这种方法首先在公司是可行的，可是回到自己住的地方后，再通过这种方法发现发向本地ip的UDP包无法收到，ping本地ip测试之后，返回的是这个结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Reply from 192.168.31.1: Destination port unreachable.</span><br></pre></td></tr></table></figure></p>
+<p>目标端口不可达，这就非常奇怪了。</p>
+<p>一开始以为是本机防火墙的锅，但是修改了win10防火墙各种参数之后还是没有效果。</p>
+<p>并且通过测试可以发现，同一子网下的不同的两台主机之间是可以ping通的，所以不存在路由器找不到mac地址的问题，既然能找到mac地址，很有可能是路由器把这个包丢掉了。</p>
+<h2 id="解决尝试"><a href="#解决尝试" class="headerlink" title="解决尝试"></a>解决尝试</h2><p>既然是路由器的问题，一种方法是直接将路由器去掉，把网线直接插到网口上面，这样直接在上层的子网内尝试向本机ip发包，然后这次问题变成了超时，由于房间内网线上层连接的是2层交换机，交换机会进行什么样的操作就无法干预了，退回到路由器的问题。</p>
+<h2 id="远程连接路由器"><a href="#远程连接路由器" class="headerlink" title="远程连接路由器"></a>远程连接路由器</h2><p>路由器管理员界面是没有提供发包调试的功能，也没有命令行页面的，仅仅通过管理员界面是无法对路由表和防火墙进行操作的，没办法，先试着远程链接下路由器。</p>
+<p>由于我的路由器的型号是小米路由器3，通过查阅资料发现，要远程连接路由器首先需要将路由器刷机到开发版，然后给路由器装上ssh，这样就可以远程连接了。</p>
+<p>然后就去重官网上下载了小米路由器3开发版的最新版，尝试了几次之后给路由器成功刷成了开发者版本。</p>
+<p>发现安装ssh要通过u盘进行操作，然后先去找室友借到了u盘，下好ssh文件，插到路由器上后，重启，尝试连接，没有反应。</p>
+<p>这样反复几次之后，突然意识到u盘需要时fat32格式的，借到的u盘太大，无法格式化为fat32格式，只能是NTFS和EXFAT格式，因为FAT32最好的支持是小于32g的U盘，太大的U盘格式化便没了这个选项。</p>
+<p>没办法，费劲心力找到了一个8g的小U盘，格式化为FAT32格式的，插入路由器，安装，OK，重启，尝试连接，成功！</p>
+<h2 id="远程路由器"><a href="#远程路由器" class="headerlink" title="远程路由器"></a>远程路由器</h2><p>不得不说小米是骚气，路由器登陆界面竟然是这个：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"> -----------------------------------------------------</span><br><span class="line">       Welcome to XiaoQiang!</span><br><span class="line"> -----------------------------------------------------</span><br><span class="line">  $$$$$$\  $$$$$$$\  $$$$$$$$\      $$\      $$\        $$$$$$\  $$\   $$\</span><br><span class="line"> $$  __$$\ $$  __$$\ $$  _____|     $$ |     $$ |      $$  __$$\ $$ | $$  |</span><br><span class="line"> $$ /  $$ |$$ |  $$ |$$ |           $$ |     $$ |      $$ /  $$ |$$ |$$  /</span><br><span class="line"> $$$$$$$$ |$$$$$$$  |$$$$$\         $$ |     $$ |      $$ |  $$ |$$$$$  /</span><br><span class="line"> $$  __$$ |$$  __$$&lt; $$  __|        $$ |     $$ |      $$ |  $$ |$$  $$&lt;</span><br><span class="line"> $$ |  $$ |$$ |  $$ |$$ |           $$ |     $$ |      $$ |  $$ |$$ |\$$\</span><br><span class="line"> $$ |  $$ |$$ |  $$ |$$$$$$$$\       $$$$$$$$$  |       $$$$$$  |$$ | \$$\</span><br><span class="line"> \__|  \__|\__|  \__|\________|      \_________/        \______/ \__|  \__|</span><br><span class="line">root@XiaoQiang:~#</span><br></pre></td></tr></table></figure></p>
+<p>不知道雷布斯同学看了后是什么反应，= =。</p>
+<p>终于登陆到路由器了，然后下一步该干嘛呢 0.0</p>
+<p>先看一下路由器的路由表:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root@XiaoQiang:~# route -n</span><br><span class="line">Kernel IP routing table</span><br><span class="line">Destination     Gateway         Genmask         Flags Metric Ref    Use Iface</span><br><span class="line">192.168.1.0     0.0.0.0         255.255.255.0   U     0      0        0 eth0.2</span><br><span class="line">192.168.31.0    0.0.0.0         255.255.255.0   U     0      0        0 br-lan</span><br><span class="line">###.###.##.#    0.0.0.0         255.255.255.0   U     0      0        0 wl2</span><br><span class="line">0.0.0.0         192.168.1.1     0.0.0.0         UG    0      0        0 eth0.2</span><br><span class="line">0.0.0.0         192.168.1.1     0.0.0.0         UG    50     0        0 eth0.2</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>个人外网的ip地址处于安全问题就先用#代替了</p>
+</blockquote>
+<p>小米路由器的内网网关是192.168.31.1，掩码是 255.255.255.0，个人主机的ip地址是192.168.31.233。对应的规则是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">192.168.31.0    0.0.0.0         255.255.255.0   U     0      0        0 br-lan</span><br></pre></td></tr></table></figure></p>
+<p>好像并没有什么问题，发向192.168.31.0的子网的包会通过自己转发出去。</p>
+<p>难道是路由器防火墙的问题？</p>
+<h2 id="坑爹的路由器防火墙"><a href="#坑爹的路由器防火墙" class="headerlink" title="坑爹的路由器防火墙"></a>坑爹的路由器防火墙</h2><p>尝试下命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/etc/init.d/firewall stop</span><br></pre></td></tr></table></figure></p>
+<p>关掉了路由器的防火墙，重新向本地ip用Ping命令测试，居然成功了！！！！！</p>
+<p>OK，果然是这个坑爹的路由器防火墙把发向源ip和目的ip相同的包给拒了。</p>
+<p>但是····QAQ，把防火墙关了之后，坑爹的网居然被断了，只能子网内自己发发包玩下，包发不出去了= =，坑爹的，实在是没精力去学习路由器防火墙规则了，先这样把，测试的时候先把路由器防火墙关了，不用的时候再打开= =，非常郁闷了。</p>
+<p>不过花了三个晚上找到了问题还是很开心的。</p>
+<p>把这个问题放在这边，希望大家不要再踩这个坑了，测试还是用两台主机去测试吧。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/network/" rel="tag"># network</a>
+          
+            <a href="/tags/debug/" rel="tag"># debug</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/01/UDP/" rel="next" title="UDP">
+                <i class="fa fa-chevron-left"></i> UDP
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/14/ENet 源码分析/" rel="prev" title="ENet 源码分析">
+                ENet 源码分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Uyouii</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题出现"><span class="nav-number">2.</span> <span class="nav-text">问题出现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决尝试"><span class="nav-number">3.</span> <span class="nav-text">解决尝试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#远程连接路由器"><span class="nav-number">4.</span> <span class="nav-text">远程连接路由器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#远程路由器"><span class="nav-number">5.</span> <span class="nav-text">远程路由器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#坑爹的路由器防火墙"><span class="nav-number">6.</span> <span class="nav-text">坑爹的路由器防火墙</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Uyouii</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
