@@ -428,6 +428,9 @@
 
           </div>
           
+    
+    <div class="comments" id="gitalk-container"></div>
+  
 
 
         </div>
@@ -730,6 +733,26 @@
 
 
 
+
+    
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+<script src="//cdn.jsdelivr.net/npm/js-md5@0.7.3/src/md5.min.js"></script>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: 'Iv1.d91818b2eefe0afe',
+    clientSecret: '092f07bb03aebaa6222773f3df6ff8713a4f52eb',
+    repo: 'gitment-comments',
+    owner: 'Uyouii',
+    admin: ['Uyouii'],
+    id: md5(location.pathname),
+      language: window.navigator.language || window.navigator.userLanguage,
+    
+    distractionFreeMode: 'true'
+  });
+  gitalk.render('gitalk-container');
+</script>
 
 
 </body>
