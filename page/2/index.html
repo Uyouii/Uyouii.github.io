@@ -2,124 +2,76 @@
 
 
 
-  
 
 
-<html class="theme-next muse use-motion" lang="en">
-<head><meta name="generator" content="Hexo 3.9.0">
+<html class="theme-next gemini use-motion" lang="en">
+<head>
   <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
 
 
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
 
 
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform">
-<meta http-equiv="Cache-Control" content="no-siteapp">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
-
-<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
-
-
-
-
-
-  <meta name="keywords" content="Hexo, NexT">
-
-
-
-
-
-
-
-
-
-
-<meta property="og:type" content="website">
-<meta property="og:title" content="Uyouii&#39;s Blogs">
-<meta property="og:url" content="https://uyouii.github.io/page/2/index.html">
-<meta property="og:site_name" content="Uyouii&#39;s Blogs">
-<meta property="og:locale" content="en">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Uyouii&#39;s Blogs">
-
-
-
-<script type="text/javascript" id="hexo.configurations">
+<script id="hexo.configurations">
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
-    version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: true,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    duoshuo: {
-      userId: '0',
-      author: 'Author'
-    },
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
     algolia: {
       applicationID: '',
       apiKey: '',
       indexName: '',
       hits: {"per_page":10},
       labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: ''
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
     }
   };
 </script>
 
-
-
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Uyouii&#39;s Blogs">
+<meta property="og:url" content="https://uyouii.github.io/page/2/index.html">
+<meta property="og:site_name" content="Uyouii&#39;s Blogs">
+<meta property="og:locale" content="en">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Uyouii&#39;s Blogs">
   <link rel="canonical" href="https://uyouii.github.io/page/2/">
 
 
-
-
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
 
   <title>Uyouii's Blogs</title>
   
@@ -131,23 +83,41 @@
 
 
 
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
 
-  
-  
-    
-  
-
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-home">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta ">
-    
+  <div class="site-meta">
 
     <div class="custom-logo-site-title">
       <a href="/" class="brand" rel="start">
@@ -156,13 +126,12 @@
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
-      
         <p class="site-subtitle">There are many things need to learn.</p>
       
   </div>
 
   <div class="site-nav-toggle">
-    <button>
+    <button aria-label="Toggle navigation bar">
       <span class="btn-bar"></span>
       <span class="btn-bar"></span>
       <span class="btn-bar"></span>
@@ -170,59 +139,83 @@
   </div>
 </div>
 
+
+
 <nav class="site-nav">
-  
-
-  
     <ul id="menu" class="menu">
-      
         
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
-            
-            Home
-          </a>
-        </li>
-      
         
-        <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
-            
-            Archives
-          </a>
-        </li>
+        
+          
+          <li class="menu-item menu-item-home">
       
+    
 
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
       
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
     </ul>
-  
-
-  
 </nav>
 
-
-
- </div>
+</div>
     </header>
+
+    
+
 
     <main id="main" class="main">
       <div class="main-inner">
         <div class="content-wrap">
+            
+
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
-    
       
-
-  
-
-  
-  
-  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
@@ -233,48 +226,56 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Uyouii">
-      <meta itemprop="description" content>
+      <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Uyouii's Blogs">
     </span>
-
-    
       <header class="post-header">
 
         
-        
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/02/23/TCP/" itemprop="url">TCP</a></h1>
+                
+                <a href="/2018/02/23/TCP/" class="post-title-link" itemprop="url">TCP</a>
+              
+            
+          </h1>
         
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-23T17:16:50+08:00">
-                2018-02-23
-              </time>
-            
 
-            
+              
+                
+              
 
-            
-          </span>
-
+              <time title="Created: 2018-02-23 17:16:50" itemprop="dateCreated datePublished" datetime="2018-02-23T17:16:50+08:00">2018-02-23</time>
+            </span>
           
-            <span class="post-category">
             
-              <span class="post-meta-divider">|</span>
+
             
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-08-02 11:28:18" itemprop="dateModified" datetime="2019-08-02T11:28:18+08:00">2019-08-02</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
@@ -282,11 +283,7 @@
                 <span class="post-meta-item-text">In</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Unix-Network-Programming/" itemprop="url" rel="index">
-                    <span itemprop="name">Unix Network Programming</span>
-                  </a>
-                </span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Unix-Network-Programming/" itemprop="url" rel="index"><span itemprop="name">Unix Network Programming</span></a></span>
 
                 
                 
@@ -294,22 +291,10 @@
             </span>
           
 
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
+          <br>
 
         </div>
       </header>
-    
 
     
     
@@ -317,10 +302,6 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
           
             <h2 id="TCP-状态转换图"><a href="#TCP-状态转换图" class="headerlink" title="TCP 状态转换图"></a>TCP 状态转换图</h2><p><img src="https://github.com/Uyouii/Uyouii.github.io/raw/master/images/TCP%20state.jpg" alt="image"></p>
 <h2 id="TCP连接分组转换"><a href="#TCP连接分组转换" class="headerlink" title="TCP连接分组转换"></a>TCP连接分组转换</h2><p><img src="https://github.com/Uyouii/Uyouii.github.io/raw/master/images/tcp%20connection%20example.jpg" alt="image"></p>
@@ -432,27 +413,13 @@
         
       
     </div>
-    
-    
-    
 
     
-
     
-
     
 
     <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
         <div class="post-eof"></div>
-      
     </footer>
   </div>
   
@@ -460,15 +427,8 @@
   
   </article>
 
-
     
       
-
-  
-
-  
-  
-  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
@@ -479,48 +439,56 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Uyouii">
-      <meta itemprop="description" content>
+      <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Uyouii's Blogs">
     </span>
-
-    
       <header class="post-header">
 
         
-        
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/02/23/网络知识/" itemprop="url">网络知识</a></h1>
+                
+                <a href="/2018/02/23/网络知识/" class="post-title-link" itemprop="url">网络知识</a>
+              
+            
+          </h1>
         
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-23T17:16:20+08:00">
-                2018-02-23
-              </time>
-            
 
-            
+              
+                
+              
 
-            
-          </span>
-
+              <time title="Created: 2018-02-23 17:16:20" itemprop="dateCreated datePublished" datetime="2018-02-23T17:16:20+08:00">2018-02-23</time>
+            </span>
           
-            <span class="post-category">
             
-              <span class="post-meta-divider">|</span>
+
             
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-08-02 11:28:18" itemprop="dateModified" datetime="2019-08-02T11:28:18+08:00">2019-08-02</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
@@ -528,11 +496,7 @@
                 <span class="post-meta-item-text">In</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Unix-Network-Programming/" itemprop="url" rel="index">
-                    <span itemprop="name">Unix Network Programming</span>
-                  </a>
-                </span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Unix-Network-Programming/" itemprop="url" rel="index"><span itemprop="name">Unix Network Programming</span></a></span>
 
                 
                 
@@ -540,22 +504,10 @@
             </span>
           
 
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
+          <br>
 
         </div>
       </header>
-    
 
     
     
@@ -563,10 +515,6 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
           
             <h2 id="客户端端口号"><a href="#客户端端口号" class="headerlink" title="客户端端口号"></a>客户端端口号</h2><p>客户端通常使用短期存活的<strong>临时端口（ephemeral port）</strong>。这些端口号通常由传输层协议自动赋予客户端。客户通常不关心其临时端口的具体值，只需要确定该端口号在所在主机中是唯一的就行。传输协议代码要确保这种唯一性。</p>
 <h2 id="MTU"><a href="#MTU" class="headerlink" title="MTU"></a>MTU</h2><p>maximum transmission unit, 最大传输单元。</p>
@@ -593,27 +541,13 @@
         
       
     </div>
-    
-    
-    
 
     
-
     
-
     
 
     <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
         <div class="post-eof"></div>
-      
     </footer>
   </div>
   
@@ -621,15 +555,8 @@
   
   </article>
 
-
     
       
-
-  
-
-  
-  
-  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
@@ -640,48 +567,56 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Uyouii">
-      <meta itemprop="description" content>
+      <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Uyouii's Blogs">
     </span>
-
-    
       <header class="post-header">
 
         
-        
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/02/23/socket-编程/" itemprop="url">socket 编程</a></h1>
+                
+                <a href="/2018/02/23/socket-编程/" class="post-title-link" itemprop="url">socket 编程</a>
+              
+            
+          </h1>
         
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-23T17:16:07+08:00">
-                2018-02-23
-              </time>
-            
 
-            
+              
+                
+              
 
-            
-          </span>
-
+              <time title="Created: 2018-02-23 17:16:07" itemprop="dateCreated datePublished" datetime="2018-02-23T17:16:07+08:00">2018-02-23</time>
+            </span>
           
-            <span class="post-category">
             
-              <span class="post-meta-divider">|</span>
+
             
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-08-02 11:28:18" itemprop="dateModified" datetime="2019-08-02T11:28:18+08:00">2019-08-02</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
@@ -689,11 +624,7 @@
                 <span class="post-meta-item-text">In</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Unix-Network-Programming/" itemprop="url" rel="index">
-                    <span itemprop="name">Unix Network Programming</span>
-                  </a>
-                </span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Unix-Network-Programming/" itemprop="url" rel="index"><span itemprop="name">Unix Network Programming</span></a></span>
 
                 
                 
@@ -701,22 +632,10 @@
             </span>
           
 
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
+          <br>
 
         </div>
       </header>
-    
 
     
     
@@ -724,10 +643,6 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
           
             <h2 id="套接字"><a href="#套接字" class="headerlink" title="套接字"></a>套接字</h2><p>标识每个端点的两个值（IP地址和端口号）通常称为一个套接字。</p>
 <p>TCP无法仅仅通过查看端口号来分离外来的分节到不同的端点。它必须查看套接字对的所有4个元素才能确定由哪个端点接收某个到达的分节。</p>
@@ -759,27 +674,13 @@
         
       
     </div>
-    
-    
-    
 
     
-
     
-
     
 
     <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
         <div class="post-eof"></div>
-      
     </footer>
   </div>
   
@@ -787,15 +688,8 @@
   
   </article>
 
-
     
       
-
-  
-
-  
-  
-  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
@@ -806,48 +700,56 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Uyouii">
-      <meta itemprop="description" content>
+      <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Uyouii's Blogs">
     </span>
-
-    
       <header class="post-header">
 
         
-        
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/02/02/python2-7-深入理解/" itemprop="url">python2.7 深入理解</a></h1>
+                
+                <a href="/2018/02/02/python2-7-深入理解/" class="post-title-link" itemprop="url">python2.7 深入理解</a>
+              
+            
+          </h1>
         
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-02T11:04:13+08:00">
-                2018-02-02
-              </time>
-            
 
-            
+              
+                
+              
 
-            
-          </span>
-
+              <time title="Created: 2018-02-02 11:04:13" itemprop="dateCreated datePublished" datetime="2018-02-02T11:04:13+08:00">2018-02-02</time>
+            </span>
           
-            <span class="post-category">
             
-              <span class="post-meta-divider">|</span>
+
             
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-08-02 11:28:18" itemprop="dateModified" datetime="2019-08-02T11:28:18+08:00">2019-08-02</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
@@ -855,11 +757,7 @@
                 <span class="post-meta-item-text">In</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/learning-python/" itemprop="url" rel="index">
-                    <span itemprop="name">learning python</span>
-                  </a>
-                </span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/learning-python/" itemprop="url" rel="index"><span itemprop="name">learning python</span></a></span>
 
                 
                 
@@ -867,22 +765,10 @@
             </span>
           
 
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
+          <br>
 
         </div>
       </header>
-    
 
     
     
@@ -890,10 +776,6 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
           
             <h2 id="tuple-和-list的异同"><a href="#tuple-和-list的异同" class="headerlink" title="tuple 和 list的异同"></a>tuple 和 list的异同</h2><ol>
 <li>tuple是不可变的，list是可变的。</li>
@@ -1023,27 +905,13 @@
         
       
     </div>
-    
-    
-    
 
     
-
     
-
     
 
     <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
         <div class="post-eof"></div>
-      
     </footer>
   </div>
   
@@ -1051,15 +919,8 @@
   
   </article>
 
-
     
       
-
-  
-
-  
-  
-  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
@@ -1070,48 +931,56 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Uyouii">
-      <meta itemprop="description" content>
+      <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Uyouii's Blogs">
     </span>
-
-    
       <header class="post-header">
 
         
-        
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/01/30/python2.7 基础知识/" itemprop="url">python2.7 基础知识</a></h1>
+                
+                <a href="/2018/01/30/python2.7 基础知识/" class="post-title-link" itemprop="url">python2.7 基础知识</a>
+              
+            
+          </h1>
         
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-30T21:13:58+08:00">
-                2018-01-30
-              </time>
-            
 
-            
+              
+                
+              
 
-            
-          </span>
-
+              <time title="Created: 2018-01-30 21:13:58" itemprop="dateCreated datePublished" datetime="2018-01-30T21:13:58+08:00">2018-01-30</time>
+            </span>
           
-            <span class="post-category">
             
-              <span class="post-meta-divider">|</span>
+
             
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-08-02 11:28:18" itemprop="dateModified" datetime="2019-08-02T11:28:18+08:00">2019-08-02</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
@@ -1119,11 +988,7 @@
                 <span class="post-meta-item-text">In</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/learning-python/" itemprop="url" rel="index">
-                    <span itemprop="name">learning python</span>
-                  </a>
-                </span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/learning-python/" itemprop="url" rel="index"><span itemprop="name">learning python</span></a></span>
 
                 
                 
@@ -1131,22 +996,10 @@
             </span>
           
 
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
+          <br>
 
         </div>
       </header>
-    
 
     
     
@@ -1154,10 +1007,6 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
           
             <p><a href="http://www.pythondoc.com/pythontutorial27/index.html" target="_blank" rel="noopener">python 入门指南</a></p>
 <h2 id="数字"><a href="#数字" class="headerlink" title="数字"></a>数字</h2><ol>
@@ -1351,27 +1200,13 @@
         
       
     </div>
-    
-    
-    
 
     
-
     
-
     
 
     <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
         <div class="post-eof"></div>
-      
     </footer>
   </div>
   
@@ -1379,15 +1214,8 @@
   
   </article>
 
-
     
       
-
-  
-
-  
-  
-  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
@@ -1398,48 +1226,56 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Uyouii">
-      <meta itemprop="description" content>
+      <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Uyouii's Blogs">
     </span>
-
-    
       <header class="post-header">
 
         
-        
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/01/30/Lua-Table-Parser/" itemprop="url">Lua Table Parser</a></h1>
+                
+                <a href="/2018/01/30/Lua-Table-Parser/" class="post-title-link" itemprop="url">Lua Table Parser</a>
+              
+            
+          </h1>
         
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-30T18:03:35+08:00">
-                2018-01-30
-              </time>
-            
 
-            
+              
+                
+              
 
-            
-          </span>
-
+              <time title="Created: 2018-01-30 18:03:35" itemprop="dateCreated datePublished" datetime="2018-01-30T18:03:35+08:00">2018-01-30</time>
+            </span>
           
-            <span class="post-category">
             
-              <span class="post-meta-divider">|</span>
+
             
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-08-02 11:28:18" itemprop="dateModified" datetime="2019-08-02T11:28:18+08:00">2019-08-02</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
@@ -1447,11 +1283,7 @@
                 <span class="post-meta-item-text">In</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a></span>
 
                 
                 
@@ -1459,22 +1291,10 @@
             </span>
           
 
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
+          <br>
 
         </div>
       </header>
-    
 
     
     
@@ -1482,10 +1302,6 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
           
             <h1 id="Lua-Table-Parser-使用说明"><a href="#Lua-Table-Parser-使用说明" class="headerlink" title="Lua Table Parser 使用说明"></a>Lua Table Parser 使用说明</h1><p>PyLuaTblParser类中有两个私有变量：</p>
 <ol>
@@ -1500,27 +1316,13 @@
         
       
     </div>
-    
-    
-    
 
     
-
     
-
     
 
     <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
         <div class="post-eof"></div>
-      
     </footer>
   </div>
   
@@ -1528,15 +1330,8 @@
   
   </article>
 
-
     
       
-
-  
-
-  
-  
-  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
@@ -1547,48 +1342,56 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Uyouii">
-      <meta itemprop="description" content>
+      <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Uyouii's Blogs">
     </span>
-
-    
       <header class="post-header">
 
         
-        
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/12/21/合金装备V-幻痛-游戏测评/" itemprop="url">合金装备V 幻痛 游戏评测</a></h1>
+                
+                <a href="/2017/12/21/合金装备V-幻痛-游戏测评/" class="post-title-link" itemprop="url">合金装备V 幻痛 游戏评测</a>
+              
+            
+          </h1>
         
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-21T23:35:35+08:00">
-                2017-12-21
-              </time>
-            
 
-            
+              
+                
+              
 
-            
-          </span>
-
+              <time title="Created: 2017-12-21 23:35:35" itemprop="dateCreated datePublished" datetime="2017-12-21T23:35:35+08:00">2017-12-21</time>
+            </span>
           
-            <span class="post-category">
             
-              <span class="post-meta-divider">|</span>
+
             
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-08-02 11:28:18" itemprop="dateModified" datetime="2019-08-02T11:28:18+08:00">2019-08-02</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
@@ -1596,11 +1399,7 @@
                 <span class="post-meta-item-text">In</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/game/" itemprop="url" rel="index">
-                    <span itemprop="name">game</span>
-                  </a>
-                </span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/game/" itemprop="url" rel="index"><span itemprop="name">game</span></a></span>
 
                 
                 
@@ -1608,22 +1407,10 @@
             </span>
           
 
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
+          <br>
 
         </div>
       </header>
-    
 
     
     
@@ -1631,10 +1418,6 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
           
             <p><img src="/images/MGS 1.jpg" alt></p>
 <h2 id="游戏概述"><a href="#游戏概述" class="headerlink" title="游戏概述"></a>游戏概述</h2><p><strong>《合金装备V 幻痛》</strong>(Metal Gear Solid V: The Phantom Pain, 台译作“潜龙谍影V 幻痛”) 是一款由小岛制作（KONAMI旗下的王牌游戏研发工作室）开发的隐蔽类开放世界动作冒险游戏。它由小岛制作研发的游戏引擎“狐引擎”（FOX Engine）制作，在2015年9月1日发行于Microsoft Windows、PlayStation 3、PlayStation 4、Xbox 360和Xbox One平台。</p>
@@ -1757,27 +1540,13 @@
         
       
     </div>
-    
-    
-    
 
     
-
     
-
     
 
     <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
         <div class="post-eof"></div>
-      
     </footer>
   </div>
   
@@ -1785,15 +1554,8 @@
   
   </article>
 
-
     
       
-
-  
-
-  
-  
-  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
@@ -1804,48 +1566,56 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Uyouii">
-      <meta itemprop="description" content>
+      <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Uyouii's Blogs">
     </span>
-
-    
       <header class="post-header">
 
         
-        
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/12/21/KCP-源码阅读/" itemprop="url">KCP 源码阅读</a></h1>
+                
+                <a href="/2017/12/21/KCP-源码阅读/" class="post-title-link" itemprop="url">KCP 源码阅读</a>
+              
+            
+          </h1>
         
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-21T22:01:04+08:00">
-                2017-12-21
-              </time>
-            
 
-            
+              
+                
+              
 
-            
-          </span>
-
+              <time title="Created: 2017-12-21 22:01:04" itemprop="dateCreated datePublished" datetime="2017-12-21T22:01:04+08:00">2017-12-21</time>
+            </span>
           
-            <span class="post-category">
             
-              <span class="post-meta-divider">|</span>
+
             
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-08-02 11:28:18" itemprop="dateModified" datetime="2019-08-02T11:28:18+08:00">2019-08-02</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
@@ -1853,11 +1623,7 @@
                 <span class="post-meta-item-text">In</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/network/" itemprop="url" rel="index">
-                    <span itemprop="name">network</span>
-                  </a>
-                </span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/network/" itemprop="url" rel="index"><span itemprop="name">network</span></a></span>
 
                 
                 
@@ -1865,22 +1631,10 @@
             </span>
           
 
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
+          <br>
 
         </div>
       </header>
-    
 
     
     
@@ -1888,10 +1642,6 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
           
             <p>KCP项目地址： <a href="https://github.com/skywind3000/kcp" target="_blank" rel="noopener">KCP - A Fast and Reliable ARQ Protocol</a></p>
 <blockquote>
@@ -1965,27 +1715,13 @@
         
       
     </div>
-    
-    
-    
 
     
-
     
-
     
 
     <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
         <div class="post-eof"></div>
-      
     </footer>
   </div>
   
@@ -1993,15 +1729,8 @@
   
   </article>
 
-
     
       
-
-  
-
-  
-  
-  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
@@ -2012,48 +1741,56 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Uyouii">
-      <meta itemprop="description" content>
+      <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Uyouii's Blogs">
     </span>
-
-    
       <header class="post-header">
 
         
-        
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/12/21/剑指offer题解/" itemprop="url">剑指offer题解</a></h1>
+                
+                <a href="/2017/12/21/剑指offer题解/" class="post-title-link" itemprop="url">剑指offer题解</a>
+              
+            
+          </h1>
         
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-21T21:15:39+08:00">
-                2017-12-21
-              </time>
-            
 
-            
+              
+                
+              
 
-            
-          </span>
-
+              <time title="Created: 2017-12-21 21:15:39" itemprop="dateCreated datePublished" datetime="2017-12-21T21:15:39+08:00">2017-12-21</time>
+            </span>
           
-            <span class="post-category">
             
-              <span class="post-meta-divider">|</span>
+
             
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-08-02 11:28:18" itemprop="dateModified" datetime="2019-08-02T11:28:18+08:00">2019-08-02</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
@@ -2061,11 +1798,7 @@
                 <span class="post-meta-item-text">In</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/algorithm/" itemprop="url" rel="index">
-                    <span itemprop="name">algorithm</span>
-                  </a>
-                </span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a></span>
 
                 
                 
@@ -2073,22 +1806,10 @@
             </span>
           
 
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
+          <br>
 
         </div>
       </header>
-    
 
     
     
@@ -2096,10 +1817,6 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
           
             <p>剑指offer上的一些算法题解。</p>
 <h2 id="1-10-Problems"><a href="#1-10-Problems" class="headerlink" title="1 ~ 10 Problems"></a>1 ~ 10 Problems</h2><h3 id="01-赋值运算符函数"><a href="#01-赋值运算符函数" class="headerlink" title="01 赋值运算符函数"></a>01 赋值运算符函数</h3><p>题目：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">求出1~13的整数中1出现的次数,并算出100~1300的整数中1出现的次数？</span><br><span class="line">为此他特别数了一下1~13中包含1的数字有1、10、11、12、13因此共出现6次,但是对于后面问题他就没辙了。</span><br><span class="line">ACMer希望你们帮帮他,并把问题更加普遍化,可以很快的求出任意非负整数区间中1出现的次数。</span><br></pre></td></tr></table></figure></p>
@@ -2185,27 +1902,13 @@
         
       
     </div>
-    
-    
-    
 
     
-
     
-
     
 
     <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
         <div class="post-eof"></div>
-      
     </footer>
   </div>
   
@@ -2213,15 +1916,8 @@
   
   </article>
 
-
     
       
-
-  
-
-  
-  
-  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
@@ -2232,48 +1928,56 @@
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Uyouii">
-      <meta itemprop="description" content>
+      <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Uyouii's Blogs">
     </span>
-
-    
       <header class="post-header">
 
         
-        
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/12/21/LeetCode-算法题解/" itemprop="url">LeetCode  算法题解</a></h1>
+                
+                <a href="/2017/12/21/LeetCode-算法题解/" class="post-title-link" itemprop="url">LeetCode  算法题解</a>
+              
+            
+          </h1>
         
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-21T18:37:00+08:00">
-                2017-12-21
-              </time>
-            
 
-            
+              
+                
+              
 
-            
-          </span>
-
+              <time title="Created: 2017-12-21 18:37:00" itemprop="dateCreated datePublished" datetime="2017-12-21T18:37:00+08:00">2017-12-21</time>
+            </span>
           
-            <span class="post-category">
             
-              <span class="post-meta-divider">|</span>
+
             
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-08-02 11:28:18" itemprop="dateModified" datetime="2019-08-02T11:28:18+08:00">2019-08-02</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
@@ -2281,11 +1985,7 @@
                 <span class="post-meta-item-text">In</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/algorithm/" itemprop="url" rel="index">
-                    <span itemprop="name">algorithm</span>
-                  </a>
-                </span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a></span>
 
                 
                 
@@ -2293,22 +1993,10 @@
             </span>
           
 
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
+          <br>
 
         </div>
       </header>
-    
 
     
     
@@ -2316,10 +2004,6 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
           
             <p>LeetCode 上的算法题的一些个人方法。</p>
 <p>不多说，直接上代码。</p>
@@ -2474,27 +2158,13 @@
         
       
     </div>
-    
-    
-    
 
     
-
     
-
     
 
     <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
         <div class="post-eof"></div>
-      
     </footer>
   </div>
   
@@ -2502,25 +2172,19 @@
   
   </article>
 
-
     
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
-
 
 
           </div>
           
 
-
-          
-
         </div>
-        
           
   
   <div class="sidebar-toggle">
@@ -2532,111 +2196,172 @@
   </div>
 
   <aside id="sidebar" class="sidebar">
-    
     <div class="sidebar-inner">
 
-      
-
-      
-
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
+
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <p class="site-author-name" itemprop="name">Uyouii</p>
-              <p class="site-description motion-element" itemprop="description"></p>
-          </div>
-
-          <nav class="site-state motion-element">
-
-            
-              <div class="site-state-item site-state-posts">
-              
-                <a href="/archives/">
-              
-                  <span class="site-state-item-count">21</span>
-                  <span class="site-state-item-name">posts</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-categories">
-                <a href="/categories/index.html">
-                  <span class="site-state-item-count">9</span>
-                  <span class="site-state-item-name">categories</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-tags">
-                <a href="/tags/index.html">
-                  <span class="site-state-item-count">23</span>
-                  <span class="site-state-item-name">tags</span>
-                </a>
-              </div>
-            
-
-          </nav>
-
+  <p class="site-author-name" itemprop="name">Uyouii</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
           
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Uyouii" title="GitHub &rarr; https://github.com/Uyouii" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="/taiyoudong@gmail.com" title="E-Mail &rarr; taiyoudong@gmail.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
 
-          
 
-          
-          
-
-          
-          
-
-          
 
         </div>
-      </section>
-
-      
-
-      
+      </div>
 
     </div>
   </aside>
+  <div id="sidebar-dimmer"></div>
 
 
-        
       </div>
     </main>
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
         <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
-  <span class="with-love">
+  <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Uyouii</span>
-
-  
 </div>
-
-
-  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
-
-
-
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
   <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
-
-
-
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
 
         
+
 
 
 
@@ -2647,32 +2372,37 @@
         
       </div>
     </footer>
-
-    
       <div class="back-to-top">
         <i class="fa fa-arrow-up"></i>
-        
       </div>
-    
 
     
 
   </div>
 
   
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
 
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
-</script>
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
 
 
 
+  
 
+  <script src="/js/next-boot.js?v=7.3.0"></script>
 
+  
 
+  
 
+  
 
 
   
@@ -2688,79 +2418,6 @@
 
 
 
-  
-  
-    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
-
-
-
-  
-  
-
-  
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  
-
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
 
 
 
@@ -2773,26 +2430,15 @@
 
 
 
-  
 
 
 
 
 
-  
 
-  
 
-  
 
-  
-  
 
-  
-
-  
-
-  
 
 </body>
 </html>
