@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini" lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: ''
+    },
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    }
+  };
+</script>
+
+  <meta name="description" content="操作系统基本概念操作系统完成的两个主要目标：  与硬件部分交互，为包含在硬件平台上的所有底层可编程部分提供服务 为运行在计算机系统上的应用程序（即所谓应用程序）提供执行环境  现代操作系统依靠特殊的硬件特性禁止用户程序直接与底层硬件部分进行交互，或者禁止直接访问任意的物理地址。硬件为CPU引入了至少两种不同的执行模式：用户程序的非特权模式和内核的特权模式。Univ把它们分别称为用户态(User M">
+<meta name="keywords" content="linux,bookread,深入理解Linux内核">
+<meta property="og:type" content="article">
+<meta property="og:title" content="01 操作系统基本概念">
+<meta property="og:url" content="https://uyouii.github.io/2019/08/03/01-操作系统基本概念/index.html">
+<meta property="og:site_name" content="Uyouii&#39;s Blogs">
+<meta property="og:description" content="操作系统基本概念操作系统完成的两个主要目标：  与硬件部分交互，为包含在硬件平台上的所有底层可编程部分提供服务 为运行在计算机系统上的应用程序（即所谓应用程序）提供执行环境  现代操作系统依靠特殊的硬件特性禁止用户程序直接与底层硬件部分进行交互，或者禁止直接访问任意的物理地址。硬件为CPU引入了至少两种不同的执行模式：用户程序的非特权模式和内核的特权模式。Univ把它们分别称为用户态(User M">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-08-03T10:12:25.565Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="01 操作系统基本概念">
+<meta name="twitter:description" content="操作系统基本概念操作系统完成的两个主要目标：  与硬件部分交互，为包含在硬件平台上的所有底层可编程部分提供服务 为运行在计算机系统上的应用程序（即所谓应用程序）提供执行环境  现代操作系统依靠特殊的硬件特性禁止用户程序直接与底层硬件部分进行交互，或者禁止直接访问任意的物理地址。硬件为CPU引入了至少两种不同的执行模式：用户程序的非特权模式和内核的特权模式。Univ把它们分别称为用户态(User M">
+  <link rel="canonical" href="https://uyouii.github.io/2019/08/03/01-操作系统基本概念/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>01 操作系统基本概念 | Uyouii's Blogs</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Uyouii's Blogs</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">There are many things need to learn.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+    </ul>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2019/08/03/01-操作系统基本概念/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Uyouii">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/logo1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Uyouii's Blogs">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">01 操作系统基本概念
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-08-03 18:00:09 / Modified: 18:12:25" itemprop="dateCreated datePublished" datetime="2019-08-03T18:00:09+08:00">2019-08-03</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/深入理解Linux内核/" itemprop="url" rel="index"><span itemprop="name">深入理解Linux内核</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="操作系统基本概念"><a href="#操作系统基本概念" class="headerlink" title="操作系统基本概念"></a>操作系统基本概念</h2><p>操作系统完成的两个主要目标：</p>
+<ul>
+<li>与硬件部分交互，为包含在硬件平台上的所有底层可编程部分提供服务</li>
+<li>为运行在计算机系统上的应用程序（即所谓应用程序）提供执行环境</li>
+</ul>
+<p>现代操作系统依靠特殊的硬件特性禁止用户程序直接与底层硬件部分进行交互，或者禁止直接访问任意的物理地址。硬件为CPU引入了至少两种不同的执行模式：用户程序的非特权模式和内核的特权模式。Univ把它们分别称为<strong>用户态(User Mode)</strong>和<strong>内核态(Kernel Mode)</strong>。</p>
+<h3 id="多用户系统"><a href="#多用户系统" class="headerlink" title="多用户系统"></a>多用户系统</h3><p>多用户系统(multiuser system)就是一台能并发和独立地执行分别属于两个或多个用户的若干应用程序的计算机。</p>
+<ul>
+<li>”并发“(concurrently)以为着几个应用程序能同时处于活动状态并竞争各种资源，如CPU、内存、硬盘等等。</li>
+<li>“独立”(independently)意味着每个应用程序能执行自己的任务，而无需考虑其他用户的应用程序在干些什么。</li>
+</ul>
+<p>多用户操作系统必须包含以下几个特点：</p>
+<ul>
+<li>核实用户身份认证的机制</li>
+<li>防止有错误的用户程序妨碍其他应用程序在系统中运行的保护机制</li>
+<li>防止有恶意的用户程序干涉或窥视其他用户的活动的保护机制</li>
+<li>限制分配给每个用户的资源数的记账机制</li>
+</ul>
+<h3 id="用户和组"><a href="#用户和组" class="headerlink" title="用户和组"></a>用户和组</h3><p>在多用户系统中，每个用户在机器上都有私有空间。</p>
+<p>所有的用户由一个唯一的数字来标识，这个数字叫用户标识符（UserID，UID）</p>
+<p>为了和其他用户有选择的共享资料，每个用户是一个或多个用户组的一名成员，组由唯一的用户组标识符（user group ID）标识。每个文件也恰好与一个组相对应。</p>
+<h2 id="Unix-文件系统概述"><a href="#Unix-文件系统概述" class="headerlink" title="Unix 文件系统概述"></a>Unix 文件系统概述</h2><h3 id="文件类型"><a href="#文件类型" class="headerlink" title="文件类型"></a>文件类型</h3><p>Unix文件可以是下列类型之一：</p>
+<ul>
+<li>普通文件（regular file）</li>
+<li>目录</li>
+<li>符号链接</li>
+<li>面向块的设备文件（block-oriented device file）</li>
+<li>面向字符的设备文件（character-oriented device file）</li>
+<li>管道（pipe）和命名管道（named piped）（也叫FIFO）</li>
+<li>套接字（socket）</li>
+</ul>
+<h3 id="文件描述符与索引节点"><a href="#文件描述符与索引节点" class="headerlink" title="文件描述符与索引节点"></a>文件描述符与索引节点</h3><p>Unix对文件的内容和描述文件的信息给出了清除的区分。除了设备文件和特殊文件系统文件外，每个文件都由字符序列组成。文件内容不包含任何控制信息。</p>
+<p>文件系统处理文件所需要的信息包含在一个名为索引节点（inode）的数据结构中。每个文件都有自己的索引节点，文件系统用索引节点来标识文件。</p>
+<p>文件系统至少提供在POSIX标准中指定的如下属性：</p>
+<ul>
+<li>文件类型</li>
+<li>与文件相关的硬链接的个数</li>
+<li>以字节为单位的文件长度</li>
+<li>设备标识符（即包含文件的设备标识符）</li>
+<li>在文件系统中标识文件的索引节点号</li>
+<li>文件拥有者的UID</li>
+<li>文件的用户组ID</li>
+<li>几个时间戳，表示索引节点状态改变的时间、最后访问时间及最后修改时间</li>
+<li>访问权限和文件模式</li>
+</ul>
+<h2 id="Unix内核概述"><a href="#Unix内核概述" class="headerlink" title="Unix内核概述"></a>Unix内核概述</h2><h3 id="进程-内核模式"><a href="#进程-内核模式" class="headerlink" title="进程/内核模式"></a>进程/内核模式</h3><p>当一个程序在用户态下执行时，它不能直接访问内核数据结构或者内核的程序。然而，当应用程序在内核态下运行时，这些限制不再有效。</p>
+<p>内核本身不是一个进程，而是进程的管理者。</p>
+<p>进程/内核模式假定：请求内核服务的进程使用所谓系统调用(system call)的特殊编程机制。每个系统调用都设置了一组识别进程请求的参数，然后执行与硬件相关的CPU指令完成从用户到内核态的转换。</p>
+<p>激活内核例程的几种方式：</p>
+<ul>
+<li>进程调用系统调用</li>
+<li>正在执行进程的CPU发出一个异常(exception)信号，内核代表产生异常的进程处理异常。</li>
+<li>外围设备向CPU发出一个中断(interrupt)信号以通知一个事件的发声，例如一个要求注意的请求、一个状态的变化或一个I/O操作已经完成等。每个中断信号都是由内核中的<strong>中断处理程序(interrupt handler)</strong>来处理的。因为外围设备与CPU是异步操作，因此，中断在不可预知的时间发生。</li>
+<li>内核线程被执行。</li>
+</ul>
+<h3 id="进程实现"><a href="#进程实现" class="headerlink" title="进程实现"></a>进程实现</h3><p>每个进程由一个<strong>进程描述符(process descriptor)</strong>表示，这个描述符包含有关进程当前状态的信息。</p>
+<p>当内核暂停一个进程的执行时，就把几个相关处理器寄存器的内容保存在进程描述符中。这些寄存器包括：</p>
+<ul>
+<li>程序计数器(PC)和栈指针(SP)寄存器</li>
+<li>通用寄存器</li>
+<li>浮点寄存器</li>
+<li>包含CPU状态信息的处理器控制寄存器(处理器状态字，Processor Status Word)</li>
+<li>用来跟踪进程对RAM访问的内存管理寄存器</li>
+</ul>
+<p>当内核恢复执行一个进程时，它用进程描述符中适合的字段来装载CPU寄存器。因为程序计数器中所存的值指向下一条将要执行的指令，所以进程从它停止的地方恢复执行。</p>
+<p>Unix内核可以区分很多等待状态，这些等待状态通常由进程描述符队列实现。</p>
+<h3 id="进程地址空间"><a href="#进程地址空间" class="headerlink" title="进程地址空间"></a>进程地址空间</h3><p>每个进程运行在它的私有地址空间。在用户态下运行的进程涉及到私有栈、数据区和代码区。当在内核态运行时，进程访问内核的数据区和代码区，但使用另外的私有栈。</p>
+<p>尽管看起来每个进程访问一个私有地址空间，但有时进程之间也共享这部分地址空间。在一些情况下，这种共享由进程显式提出；在另一些情况下，由内核自动完成共享以节约内存。进程间能共享部分地址空间，以实现一种进程间通信，这就是由System V引入并已经被Linux支持地”共享内存”技术。</p>
+<p>Linux支持mmap()系统调用，该系统调用允许存放在块设备上的文件或者信息的一部分映射到进程的部分地址空间。内存映射为正常的读写传送数据提供了另一种选择。如果同一个文件由几个进程共享，那么共享它的每个进程地址空间都包含它的内存映射。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/linux/" rel="tag"># linux</a>
+          
+            <a href="/tags/bookread/" rel="tag"># bookread</a>
+          
+            <a href="/tags/深入理解Linux内核/" rel="tag"># 深入理解Linux内核</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/2018/11/12/Chapter3-The-Graphics-Processing-Unit/" rel="next" title="Chapter3 The Graphics Processing Unit">
+                <i class="fa fa-chevron-left"></i> Chapter3 The Graphics Processing Unit
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/2019/08/03/02-内存寻址/" rel="prev" title="02 内存寻址">
+                02 内存寻址 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/logo1.jpg"
+      alt="Uyouii">
+  <p class="site-author-name" itemprop="name">Uyouii</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Uyouii" title="GitHub &rarr; https://github.com/Uyouii" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:taiyoudong@gmail.com" title="E-Mail &rarr; mailto:taiyoudong@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#操作系统基本概念"><span class="nav-number">1.</span> <span class="nav-text">操作系统基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#多用户系统"><span class="nav-number">1.1.</span> <span class="nav-text">多用户系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用户和组"><span class="nav-number">1.2.</span> <span class="nav-text">用户和组</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Unix-文件系统概述"><span class="nav-number">2.</span> <span class="nav-text">Unix 文件系统概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#文件类型"><span class="nav-number">2.1.</span> <span class="nav-text">文件类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件描述符与索引节点"><span class="nav-number">2.2.</span> <span class="nav-text">文件描述符与索引节点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Unix内核概述"><span class="nav-number">3.</span> <span class="nav-text">Unix内核概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#进程-内核模式"><span class="nav-number">3.1.</span> <span class="nav-text">进程/内核模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程实现"><span class="nav-number">3.2.</span> <span class="nav-text">进程实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程地址空间"><span class="nav-number">3.3.</span> <span class="nav-text">进程地址空间</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Uyouii</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

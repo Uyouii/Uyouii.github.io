@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini" lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: ''
+    },
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    }
+  };
+</script>
+
+  <meta name="description" content="[TOC] 进程环境main函数c程序总是从main函数开始执行。 当内核执行C程序时（使用一个exec函数），在调用mian函数前先调用一个特殊的启动例程。启动例程从内核取得命令行参数和环境变量值。 进程终止有8种方式使进程终止(termination)，其中5种为正常终止，它们是：  从mian返回 调用exit 调用_exit或_Exit 最后一个线程从其启动例程返回 从最后一个线程调用pt">
+<meta name="keywords" content="linux,bookread,Unix环境高级编程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="07 进程环境">
+<meta property="og:url" content="https://uyouii.github.io/2019/08/03/07-进程环境/index.html">
+<meta property="og:site_name" content="Uyouii&#39;s Blogs">
+<meta property="og:description" content="[TOC] 进程环境main函数c程序总是从main函数开始执行。 当内核执行C程序时（使用一个exec函数），在调用mian函数前先调用一个特殊的启动例程。启动例程从内核取得命令行参数和环境变量值。 进程终止有8种方式使进程终止(termination)，其中5种为正常终止，它们是：  从mian返回 调用exit 调用_exit或_Exit 最后一个线程从其启动例程返回 从最后一个线程调用pt">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://note.youdao.com/yws/api/personal/file/WEB8b9465fba8f6d9953f589a3be7c5b99f?method=download&shareKey=0ee0ac303f8eed43158ca594f0096ca0">
+<meta property="og:updated_time" content="2019-08-03T10:12:14.692Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="07 进程环境">
+<meta name="twitter:description" content="[TOC] 进程环境main函数c程序总是从main函数开始执行。 当内核执行C程序时（使用一个exec函数），在调用mian函数前先调用一个特殊的启动例程。启动例程从内核取得命令行参数和环境变量值。 进程终止有8种方式使进程终止(termination)，其中5种为正常终止，它们是：  从mian返回 调用exit 调用_exit或_Exit 最后一个线程从其启动例程返回 从最后一个线程调用pt">
+<meta name="twitter:image" content="https://note.youdao.com/yws/api/personal/file/WEB8b9465fba8f6d9953f589a3be7c5b99f?method=download&shareKey=0ee0ac303f8eed43158ca594f0096ca0">
+  <link rel="canonical" href="https://uyouii.github.io/2019/08/03/07-进程环境/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>07 进程环境 | Uyouii's Blogs</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Uyouii's Blogs</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">There are many things need to learn.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+    </ul>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2019/08/03/07-进程环境/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Uyouii">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/logo1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Uyouii's Blogs">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">07 进程环境
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-08-03 18:11:23 / Modified: 18:12:14" itemprop="dateCreated datePublished" datetime="2019-08-03T18:11:23+08:00">2019-08-03</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Unix环境高级编程/" itemprop="url" rel="index"><span itemprop="name">Unix环境高级编程</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>[TOC]</p>
+<h1 id="进程环境"><a href="#进程环境" class="headerlink" title="进程环境"></a>进程环境</h1><h2 id="main函数"><a href="#main函数" class="headerlink" title="main函数"></a>main函数</h2><p>c程序总是从main函数开始执行。</p>
+<p>当内核执行C程序时（使用一个exec函数），在调用mian函数前先调用一个特殊的启动例程。启动例程从内核取得命令行参数和环境变量值。</p>
+<h2 id="进程终止"><a href="#进程终止" class="headerlink" title="进程终止"></a>进程终止</h2><p>有8种方式使进程终止(termination)，其中5种为正常终止，它们是：</p>
+<ol>
+<li>从mian返回</li>
+<li>调用exit</li>
+<li>调用<code>_exit</code>或<code>_Exit</code></li>
+<li>最后一个线程从其启动例程返回</li>
+<li>从最后一个线程调用<code>pthread_exit</code></li>
+</ol>
+<p>异常终止有3种方式：</p>
+<ol start="6">
+<li>调用abort</li>
+<li>接到一个信号</li>
+<li>最后一个线程对取消请求做出响应</li>
+</ol>
+<h3 id="退出函数"><a href="#退出函数" class="headerlink" title="退出函数"></a>退出函数</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">exit</span><span class="params">(<span class="keyword">int</span> status)</span></span>;</span><br><span class="line"><span class="keyword">void</span> _Exit(<span class="keyword">int</span> status);</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> _exit(<span class="keyword">int</span> status);</span><br></pre></td></tr></table></figure>
+<p>3个函数用于正常终止一个程序：<code>_exit</code>和<code>_Exit</code>立即进入内核，<code>exit</code>则先执行一些清理处理，然后返回内核。</p>
+<p><code>exit</code>函数总是执行一个标准I/O库的清理关闭操作；对于所有打开流调用<code>fclose</code>函数。这造成输出缓冲中所有的数据都被冲洗（写到文件上）。</p>
+<p>3个推出函数都带一个整型参数，称为终止状态（或 退出状态，exit status）。大多数UNIX系统shell都提供检查进程终止状态的方法。如果(a)调用这些函数时不带终止状态，或(b)main执行了一个无返回值的return语句，或(c)main没有声明返回类型为整型，则该进程的终止状态是为定义的。</p>
+<p>但是若main的返回类型是整型，并且mian执行到最后一条语句时返回（隐式返回），那么该进程的终止状态是0。</p>
+<h3 id="函数atexit"><a href="#函数atexit" class="headerlink" title="函数atexit"></a>函数atexit</h3><p>按照ISO C的规定，一个进程可以登记至多32个函数，这些函数将由exit自动调用。这些函数为终止处理程序（exit handler），并调用<code>atexit</code>函数来登记这些函数。</p>
+<p>如果程序调用exec族中的任一函数，则将清除已安装的所有终止处理程序。</p>
+<h2 id="c程序的储存空间布局"><a href="#c程序的储存空间布局" class="headerlink" title="c程序的储存空间布局"></a>c程序的储存空间布局</h2><p><img src="https://note.youdao.com/yws/api/personal/file/WEB8b9465fba8f6d9953f589a3be7c5b99f?method=download&amp;shareKey=0ee0ac303f8eed43158ca594f0096ca0" alt="image"></p>
+<blockquote>
+<p>典型储存空间安排</p>
+</blockquote>
+<p>c语言一直由一下几个部分组成：</p>
+<ul>
+<li><strong>正文段</strong>。这是CPU执行机器指令的部分。通常，正文段是可以共享的，所以即使是频繁执行的程序，在储存器中也只需要有一个副本，而且正文段通常是只读的，以防止程序由于意外而修改其指令。</li>
+<li><strong>初始化数据段</strong>。通常将此段称为数据段，它包含了程序中需明确地赋初值的变量。例如，C程序中任何函数之外的声明:</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">int maxcount = 99;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>未初始化数据段</strong>。通常将此段称为bss段，这一名称来源于早期汇编程序一个操作符，意思是“由符号开始的块”（block started by symbol），在程序开始执行之前，内核讲此段中的数据初始化为0或空指针。函数外的声明：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">long sum[1000];</span><br></pre></td></tr></table></figure>
+<p>使此变量存放在非初始化数据段中。</p>
+<ul>
+<li><strong>栈</strong>。自动变量以及每次函数调用时所需保存的信息都存放在此段中。每次函数调用时，其返回地址以及调用者的环境信息（如某些机器寄存器的值）都存放在栈中。然后，最近被调用的函数在栈上为其自动和临时变量分配储存空间。</li>
+<li><strong>堆</strong>。通常在堆中进行动态内存分配。</li>
+</ul>
+<p>对于32位Intel x86处理器上的linux，正文段从0x04048000单元开始，栈底则在0xC0000000之下开始。堆顶和栈顶之间未用的虚地址空间很大。</p>
+<p>未初始化数据段的内容并不存放在磁盘文件中。其原因是，内核在程序开始运行前将它们都设置为0。需要存放在磁盘程序文件中的段只有正文段和初始化数据段。</p>
+<h2 id="共享库"><a href="#共享库" class="headerlink" title="共享库"></a>共享库</h2><p>大多数UNIX系统支持共享库。</p>
+<p>共享库时的可执行文件中不再需要包含公共的库函数，而只需在所有进程都可引用的储存区中保存这种库例程的一个副本。</p>
+<p>程序第一次执行或者第一次调用某个库函数时，用动态链接方法将程序与共享库函数相链接。</p>
+<p>这减少了每个可执行文件的长度，但增加了一些运行时间开销。这种时间开销发生在该程序第一次被执行时，或者每个共享库函数第一次被调用时。</p>
+<p>共享库的另一个有点是可以用库函数的新版本代替老版本而无需对使用该库的程序重新连接编辑。</p>
+<h2 id="储存空间分配"><a href="#储存空间分配" class="headerlink" title="储存空间分配"></a>储存空间分配</h2><p>ISO C 说明了3个用于储存空间分配的函数。</p>
+<ol>
+<li><code>malloc</code>，分配指定字节数的储存区。此储存区中的初始值不确定。</li>
+<li><code>calloc</code>，为指定数量指定长度的对象分配储存空间。该空间中的每一位(bit)都初始化为0。</li>
+<li><code>realloc</code>，增加或减少以前分配区的长度。当增加长度时，可能需将以前分配区的内容移到另一个足够大的区域，以便在尾端提供增加的储存区，而新增区域内的初始值则不确定。</li>
+</ol>
+<p>函数<code>free</code>释放ptr指向的储存空间。被释放的空间通常被送入可用储存区池，以后再调用上述3个函数时再分配。</p>
+<p>这些分配例程通常用<code>sbrk(2)</code>系统调用实现。该系统调用扩充（或缩小）进程的堆。</p>
+<p>虽然sbrk可以扩充或者缩小进程的储存空间，但是大多数malloc和free的实现都不减小进程的储存空间。释放的空间可供以后再分配，但将它们保持在malloc池中而不返回给内核。</p>
+<p>大多数实现说分配的储存空间比所要求的稍微大一些，额外的空间用来记录管理信息————分配块长度、指向下一个分配块的指针等。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/linux/" rel="tag"># linux</a>
+          
+            <a href="/tags/bookread/" rel="tag"># bookread</a>
+          
+            <a href="/tags/Unix环境高级编程/" rel="tag"># Unix环境高级编程</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/2019/08/03/19-进程通信/" rel="next" title="19 进程通信">
+                <i class="fa fa-chevron-left"></i> 19 进程通信
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/2019/08/03/神们自己/" rel="prev" title="神们自己">
+                神们自己 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/logo1.jpg"
+      alt="Uyouii">
+  <p class="site-author-name" itemprop="name">Uyouii</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Uyouii" title="GitHub &rarr; https://github.com/Uyouii" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:taiyoudong@gmail.com" title="E-Mail &rarr; mailto:taiyoudong@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#进程环境"><span class="nav-number">1.</span> <span class="nav-text">进程环境</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#main函数"><span class="nav-number">1.1.</span> <span class="nav-text">main函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进程终止"><span class="nav-number">1.2.</span> <span class="nav-text">进程终止</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#退出函数"><span class="nav-number">1.2.1.</span> <span class="nav-text">退出函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#函数atexit"><span class="nav-number">1.2.2.</span> <span class="nav-text">函数atexit</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#c程序的储存空间布局"><span class="nav-number">1.3.</span> <span class="nav-text">c程序的储存空间布局</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#共享库"><span class="nav-number">1.4.</span> <span class="nav-text">共享库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#储存空间分配"><span class="nav-number">1.5.</span> <span class="nav-text">储存空间分配</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Uyouii</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

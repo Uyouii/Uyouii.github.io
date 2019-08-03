@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini" lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: ''
+    },
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    }
+  };
+</script>
+
+  <meta name="description" content="进程通信System V IPCIPC 共享内存共享内存机制允许两个或多个进程通过把公共数据结构放入一个共享内存区(IPC shared memory region)来访问它们。如果进程要访问这种存放在共享内存区的数据结构，就必须在自己的地址空间中增加一个新内存区，它将映射与这个共享内存区相关的页框。这样的页框可以很容易地由内核通过请求调页进行处理。  调用shmget()函数来获得一个共享内存地">
+<meta name="keywords" content="linux,bookread,深入理解Linux内核">
+<meta property="og:type" content="article">
+<meta property="og:title" content="19 进程通信">
+<meta property="og:url" content="https://uyouii.github.io/2019/08/03/19-进程通信/index.html">
+<meta property="og:site_name" content="Uyouii&#39;s Blogs">
+<meta property="og:description" content="进程通信System V IPCIPC 共享内存共享内存机制允许两个或多个进程通过把公共数据结构放入一个共享内存区(IPC shared memory region)来访问它们。如果进程要访问这种存放在共享内存区的数据结构，就必须在自己的地址空间中增加一个新内存区，它将映射与这个共享内存区相关的页框。这样的页框可以很容易地由内核通过请求调页进行处理。  调用shmget()函数来获得一个共享内存地">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://note.youdao.com/yws/api/personal/file/2E9C20A4835B4AE380127F5612D04990?method=download&shareKey=36dd74b524514ff32b9b3c409d7855c4">
+<meta property="og:updated_time" content="2019-08-03T10:12:53.203Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="19 进程通信">
+<meta name="twitter:description" content="进程通信System V IPCIPC 共享内存共享内存机制允许两个或多个进程通过把公共数据结构放入一个共享内存区(IPC shared memory region)来访问它们。如果进程要访问这种存放在共享内存区的数据结构，就必须在自己的地址空间中增加一个新内存区，它将映射与这个共享内存区相关的页框。这样的页框可以很容易地由内核通过请求调页进行处理。  调用shmget()函数来获得一个共享内存地">
+<meta name="twitter:image" content="https://note.youdao.com/yws/api/personal/file/2E9C20A4835B4AE380127F5612D04990?method=download&shareKey=36dd74b524514ff32b9b3c409d7855c4">
+  <link rel="canonical" href="https://uyouii.github.io/2019/08/03/19-进程通信/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>19 进程通信 | Uyouii's Blogs</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Uyouii's Blogs</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">There are many things need to learn.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+    </ul>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2019/08/03/19-进程通信/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Uyouii">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/logo1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Uyouii's Blogs">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">19 进程通信
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-08-03 18:04:14 / Modified: 18:12:53" itemprop="dateCreated datePublished" datetime="2019-08-03T18:04:14+08:00">2019-08-03</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/深入理解Linux内核/" itemprop="url" rel="index"><span itemprop="name">深入理解Linux内核</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="进程通信"><a href="#进程通信" class="headerlink" title="进程通信"></a>进程通信</h1><h2 id="System-V-IPC"><a href="#System-V-IPC" class="headerlink" title="System V IPC"></a>System V IPC</h2><h3 id="IPC-共享内存"><a href="#IPC-共享内存" class="headerlink" title="IPC 共享内存"></a>IPC 共享内存</h3><p>共享内存机制允许两个或多个进程通过把公共数据结构放入一个共享内存区(IPC shared memory region)来访问它们。如果进程要访问这种存放在共享内存区的数据结构，就必须在自己的地址空间中增加一个新内存区，它将映射与这个共享内存区相关的页框。这样的页框可以很容易地由内核通过请求调页进行处理。</p>
+<ul>
+<li>调用<code>shmget()</code>函数来获得一个共享内存地IPC标识符，如果这个共享内存区不存在，就创建它。</li>
+<li>调用<code>shmat()</code>函数把一个共享内存区”附加(attach)”到一个进程上。该函数使用IPC共享内存资源地标识符作为参数，并试图把一个共享内存加入到调用进程的地址空间中。调用进程可以获得这个内存区域的起始线性地址，但是这个地址通常不重要，访问这个共享内存区的每个进程都可以使用自己地址空间中的不同地址。<code>shmat()</code>函数不修改进程的页表。</li>
+<li>调用<code>shmdt()</code>函数来”分离“由IPC标识符所指定的共享内存区域，也就是说把响应的共享内存区域从进程的地址空间删除。IPC共享内存资源是持久的，即使现在没有进程在使用它，相应的页也不能被丢弃，但是可以被换出。</li>
+</ul>
+<blockquote>
+<p>IPC共享内存数据结构</p>
+</blockquote>
+<p><img src="https://note.youdao.com/yws/api/personal/file/2E9C20A4835B4AE380127F5612D04990?method=download&amp;shareKey=36dd74b524514ff32b9b3c409d7855c4" alt></p>
+<blockquote>
+<p>shmid_kernel数据结构中的字段</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>字段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>struct kern_ipc_perm</td>
+<td>shm_perm</td>
+<td>kern_ipc_perm数据结构</td>
+</tr>
+<tr>
+<td>struct file *</td>
+<td>shm_file</td>
+<td>共享段的特殊文件</td>
+</tr>
+<tr>
+<td>int</td>
+<td>id</td>
+<td>共享段的位置索引</td>
+</tr>
+<tr>
+<td>unsigned long</td>
+<td>shm_nattch</td>
+<td>当前附加的内存区数</td>
+</tr>
+<tr>
+<td>unsigned long</td>
+<td>shm_segsz</td>
+<td>内存区字节数</td>
+</tr>
+<tr>
+<td>time_t</td>
+<td>shm_atim</td>
+<td>最后访问时间</td>
+</tr>
+<tr>
+<td>time_t</td>
+<td>shm_dtim</td>
+<td>最后分离时间</td>
+</tr>
+<tr>
+<td>time_t</td>
+<td>shm_ctim</td>
+<td>最后修改时间</td>
+</tr>
+<tr>
+<td>pid_t</td>
+<td>shm_cprid</td>
+<td>创建者的PID</td>
+</tr>
+<tr>
+<td>pid_t</td>
+<td>shm_lprid</td>
+<td>最后访问进程的PID</td>
+</tr>
+<tr>
+<td>struct user_struct *</td>
+<td>mlock_user</td>
+<td>锁定在共享内存RAM中的用户的user_struct描述符的指针</td>
+</tr>
+</tbody>
+</table>
+<p>字段<code>shm_file</code>是存放文件对象的地址。Linux 2.6中IPC共享内存与VFS紧密结合。每个IPC共享内存区与属于shm特殊文件系统的一个普通文件关联。</p>
+<p>因为shm文件系统在系统目录中没有安装点，因此，用户不能通过普通的VFS系统调用打开并访问它的文件。但是，只要进程”附加”一个内存段，内核就调用<code>do_mmap()</code>，并在进程的地址空间创建文件的一个新的共享内存映射。因此，属于shm特殊文件系统的文件只有一个文件对象方法mmap，该方法是由<code>shm_mmap()</code>函数实现的。</p>
+<p>对于任何共享内存映射，通过<code>address_space</code>对象把页框包含在页高速缓存中，而<code>address_space</code>对象包含在索引节点中而且被索引节点的<code>i_mapping</code>字段引用。万一页框属于IPC共享内存区，<code>address_space</code>对象的方法就存放在全局变量<code>shmem_aops</code>中。</p>
+<h4 id="换出IPC共享内存区的页"><a href="#换出IPC共享内存区的页" class="headerlink" title="换出IPC共享内存区的页"></a>换出IPC共享内存区的页</h4><p>因为IPC共享内存区映射的是在磁盘上没有映像的特殊索引节点，因此其页是可交换的。因此为了回收IPC共享内存区的页，内核必须把它写入交换区。因为IPC共享内存区是持久的——也就是说内存段不附加到进程，也必须保留这些页。因此即使这些页没有进程在使用，内核也不能简单地删除它们。</p>
+<p>…</p>
+<h4 id="IPC共享内存区的请求调页"><a href="#IPC共享内存区的请求调页" class="headerlink" title="IPC共享内存区的请求调页"></a>IPC共享内存区的请求调页</h4><p>通过<code>shmat()</code>加入进程的页都是哑元页(dummy page)；该函数把一个新内存区加入一个进程地址空间中，但是它不修改进程的页表。IPC共享内存区的页可以被换出。因此，可以通过请求调页机制来处理这些页。</p>
+<p>当进程试图访问IPC共享内存区的一个单元，而其基本的页框还没有分配时则发生缺页异常。相应的异常处理程序确定引起的缺页的地址是在进程的地址空间内，且相应的页表项为空；因此，它就调用<code>do_no_page()</code>函数。这个函数又检查是否为了这个内存区定义了<code>nopage</code>方法。然后调用这个方法，并把页表项设置成所返回的地址。</p>
+<p>IPC共享内存所使用的内存区通常定义了<code>nopage</code>方法。这是通过<code>shmem_nopage()</code>函数实现的，该函数执行以下操作：</p>
+<ol>
+<li>遍历VFS对象的指针链表，并导出IPC共享内存资源的索引节点对象的地址。</li>
+<li>从内存区域描述符的<code>vm_start</code>字段和请求的地址计算共享内存内的逻辑页号</li>
+<li>检查页是否已经在交换高速缓存中，如果是，则结束并返回描述符的地址</li>
+<li>检查页是否在交换高速缓存内且是否最新，如果是，则结束并返回该描述符地址。</li>
+<li>检查内嵌在索引节点对象的<code>shmem_inode_info</code>是否存放着逻辑页号对应的换出页标识符。如果是，就调用<code>read_swap_cache_async()</code>执行换入操作，并一直等到数据传送完成，然后结束并返回页描述符的地址。</li>
+<li>否则，页不在交换区中；因此就从伙伴系统中分配一个新页框，把它插入到页高速缓存，并返回它的地址。</li>
+</ol>
+<p><code>do_no_page()</code>函数对引起缺页的地址在进程的页表中所对应表项进行设置，以使该函数指向<code>nopage</code>方法返回的页框。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/linux/" rel="tag"># linux</a>
+          
+            <a href="/tags/bookread/" rel="tag"># bookread</a>
+          
+            <a href="/tags/深入理解Linux内核/" rel="tag"># 深入理解Linux内核</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/2019/08/03/17-回收页框/" rel="next" title="17 回收页框">
+                <i class="fa fa-chevron-left"></i> 17 回收页框
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/2019/08/03/07-进程环境/" rel="prev" title="07 进程环境">
+                07 进程环境 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/logo1.jpg"
+      alt="Uyouii">
+  <p class="site-author-name" itemprop="name">Uyouii</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Uyouii" title="GitHub &rarr; https://github.com/Uyouii" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:taiyoudong@gmail.com" title="E-Mail &rarr; mailto:taiyoudong@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#进程通信"><span class="nav-number">1.</span> <span class="nav-text">进程通信</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#System-V-IPC"><span class="nav-number">1.1.</span> <span class="nav-text">System V IPC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#IPC-共享内存"><span class="nav-number">1.1.1.</span> <span class="nav-text">IPC 共享内存</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#换出IPC共享内存区的页"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">换出IPC共享内存区的页</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IPC共享内存区的请求调页"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">IPC共享内存区的请求调页</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Uyouii</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

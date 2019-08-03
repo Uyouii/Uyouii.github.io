@@ -4,7 +4,7 @@
 
 
 
-<html class="theme-next gemini use-motion" lang="en">
+<html class="theme-next gemini" lang="en">
 <head>
   <meta charset="UTF-8">
 <meta name="generator" content="Hexo 3.9.0">
@@ -48,7 +48,7 @@
       path: ''
     },
     tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
     translation: {
       copy_button: 'Copy',
       copy_success: 'Copied',
@@ -58,7 +58,7 @@
 </script>
 
   <meta name="description" content="使用I/O复用的经典场合 当客户处理多个描述符（通常是交互式输入和网络套接字）时，必须使用I/O复用。 当一个客户端同时处理多个套接字时可能的。 如果一个TCP服务器既要处理监听套接字，又要处理已连接套接字。 如果一个服务器既要处理TCP，又要处理UDP，一般就要使用I/O复用。 如果一个服务器要处理多个服务器或者多个协议，一般要使用I/O复用。  select 函数该函数允许进程指示内核等待多个">
-<meta name="keywords" content="network,IO multiplexing,c">
+<meta name="keywords" content="IO multiplexing,c,network">
 <meta property="og:type" content="article">
 <meta property="og:title" content="IO复用：select和poll">
 <meta property="og:url" content="https://uyouii.github.io/2018/02/23/IO复用：select和poll/index.html">
@@ -340,11 +340,11 @@
           
         
         <div class="post-tags">
-            <a href="/tags/network/" rel="tag"># network</a>
-          
             <a href="/tags/IO-multiplexing/" rel="tag"># IO multiplexing</a>
           
             <a href="/tags/c/" rel="tag"># c</a>
+          
+            <a href="/tags/network/" rel="tag"># network</a>
           
         </div>
         <div class="post-nav">
@@ -416,7 +416,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-count">42</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -449,7 +449,11 @@
         
           
         
-        <span class="site-state-item-count">9</span>
+          
+        
+          
+        
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -510,7 +514,15 @@
         
           
         
-        <span class="site-state-item-count">23</span>
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">27</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
@@ -604,12 +616,13 @@
   </div>
 
   
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
   <script src="/lib/jquery/index.js?v=3.4.1"></script>
-  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
 
   <script src="/js/utils.js?v=7.3.0"></script>
-  <script src="/js/motion.js?v=7.3.0"></script>
 
   
   <script src="/js/affix.js?v=7.3.0"></script>

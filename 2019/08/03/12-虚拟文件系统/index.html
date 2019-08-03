@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini" lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: ''
+    },
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    }
+  };
+</script>
+
+  <meta name="description" content="虚拟文件系统虚拟文件系统（VFS）的作用虚拟文件系统(Virtual Filesystem)也可以称之为虚拟文件系统转换(Virtual Filesystem Switch, VFS)，是一个内核软件层，用来处理于Unix标准文件系统相关的所有系统调用。 VFS支持的文件系统可以划分为三种主要类型：  磁盘文件系统 这些文件系统管理在本地磁盘分区中可用的储存空间或者其他可以起到磁盘作用的设备（比如">
+<meta name="keywords" content="linux,bookread,深入理解Linux内核">
+<meta property="og:type" content="article">
+<meta property="og:title" content="12 虚拟文件系统">
+<meta property="og:url" content="https://uyouii.github.io/2019/08/03/12-虚拟文件系统/index.html">
+<meta property="og:site_name" content="Uyouii&#39;s Blogs">
+<meta property="og:description" content="虚拟文件系统虚拟文件系统（VFS）的作用虚拟文件系统(Virtual Filesystem)也可以称之为虚拟文件系统转换(Virtual Filesystem Switch, VFS)，是一个内核软件层，用来处理于Unix标准文件系统相关的所有系统调用。 VFS支持的文件系统可以划分为三种主要类型：  磁盘文件系统 这些文件系统管理在本地磁盘分区中可用的储存空间或者其他可以起到磁盘作用的设备（比如">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://note.youdao.com/yws/api/personal/file/C4789661047241908CA97231F7444059?method=download&shareKey=b519bbe0405aff597cf7ceefbb132e54">
+<meta property="og:updated_time" content="2019-08-03T10:12:47.441Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="12 虚拟文件系统">
+<meta name="twitter:description" content="虚拟文件系统虚拟文件系统（VFS）的作用虚拟文件系统(Virtual Filesystem)也可以称之为虚拟文件系统转换(Virtual Filesystem Switch, VFS)，是一个内核软件层，用来处理于Unix标准文件系统相关的所有系统调用。 VFS支持的文件系统可以划分为三种主要类型：  磁盘文件系统 这些文件系统管理在本地磁盘分区中可用的储存空间或者其他可以起到磁盘作用的设备（比如">
+<meta name="twitter:image" content="https://note.youdao.com/yws/api/personal/file/C4789661047241908CA97231F7444059?method=download&shareKey=b519bbe0405aff597cf7ceefbb132e54">
+  <link rel="canonical" href="https://uyouii.github.io/2019/08/03/12-虚拟文件系统/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>12 虚拟文件系统 | Uyouii's Blogs</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Uyouii's Blogs</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">There are many things need to learn.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+    </ul>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2019/08/03/12-虚拟文件系统/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Uyouii">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/logo1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Uyouii's Blogs">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">12 虚拟文件系统
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-08-03 18:03:55 / Modified: 18:12:47" itemprop="dateCreated datePublished" datetime="2019-08-03T18:03:55+08:00">2019-08-03</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/深入理解Linux内核/" itemprop="url" rel="index"><span itemprop="name">深入理解Linux内核</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="虚拟文件系统"><a href="#虚拟文件系统" class="headerlink" title="虚拟文件系统"></a>虚拟文件系统</h1><h3 id="虚拟文件系统（VFS）的作用"><a href="#虚拟文件系统（VFS）的作用" class="headerlink" title="虚拟文件系统（VFS）的作用"></a>虚拟文件系统（VFS）的作用</h3><p>虚拟文件系统(Virtual Filesystem)也可以称之为虚拟文件系统转换(Virtual Filesystem Switch, VFS)，是一个内核软件层，用来处理于Unix标准文件系统相关的所有系统调用。</p>
+<p>VFS支持的文件系统可以划分为三种主要类型：</p>
+<ul>
+<li><strong>磁盘文件系统</strong><ul>
+<li>这些文件系统管理在本地磁盘分区中可用的储存空间或者其他可以起到磁盘作用的设备（比如说一个USB闪存）</li>
+</ul>
+</li>
+<li><strong>网络文件系统</strong><ul>
+<li>这些文件系统允许轻易地访问属于其他网络计算机的文件系统所包含的文件。</li>
+</ul>
+</li>
+<li><strong>特殊文件系统</strong><ul>
+<li>这些文件系统部管理本地或者远程磁盘空间。/proc文件系统是特殊文件系统的一个典型范例。</li>
+</ul>
+</li>
+</ul>
+<p>Unix目录建立了一颗根目录为”/“的树。根目录包含在文件系统(root filesystem)中，在Linux中这个跟文件系统通常是Ext2或Ext3类型。其他所有文件系统都可以被”安装“在根文件系统的子目录中。</p>
+<p>基于磁盘的文件系统通常放在硬件设备中，如硬盘、软盘或者CD-ROM。</p>
+<h4 id="通用文件模型"><a href="#通用文件模型" class="headerlink" title="通用文件模型"></a>通用文件模型</h4><p>VFS所隐含的主要思想在于引入一个通用的文件模型(common file model)，这个模型能够表示所有支持的文件系统。不过，要实现每个具体的文件系统，必须将其物立组织结构转换为虚拟文件系统的通用文件模型。</p>
+<p>从本质上说，Linux内核不能对一个特定的函数进行硬编码来执行诸如read()或ioctl()这样的操作，而是对每个操作都必须使用一个指针，指向要访问的具体文件系统的适当函数。</p>
+<p>通用文件模型由下列对象组成：</p>
+<ul>
+<li><strong>超级块对象(superblock object)</strong><ul>
+<li>存放已安装文件系统的有关信息。对基于磁盘的文件系统，这类对象通常对于存放在磁盘上的<strong>文件系统控制块(filesystem control block)</strong></li>
+</ul>
+</li>
+<li><strong>索引节点对象(inode object)</strong><ul>
+<li>存放关于具体文件的一般信息。对于基于磁盘的文件系统，这类对象通常对应于存放在磁盘上的<strong>文件控制块(file control block)</strong>。每个索引节点对象都有一个索引节点号，这个节点号唯一地标识文件系统中的文件。</li>
+</ul>
+</li>
+<li><strong>文件对象(file object)</strong><ul>
+<li>存放打开文件与进程之间进行交互的有关信息。这类信息仅当进程访问文件期间存在内核内存中。</li>
+</ul>
+</li>
+<li><strong>目录项对象(dentry object)</strong><ul>
+<li>存放目录项（也就是文件的特定名称）与对应文件进行链接的有关信息。每个磁盘文件系统都以自己特有的方式将改类信息存放在磁盘上。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>进程与VFS对象之间的交互</p>
+</blockquote>
+<p><img src="https://note.youdao.com/yws/api/personal/file/C4789661047241908CA97231F7444059?method=download&amp;shareKey=b519bbe0405aff597cf7ceefbb132e54" alt></p>
+<p>例如：三个不同的进程已经打开同一个文件，其中两个进程使用同一个硬链接。在这种情况下，每个进程都使用自己的文件对象，但只需要两个目录项对象，每个硬链接对应一个目录项对象。这两个目录项对象指向同一个索引节点文件，该索引节点对象标识超级块对象，以及随后的普通磁盘文件。</p>
+<p>最近最常使用的目录项被存放在所谓目录项高速缓存 (dentry cache)的<strong>磁盘高速缓存</strong>中，以加速从文件路径名到最后一个路径分量的索引节点的转换过程。</p>
+<p>一般来说，<strong>磁盘高速缓存(disk cache)</strong>属于软件机制，它允许内核将原本存在磁盘上的某些信息保存在RAM中，以便这些数据得的进一步访问能快速进行，而不必慢速访问磁盘本身。</p>
+<p>磁盘高速缓存不同于<strong>硬件高速缓存</strong>或<strong>内存高速缓存</strong>，后两者都与磁盘或者其他设备无关。硬件高速缓存是一个快速静态RAM，它加快了直接对慢速动态RAM的请求。内存高速缓存是一种软件机制，引入它是为了绕过内核内存分配器。</p>
+<p>除了<strong>目录项高速缓存</strong>和<strong>索引节点高速缓存</strong>之外，Linux还使用其他磁盘高速缓存。其中最重要的一种就是<strong>页高速缓存</strong>。</p>
+<h3 id="VFS数据结构"><a href="#VFS数据结构" class="headerlink" title="VFS数据结构"></a>VFS数据结构</h3><h4 id="超级块对象"><a href="#超级块对象" class="headerlink" title="超级块对象"></a>超级块对象</h4><p>所有超级块对象都以双向循环链表的形式链接在一起。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/linux/" rel="tag"># linux</a>
+          
+            <a href="/tags/bookread/" rel="tag"># bookread</a>
+          
+            <a href="/tags/深入理解Linux内核/" rel="tag"># 深入理解Linux内核</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/2019/08/03/09-进程地址空间/" rel="next" title="09 进程地址空间">
+                <i class="fa fa-chevron-left"></i> 09 进程地址空间
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/2019/08/03/17-回收页框/" rel="prev" title="17 回收页框">
+                17 回收页框 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/logo1.jpg"
+      alt="Uyouii">
+  <p class="site-author-name" itemprop="name">Uyouii</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Uyouii" title="GitHub &rarr; https://github.com/Uyouii" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:taiyoudong@gmail.com" title="E-Mail &rarr; mailto:taiyoudong@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#虚拟文件系统"><span class="nav-number">1.</span> <span class="nav-text">虚拟文件系统</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#虚拟文件系统（VFS）的作用"><span class="nav-number">1.0.1.</span> <span class="nav-text">虚拟文件系统（VFS）的作用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#通用文件模型"><span class="nav-number">1.0.1.1.</span> <span class="nav-text">通用文件模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VFS数据结构"><span class="nav-number">1.0.2.</span> <span class="nav-text">VFS数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#超级块对象"><span class="nav-number">1.0.2.1.</span> <span class="nav-text">超级块对象</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Uyouii</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
