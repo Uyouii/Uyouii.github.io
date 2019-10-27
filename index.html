@@ -222,6 +222,298 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2019/10/27/Effective-Modern-C-2-理解auto型别推导/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Uyouii">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/logo1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Uyouii's Blogs">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/10/27/Effective-Modern-C-2-理解auto型别推导/" class="post-title-link" itemprop="url">Effective Modern C++ 2 理解auto型别推导</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-10-27 22:38:12 / Modified: 22:40:16" itemprop="dateCreated datePublished" datetime="2019-10-27T22:38:12+08:00">2019-10-27</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/effective-modern-c/" itemprop="url" rel="index"><span itemprop="name">effective modern c++</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+            <h2 id="条款2：-理解auto-型别推导"><a href="#条款2：-理解auto-型别推导" class="headerlink" title="条款2： 理解auto 型别推导"></a>条款2： 理解auto 型别推导</h2><p>在模板型别推导和auto型别推导可以建立起一一映射，它们之间也确实存在着双向的算法变换。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">(ParamType param)</span></span>;</span><br><span class="line"></span><br><span class="line">f(expr);	<span class="comment">// 以某表达式调用f</span></span><br></pre></td></tr></table></figure>
+<p>在f的调用语句中，编译器会利用expr来推导T和ParamType的型别。</p>
+<p>当某变量采用auto来声明的时候，auto就扮演了模板中T这个角色，而变量的饰词则扮演的是ParamType的角色。</p>
+<ul>
+<li>情况1: <em>ParamType</em>是个指针或者引用，但不是个万能引用</li>
+<li>情况2: <em>ParamType</em>是个万能引用</li>
+<li>情况3: <em>ParamType</em>既非指针也非引用</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 情况1 或 情况3</span></span><br><span class="line"><span class="keyword">auto</span> x = <span class="number">27</span>;		<span class="comment">// 情况3（x既非指针也非引用）</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">auto</span> cx = x;	<span class="comment">// 情况3（cx既非指针也非引用）</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">auto</span>&amp; rx = x;	<span class="comment">// 情况1（rx是个引用，但不是个万能引用）</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 情况2</span></span><br><span class="line"><span class="keyword">auto</span>&amp;&amp; uref1 = x;	<span class="comment">// x的型别是int，且是左值</span></span><br><span class="line">					<span class="comment">// 所以uref1的型别是int&amp;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span>&amp;&amp; uref2 = x;	<span class="comment">// cx的型别是const int，且是左值</span></span><br><span class="line">					<span class="comment">// 所以uref2的型别是const int&amp;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span>&amp;&amp; uref3 = <span class="number">27</span>;	<span class="comment">// 27的型别是int，且是右值</span></span><br><span class="line">					<span class="comment">// 所以uref2的型别是int&amp;&amp;</span></span><br></pre></td></tr></table></figure>
+<p>数组和函数的情况也适用于auto型别的推导</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> name[] = <span class="string">"xxxxxx"</span>	<span class="comment">// name的型别是 const char [7]</span></span><br><span class="line">    </span><br><span class="line"><span class="keyword">auto</span> arr1 = name;				<span class="comment">// arr1的型别是const char *</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span> arr2 = name;				<span class="comment">// arr1的型别是const char (&amp;)[7]</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">someFunc</span><span class="params">(<span class="keyword">int</span>, <span class="keyword">double</span>)</span>		<span class="comment">// someFunc是个函数，型别是void(int, double)</span></span></span><br><span class="line"><span class="function">    </span></span><br><span class="line"><span class="function"><span class="keyword">auto</span> func1 </span>= someFunc;			<span class="comment">// fun1的型别是 void(*)(int, double)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span>&amp; func2 = someFunc;			<span class="comment">// func2的型别是void(&amp;)(int, double)</span></span><br></pre></td></tr></table></figure>
+<h3 id="auto和模板类型的不同"><a href="#auto和模板类型的不同" class="headerlink" title="auto和模板类型的不同"></a>auto和模板类型的不同</h3><p>声明一个int并初始化，C++98中有两种语法</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> x1 = <span class="number">27</span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">x2</span><span class="params">(<span class="number">27</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>C++11为了支持统一初始化(uniform initialization)，增加了下面的语法选项：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> x3 = &#123;<span class="number">27</span>&#125;;</span><br><span class="line"><span class="keyword">int</span> x4&#123;<span class="number">27</span>&#125;;</span><br></pre></td></tr></table></figure>
+<p>如果用auto：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> x1 = <span class="number">27</span>;		<span class="comment">// 型别是int，值是27</span></span><br><span class="line"><span class="function"><span class="keyword">auto</span> <span class="title">x2</span><span class="params">(<span class="number">27</span>)</span></span>;		<span class="comment">// 同上</span></span><br><span class="line"><span class="keyword">auto</span> x3 = &#123;<span class="number">27</span>&#125;;		<span class="comment">// 型别是 std::initializer_list&lt;int&gt;，值是&#123;27&#125;</span></span><br><span class="line"><span class="keyword">auto</span> x4&#123;<span class="number">27</span>&#125;;		<span class="comment">// 同上</span></span><br></pre></td></tr></table></figure>
+<p>后面两个语句，声明了这么一个变量，其型别类型为std::initializer_list<int>，且含有单个值为27的元素。</int></p>
+<p>当用于auto声明变量的初始表达式是大括号起时，推导所得的型别就属于std::initizlizer_list。</p>
+<p>对于大括号初始表达式的处理方式，是auto型别推导和模板型别推导的唯一不同之处。当采用auto声明的变量使用大括号初始化表达式进行初始化时，推导所得的型别是std::initializer_list的一个实例型别。</p>
+<p>但是如果向对应模板传入一个同样的初始化表达式，型别类型推导将会失败，代码将不同通过编译：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> x = &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>&#125;;		<span class="comment">// x的型别是 std::initializer_list&lt;int&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">(ParamType param)</span></span>;</span><br><span class="line"></span><br><span class="line">f(&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>&#125;)				<span class="comment">//错误，无法推导T的型别</span></span><br></pre></td></tr></table></figure>
+<p>auto和模板类型推导的唯一区别是，auto会假定用大括号起的初始化表达式是一个std::initialize_list，但是模板型别推导不会。</p>
+<p>C++14允许使用auto来说明函数返回值需要推导，而且C++14中的lamba表达式也会在形参中用到auto。然而，这些auto的用法是在使用模板型别推导，而非auto型别推导，所以，带有auto返回值的函数如果需要返回一个大括号起的初始化表达式，是通不过编译的。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">auto</span> <span class="title">createInitList</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>&#125;;			<span class="comment">// 错误，无法为&#123;1,2,3&#125;完成型别类型推导</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>用auto来指定C++14中lambda式的形参型别时，也不能使用大括号起的初始化表达式</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; v;</span><br><span class="line">…</span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span> resetV =</span><br><span class="line">  [&amp;v](<span class="keyword">const</span> <span class="keyword">auto</span>&amp; newValue) &#123; v = newValue; &#125;;     <span class="comment">// C++14</span></span><br><span class="line"></span><br><span class="line">…</span><br><span class="line"></span><br><span class="line">resetV(&#123; <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span> &#125;);          <span class="comment">// error! can't deduce type</span></span><br><span class="line">                              <span class="comment">// for &#123; 1, 2, 3 &#125;</span></span><br></pre></td></tr></table></figure>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>在一般情况下，auto型别推导和模板型别推导时一模一样的，但是auto型别推导会假定用大括号括起的初始化表达式代表一个std::intializer_list，但是模板型别推导不会</li>
+<li>在函数返回值或lambda式的形参中使用auto，意思是使用模板型别推导而非auto型别推导。</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+      
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2019/10/27/Effective-Modern-C-1-理解模板型别推导/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Uyouii">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/logo1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Uyouii's Blogs">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/10/27/Effective-Modern-C-1-理解模板型别推导/" class="post-title-link" itemprop="url">Effective Modern C++ 1 理解模板型别推导</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-10-27 22:37:41 / Modified: 22:39:59" itemprop="dateCreated datePublished" datetime="2019-10-27T22:37:41+08:00">2019-10-27</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/effective-modern-c/" itemprop="url" rel="index"><span itemprop="name">effective modern c++</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+            <h2 id="条款1：理解模版型别推导"><a href="#条款1：理解模版型别推导" class="headerlink" title="条款1：理解模版型别推导"></a>条款1：理解模版型别推导</h2><p>函数模版形如：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">(ParamType param)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>一次调用形如：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f(expr);</span><br></pre></td></tr></table></figure>
+<p>编译器会通过expre推导两个型别：一个是T的型别，一个是ParamType的型别，这两个型别通常不一样，因为ParamType通常包含了一些饰词，如const或引用符号等限定词。</p>
+<p>T的型别推导结果，不仅仅以来expr的型别，还依赖ParamType的形式。具体分三种情况讨论。</p>
+<h3 id="情况1-ParamType是个指针或者引用，但不是个万能引用"><a href="#情况1-ParamType是个指针或者引用，但不是个万能引用" class="headerlink" title="情况1: ParamType是个指针或者引用，但不是个万能引用"></a>情况1: <em>ParamType</em>是个指针或者引用，但不是个万能引用</h3><p>这种情形下，型别推导会这样运作：</p>
+<ol>
+<li>若expr具有引用型别，现将引用部分忽略</li>
+<li>对expr的型别和ParamType的型别执行模式匹配，来决定T的型别</li>
+</ol>
+<p>例如：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">(T&amp; param)</span></span>;		<span class="comment">// param是个引用</span></span><br><span class="line"></span><br><span class="line">声明变量：</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> x = <span class="number">27</span>;				<span class="comment">// x的类型是int</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> cx = x;		<span class="comment">// cx的类型是const int</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span>&amp; rx = x;		<span class="comment">// rx是x的型别为const int的引用</span></span><br><span class="line"></span><br><span class="line">f(x);	<span class="comment">// T的类型是int，param的类型是int&amp;</span></span><br><span class="line">f(cx);	<span class="comment">// T的类型是const int，param的类型是const int&amp;</span></span><br><span class="line">f(rx);	<span class="comment">// T的类型是const int，param的类型是const int&amp;</span></span><br></pre></td></tr></table></figure>
+<p>由于cx和rx的值都被指明为const ，所以T的型别被推到为const int，从而形参的型别就成了const int&amp;。</p>
+<p>当人们向引用型别传入const 对象时，他们期望对该对象保持不可修改的属性，即期望该形参成为const的引用型别。</p>
+<p>向持有T&amp;型别的模版传入const对象是安全的：该对象的常量性（constness）会成为T的型别推导结果的组成部分。</p>
+<p>而引用性（reference-ness）会在型别推导过程中被忽略。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">(<span class="keyword">const</span> T&amp; param)</span></span>;	<span class="comment">// param是个引用</span></span><br><span class="line"></span><br><span class="line">声明变量：</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> x = <span class="number">27</span>;				<span class="comment">// 同前</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> cx = x;		<span class="comment">// 同前</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span>&amp; rx = x;		<span class="comment">// 同前</span></span><br><span class="line"></span><br><span class="line">f(x);	<span class="comment">// T的类型是int，param的类型是const int&amp;</span></span><br><span class="line">f(cx);	<span class="comment">// T的类型是int，param的类型是const int&amp;</span></span><br><span class="line">f(rx);	<span class="comment">// T的类型是int，param的类型是const int&amp;</span></span><br></pre></td></tr></table></figure>
+<p>rx的引用性在型别推导过程中是被忽略的。</p>
+<p>如果param是个指针，而非引用，运作方式上本质上没有不同。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">(T* param)</span></span>;	<span class="comment">// param是个指针</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> x = <span class="number">27</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> *px = &amp;x;	<span class="comment">// px是指到x的指针，类型为 const int</span></span><br><span class="line">f(&amp;x);				<span class="comment">// T的类型是int，param的类型是int*</span></span><br><span class="line">f(px);				<span class="comment">// T的类型是const int，param的类型是const int*</span></span><br></pre></td></tr></table></figure>
+<h3 id="情况2-ParamType是个万能引用"><a href="#情况2-ParamType是个万能引用" class="headerlink" title="情况2: ParamType是个万能引用"></a>情况2: <em>ParamType</em>是个万能引用</h3><p>万能引用的声明型别写作：T&amp;&amp;</p>
+<ul>
+<li>如果expr是个左值，T和ParamType都会被推导为左值引用。这个结果具有双重奇特之处：首先，这是在模版类型推导中，T被推导为引用型的唯一情形。其次，尽管在声明时使用的是右值引用语法，它的型别推导结果却是左值引用。</li>
+<li>如果expre是个右值，则应用“常规”的规则。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">(T&amp;&amp; param)</span></span>;	<span class="comment">// param是个万能引用</span></span><br><span class="line"></span><br><span class="line">声明变量：</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> x = <span class="number">27</span>;				<span class="comment">// 同前</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> cx = x;		<span class="comment">// 同前</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span>&amp; rx = x;		<span class="comment">// 同前</span></span><br><span class="line"></span><br><span class="line">f(x);	<span class="comment">// x是个左值，所以T的型别是int&amp;，param的型别也是int&amp;</span></span><br><span class="line">f(cx);	<span class="comment">// cx是个左值，所以T的型别是const int&amp;</span></span><br><span class="line">		<span class="comment">// param的型别也是const int&amp;</span></span><br><span class="line">f(rx);	<span class="comment">// rx是个左值，所以T的型别是const int&amp;</span></span><br><span class="line">		<span class="comment">// param的型别也是const int&amp;</span></span><br><span class="line">f(<span class="number">27</span>);	<span class="comment">// 27是个右值，所以T的型别是int</span></span><br><span class="line">		<span class="comment">// param就成了int&amp;&amp;</span></span><br></pre></td></tr></table></figure>
+<p>万能引用的推导规则不同于左值引用和右值引用形参。当遇到万能引用时，型别推导类型规则会区分实参是左值还是右值。而非万能引用时从来不会作这样的区分的。</p>
+<h3 id="情况3-ParamType既非指针也非引用"><a href="#情况3-ParamType既非指针也非引用" class="headerlink" title="情况3: ParamType既非指针也非引用"></a>情况3: <em>ParamType</em>既非指针也非引用</h3><p>既非指针，也非引用，就是按值传递了。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">(T param)</span></span>;	<span class="comment">// param是按值传递</span></span><br></pre></td></tr></table></figure>
+<p>无论传入的是什么，param都会是它的一个副本，也即是一个全新的对象。</p>
+<ul>
+<li>exper具有引用型别，则忽略其引用部分</li>
+<li>忽略引用部分之后，若expre是个const对象，也忽略。如果是一个volatile对象，也忽略。</li>
+</ul>
+<p>所以</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> x = <span class="number">27</span>;				<span class="comment">// 同前</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> cx = x;		<span class="comment">// 同前</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span>&amp; rx = x;		<span class="comment">// 同前</span></span><br><span class="line"></span><br><span class="line">f(x);	<span class="comment">// T和prama都是int</span></span><br><span class="line">f(cx);	<span class="comment">// T和prama都是int</span></span><br><span class="line">f(rx);	<span class="comment">// T和prama都是int</span></span><br></pre></td></tr></table></figure>
+<p>cx和rx代表const值，param仍然不具有const型别，这是合理的。</p>
+<p>param是个完全独立于cx和rx存在的对象——是cx和rx的一个<strong>副本</strong>，cx和rx不能修改不能说明param不能修改。expre的常量性和挥发性（volatileness，若有）可以在推导param的型别时忽略。</p>
+<p>重点说明的是，const（和volatile）仅会在按值形参处被忽略。若形参是const的引用或者指针，expre的常量性会在型别推导过程中加以保留。</p>
+<p>但是这种情况，expr是一个指到const对象的const指针，且expr按值传递给param：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">(T param)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span>* <span class="keyword">const</span> ptr = <span class="string">"xxxx"</span>;</span><br><span class="line">f(ptr);			<span class="comment">// 传递类型为 const char * const</span></span><br></pre></td></tr></table></figure>
+<p>ptr这个指针自己会按值传递，按照按值传递的规则，ptr的常量性会被忽略，param的型别会被推导为const char*。</p>
+<p>即ptr的指向对象的常量性会被保留，但是其自身的常量性会在以复制方式创建新指针param时被忽略。</p>
+<h3 id="数组实参"><a href="#数组实参" class="headerlink" title="数组实参"></a>数组实参</h3><p>数组型别有别于指针型别，很多语境下，数组会退化成指到其首元素的指针。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> name[] = <span class="string">"xxx"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">(T param)</span></span>;</span><br><span class="line">f(name);</span><br></pre></td></tr></table></figure>
+<p>由于数组形参声明会按照他们好像是指针形参那样处理，按值传递给函数模版的数组型别会被推导成指针型别。</p>
+<p>在模版f调用中，其型别类型T会被推导成const char*</p>
+<p>难点来了，尽管函数无法声明真正的数组类型形参，它们却能够将形参声明成数组的引用。如果修改模版f，制定按照引用的方式传递实参。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">(T&amp; param)</span></span>;</span><br><span class="line">f(name);			<span class="comment">// 向f传递一个数组</span></span><br></pre></td></tr></table></figure>
+<p>这种情况下，T的型别会推导成实际数组的型别，这个型别包含数组的尺寸。</p>
+<p>本例中，T的型别推导类型结果为 const char [4]，而f的形参被推导为 const char (&amp;)[4]。</p>
+<p>可以利用数组引用这一能力创造一个模版，用来推导数组含有的元素个数。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 以编译期常量的形式返回数组尺寸</span></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="built_in">std</span>::<span class="keyword">size_t</span> N&gt;</span><br><span class="line"><span class="keyword">constexpr</span> <span class="built_in">std</span>::<span class="keyword">size_t</span> arraySize( T(&amp;)[N]) <span class="keyword">noexcept</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> N;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将该函数声明为constexpr，能够使得其返回值在编译期间可用。从而就可以指定一个数组时，制定其尺寸和另一个数组相同。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> keyVals = &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>&#125;;</span><br><span class="line"><span class="keyword">int</span> mappedVals[arraySize(keyVals)];</span><br></pre></td></tr></table></figure>
+<h3 id="函数实参"><a href="#函数实参" class="headerlink" title="函数实参"></a>函数实参</h3><p>数组并非c++唯一可以退化为指针之物。函数型别也同样可以退化为函数指针，针对数组型别的推导的一切导论适用于函数向其指针的退化。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">someFunc</span><span class="params">(<span class="keyword">int</span>, <span class="keyword">double</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f1</span><span class="params">(T param)</span></span>;		<span class="comment">// param按值传递</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f2</span><span class="params">(T param)</span></span>;		<span class="comment">// param按引用传递</span></span><br><span class="line"></span><br><span class="line">f1(someFunc);			<span class="comment">// param被推导为函数指针</span></span><br><span class="line">						<span class="comment">// 具体类型为 void(*)(int, double)</span></span><br><span class="line">f2(someFunc);			<span class="comment">// param被推导为函数引用</span></span><br><span class="line">						<span class="comment">// 具体类型为 void(&amp;)(int, double)</span></span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>在模版类型推导过程中，具有引用类型的实参会被当成非引用类型来处理。即其引用性会被忽略</li>
+<li>对万能引用形参进行推导时，左值实参会进行特殊处理</li>
+<li>对按值传递的形参进行推导时，若实参中带有const 或 volatile饰词，则它们还是会被当作不带const或volatile饰词的型别来处理</li>
+<li>在模版型别推导过程中，数组或函数类型的实参会退化成对应的指针，除非它们被用来初始化引用。</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+      
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2019/08/03/三体/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1079,227 +1371,6 @@
   </article>
 
     
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2019/08/03/天才在左，疯子在右/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Uyouii">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/logo1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Uyouii's Blogs">
-    </span>
-      <header class="post-header">
-
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/08/03/天才在左，疯子在右/" class="post-title-link" itemprop="url">天才在左，疯子在右</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2019-08-03 18:16:15 / Modified: 18:22:22" itemprop="dateCreated datePublished" datetime="2019-08-03T18:16:15+08:00">2019-08-03</time>
-            </span>
-          
-            
-
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/bookread/" itemprop="url" rel="index"><span itemprop="name">bookread</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          <br>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          
-            <h2 id="天才在左，疯子在右"><a href="#天才在左，疯子在右" class="headerlink" title="天才在左，疯子在右"></a>天才在左，疯子在右</h2><ol>
-<li>人之所以会产生一些妄想或者说是幻觉，主要是因为大脑不听使唤，左脑接受了来自右脑的错误指令，因而产生了歪曲的理解和判断。</li>
-<li>缺乏安全感和孤独寂寞的人最容易出现妄想症，他们最初觉得“没人关系我”，后来演变为“有人要害我”。</li>
-<li>视觉对于外界光线的感应能偶帮助我们维持生物钟的正常运转。但如果用光线照射我们的双眼，大脑便会由此“上当”，从而加速或者减缓我们的生理时钟的运转。</li>
-<li>“马太效应”是社会心理学的经典效应，他向我们证明了强者恒强、弱者越弱的道理。如果一个人获得了成功，那么随之而来，各种好事情都会发生在他的身上。同样，如果一个人很衰，他就会遇到各种各样衰的事情。</li>
-<li>心理学家认为，人的幸或者不幸，并不是上帝在天空中决定并安排好的，实际上一个人的运气好坏是由这个人的行为和思想决定的。 幸运的人通常乐观积极，活力四射，这样的心态让他们对未知的恐惧低于阈值，因为更容易接受新的挑战，更容易抓住新的机遇。 而那些不幸的人则相反，他们多半性格孤僻，反应也不够敏捷。他们的情感关注点更多地集中于自己身上，因此很害怕周遭发生的会让自己感受到不舒服的改变。对他们而言，“未知”便是最大的恐惧和不安，处于恐惧中时，他们便会与大好的机会擦肩而过。</li>
-<li>自我监控能力强的人显然更容易成为撒谎高手，而这种能力较弱的人，似乎用撒谎来掩饰自己的意识较差。</li>
-<li>六度分隔假说，其含义是世界上任意两个欲取得联系的陌生人之间，最多只隔着六个人，便能够达成联系。</li>
-<li>越是急于证明自己，就越是证明不了。因为没有人愿意跟着你的思路去思考问题。</li>
-<li>车尔尼雪夫斯基说：“在人间有什么会更有诗意，更为迷人，胜于那怀着欢乐的爱，对自己觉得像自己本身一样崇高、纯洁和美妙的一切东西都发生共鸣的纯真的纯真的少年心灵呢？”</li>
-<li>童年对一个作家的影响是深入骨髓的，是融贯在灵魂中的，同年是我们的精神故乡，同年所遭受的创伤会让人铭记在心。创伤在灵魂的深处生了根，就好像在土地中播撒了种子般，在岁月流逝中，种子逐渐发芽、长出了树枝，成长为参天大树，然而其根基仍然是当初的种子，是由幼时的创伤繁衍出来的。创伤及由此而形成的思想就由此成为作家作品的内核。</li>
-<li>有人曾这样描述弗吉尼亚.伍尔夫：“她的记忆有着隐秘的两面——一面澄清，一面黑暗；一面寒冷，一面温热；一面创造，一面是毁灭；一面铺洒着天堂之光，一面燃烧着地狱之火。</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2019/08/03/人间失格/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Uyouii">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/logo1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Uyouii's Blogs">
-    </span>
-      <header class="post-header">
-
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/08/03/人间失格/" class="post-title-link" itemprop="url">人间失格</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2019-08-03 18:15:54 / Modified: 18:21:44" itemprop="dateCreated datePublished" datetime="2019-08-03T18:15:54+08:00">2019-08-03</time>
-            </span>
-          
-            
-
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/bookread/" itemprop="url" rel="index"><span itemprop="name">bookread</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          <br>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          
-            <h2 id="人间失格"><a href="#人间失格" class="headerlink" title="人间失格"></a>人间失格</h2><ol>
-<li>那是我对人类最后的求爱。我对人类极度恐惧，却无论如何也无法对人类死心。</li>
-<li>旁人承受的痛苦的性质和大小，我完全捉摸不透。现实生活中的痛苦，只是吃个饭就能化解的痛苦，或许才是莫大的痛苦。也许，我刚才所说的那十个灾祸在这些痛苦面前不值一提。也许那些我无法理解的痛苦才是凄惨的阿鼻地狱。果真如此嘛？我不知道。但即使如此，那些人依然不想轻生、不会发狂，纵谈政治、毫不绝望、毫不屈服，继续与生活作战。他们不觉得痛苦吗？他们变得自私自利，甚至视其为理所当然，难道他们从未怀疑过自己？若真如此，那真是快活。不是每个人都是如此吧？真的都满足于此吗？我不知道······在夜里酣然入睡，一早醒来就会神清气爽吗？他们做了怎样的梦？走路时想些什么？想着钱的事情？不会仅此而已吧？我似乎听过说“民以食为天”，却从未听过“人为钱而活”。不，也许因人而异吧······我还是搞不懂······思绪渐感困惑之时，我越发惶恐不安，仿佛自己是这个世界上的异类。我与旁人几乎无法交谈，因我不知该谈些什么，也不知该如何谈起。</li>
-<li>因此我总是黯然接收外界打击，内心却承受着疯狂的恐惧。</li>
-<li>受人责备或怒斥时，或许没有人能保持好心情。但我在人们怒不可遏的脸上，看到了比狮子、鳄鱼、巨龙更加可怕的动物本性。寻常时候，他们似乎会将这一本性刻意隐藏，但一有机会，人类可怕的真面目就会在愤怒中不经意的暴露出来。就像在草地上安稳打盹的牛，冷不防甩尾吗“啪”地打死肚子上地牛虻。每每见到人类露出本性，我都惊悚得汗毛倒竖。而一旦想到，这种本性或许是人活于世的必备资质之一，我简直要对自己绝望了。</li>
-<li>对讨厌的事物说不出讨厌，对喜欢的事也总是偷偷摸摸，我总是品着极为苦涩的滋味，困难以名状的恐惧痛苦挣扎。</li>
-<li>我一向对“向人诉苦”不抱任何期待。无论是向父母说，还是向警察或者政府说，最终还是会被那些深谙处世之道的人打败，任由他们花言巧语，喋喋不休。</li>
-<li>相互欺骗的双方竟然都相安无事，甚至未曾察觉相互欺骗之事————我以为，人类生活中无处不是这样单纯、明了的不信任之举。</li>
-<li>对人类极度恐惧的人，反而会比任何人都渴望亲眼见识妖怪的可怕。愈是敏感、愈是胆怯，愈会企盼暴风雨降临的更加猛烈。</li>
-<li>对我而言，听女人就自己的身世说上千言万语，也不及一句低喃让我心生共鸣。我是如此期盼听到这句低语，然而我在这世上遇到的女子，竟没有一人向我如此诉说，我深感不可思议。眼前这名女子，虽然没有用言语变现自己的寂寞，但整个身体的轮廓却无声地吐露出巨大地寂寞气息。她的身旁仿佛充斥着约莫一寸见方的气流，走近她身旁，我的身体也被那气流说包裹。这气流与我自身携带的阴郁气流完美的融合，如贴在水底岩石上的枯叶一般，是我得以从恐惧与不安中抽离。</li>
-<li>胆小鬼连幸福都会害怕，碰到棉花都会受伤，有时还会被幸福所伤。</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
   </section>
 
   
@@ -1340,7 +1411,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-count">44</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1377,7 +1448,9 @@
         
           
         
-        <span class="site-state-item-count">11</span>
+          
+        
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">categories</span>
         </a>
       </div>
@@ -1446,7 +1519,9 @@
         
           
         
-        <span class="site-state-item-count">27</span>
+          
+        
+        <span class="site-state-item-count">28</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>

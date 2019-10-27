@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini" lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: ''
+    },
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    }
+  };
+</script>
+
+  <meta name="description" content="条款2： 理解auto 型别推导在模板型别推导和auto型别推导可以建立起一一映射，它们之间也确实存在着双向的算法变换。 1234template&amp;lt;typename T&amp;gt;void f(ParamType param);f(expr);	// 以某表达式调用f 在f的调用语句中，编译器会利用expr来推导T和ParamType的型别。 当某变量采用auto来声明的时候，auto就扮演了模">
+<meta name="keywords" content="c++,effective modern c++">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Effective Modern C++ 2 理解auto型别推导">
+<meta property="og:url" content="https://uyouii.github.io/2019/10/27/Effective-Modern-C-2-理解auto型别推导/index.html">
+<meta property="og:site_name" content="Uyouii&#39;s Blogs">
+<meta property="og:description" content="条款2： 理解auto 型别推导在模板型别推导和auto型别推导可以建立起一一映射，它们之间也确实存在着双向的算法变换。 1234template&amp;lt;typename T&amp;gt;void f(ParamType param);f(expr);	// 以某表达式调用f 在f的调用语句中，编译器会利用expr来推导T和ParamType的型别。 当某变量采用auto来声明的时候，auto就扮演了模">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-10-27T14:40:16.305Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Effective Modern C++ 2 理解auto型别推导">
+<meta name="twitter:description" content="条款2： 理解auto 型别推导在模板型别推导和auto型别推导可以建立起一一映射，它们之间也确实存在着双向的算法变换。 1234template&amp;lt;typename T&amp;gt;void f(ParamType param);f(expr);	// 以某表达式调用f 在f的调用语句中，编译器会利用expr来推导T和ParamType的型别。 当某变量采用auto来声明的时候，auto就扮演了模">
+  <link rel="canonical" href="https://uyouii.github.io/2019/10/27/Effective-Modern-C-2-理解auto型别推导/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Effective Modern C++ 2 理解auto型别推导 | Uyouii's Blogs</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Uyouii's Blogs</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">There are many things need to learn.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+    </ul>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2019/10/27/Effective-Modern-C-2-理解auto型别推导/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Uyouii">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/logo1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Uyouii's Blogs">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Effective Modern C++ 2 理解auto型别推导
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-10-27 22:38:12 / Modified: 22:40:16" itemprop="dateCreated datePublished" datetime="2019-10-27T22:38:12+08:00">2019-10-27</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/effective-modern-c/" itemprop="url" rel="index"><span itemprop="name">effective modern c++</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="条款2：-理解auto-型别推导"><a href="#条款2：-理解auto-型别推导" class="headerlink" title="条款2： 理解auto 型别推导"></a>条款2： 理解auto 型别推导</h2><p>在模板型别推导和auto型别推导可以建立起一一映射，它们之间也确实存在着双向的算法变换。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">(ParamType param)</span></span>;</span><br><span class="line"></span><br><span class="line">f(expr);	<span class="comment">// 以某表达式调用f</span></span><br></pre></td></tr></table></figure>
+<p>在f的调用语句中，编译器会利用expr来推导T和ParamType的型别。</p>
+<p>当某变量采用auto来声明的时候，auto就扮演了模板中T这个角色，而变量的饰词则扮演的是ParamType的角色。</p>
+<ul>
+<li>情况1: <em>ParamType</em>是个指针或者引用，但不是个万能引用</li>
+<li>情况2: <em>ParamType</em>是个万能引用</li>
+<li>情况3: <em>ParamType</em>既非指针也非引用</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 情况1 或 情况3</span></span><br><span class="line"><span class="keyword">auto</span> x = <span class="number">27</span>;		<span class="comment">// 情况3（x既非指针也非引用）</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">auto</span> cx = x;	<span class="comment">// 情况3（cx既非指针也非引用）</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">auto</span>&amp; rx = x;	<span class="comment">// 情况1（rx是个引用，但不是个万能引用）</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 情况2</span></span><br><span class="line"><span class="keyword">auto</span>&amp;&amp; uref1 = x;	<span class="comment">// x的型别是int，且是左值</span></span><br><span class="line">					<span class="comment">// 所以uref1的型别是int&amp;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span>&amp;&amp; uref2 = x;	<span class="comment">// cx的型别是const int，且是左值</span></span><br><span class="line">					<span class="comment">// 所以uref2的型别是const int&amp;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span>&amp;&amp; uref3 = <span class="number">27</span>;	<span class="comment">// 27的型别是int，且是右值</span></span><br><span class="line">					<span class="comment">// 所以uref2的型别是int&amp;&amp;</span></span><br></pre></td></tr></table></figure>
+<p>数组和函数的情况也适用于auto型别的推导</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> name[] = <span class="string">"xxxxxx"</span>	<span class="comment">// name的型别是 const char [7]</span></span><br><span class="line">    </span><br><span class="line"><span class="keyword">auto</span> arr1 = name;				<span class="comment">// arr1的型别是const char *</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span> arr2 = name;				<span class="comment">// arr1的型别是const char (&amp;)[7]</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">someFunc</span><span class="params">(<span class="keyword">int</span>, <span class="keyword">double</span>)</span>		<span class="comment">// someFunc是个函数，型别是void(int, double)</span></span></span><br><span class="line"><span class="function">    </span></span><br><span class="line"><span class="function"><span class="keyword">auto</span> func1 </span>= someFunc;			<span class="comment">// fun1的型别是 void(*)(int, double)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span>&amp; func2 = someFunc;			<span class="comment">// func2的型别是void(&amp;)(int, double)</span></span><br></pre></td></tr></table></figure>
+<h3 id="auto和模板类型的不同"><a href="#auto和模板类型的不同" class="headerlink" title="auto和模板类型的不同"></a>auto和模板类型的不同</h3><p>声明一个int并初始化，C++98中有两种语法</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> x1 = <span class="number">27</span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">x2</span><span class="params">(<span class="number">27</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>C++11为了支持统一初始化(uniform initialization)，增加了下面的语法选项：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> x3 = &#123;<span class="number">27</span>&#125;;</span><br><span class="line"><span class="keyword">int</span> x4&#123;<span class="number">27</span>&#125;;</span><br></pre></td></tr></table></figure>
+<p>如果用auto：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> x1 = <span class="number">27</span>;		<span class="comment">// 型别是int，值是27</span></span><br><span class="line"><span class="function"><span class="keyword">auto</span> <span class="title">x2</span><span class="params">(<span class="number">27</span>)</span></span>;		<span class="comment">// 同上</span></span><br><span class="line"><span class="keyword">auto</span> x3 = &#123;<span class="number">27</span>&#125;;		<span class="comment">// 型别是 std::initializer_list&lt;int&gt;，值是&#123;27&#125;</span></span><br><span class="line"><span class="keyword">auto</span> x4&#123;<span class="number">27</span>&#125;;		<span class="comment">// 同上</span></span><br></pre></td></tr></table></figure>
+<p>后面两个语句，声明了这么一个变量，其型别类型为std::initializer_list<int>，且含有单个值为27的元素。</int></p>
+<p>当用于auto声明变量的初始表达式是大括号起时，推导所得的型别就属于std::initizlizer_list。</p>
+<p>对于大括号初始表达式的处理方式，是auto型别推导和模板型别推导的唯一不同之处。当采用auto声明的变量使用大括号初始化表达式进行初始化时，推导所得的型别是std::initializer_list的一个实例型别。</p>
+<p>但是如果向对应模板传入一个同样的初始化表达式，型别类型推导将会失败，代码将不同通过编译：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> x = &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>&#125;;		<span class="comment">// x的型别是 std::initializer_list&lt;int&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">(ParamType param)</span></span>;</span><br><span class="line"></span><br><span class="line">f(&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>&#125;)				<span class="comment">//错误，无法推导T的型别</span></span><br></pre></td></tr></table></figure>
+<p>auto和模板类型推导的唯一区别是，auto会假定用大括号起的初始化表达式是一个std::initialize_list，但是模板型别推导不会。</p>
+<p>C++14允许使用auto来说明函数返回值需要推导，而且C++14中的lamba表达式也会在形参中用到auto。然而，这些auto的用法是在使用模板型别推导，而非auto型别推导，所以，带有auto返回值的函数如果需要返回一个大括号起的初始化表达式，是通不过编译的。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">auto</span> <span class="title">createInitList</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>&#125;;			<span class="comment">// 错误，无法为&#123;1,2,3&#125;完成型别类型推导</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>用auto来指定C++14中lambda式的形参型别时，也不能使用大括号起的初始化表达式</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; v;</span><br><span class="line">…</span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span> resetV =</span><br><span class="line">  [&amp;v](<span class="keyword">const</span> <span class="keyword">auto</span>&amp; newValue) &#123; v = newValue; &#125;;     <span class="comment">// C++14</span></span><br><span class="line"></span><br><span class="line">…</span><br><span class="line"></span><br><span class="line">resetV(&#123; <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span> &#125;);          <span class="comment">// error! can't deduce type</span></span><br><span class="line">                              <span class="comment">// for &#123; 1, 2, 3 &#125;</span></span><br></pre></td></tr></table></figure>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>在一般情况下，auto型别推导和模板型别推导时一模一样的，但是auto型别推导会假定用大括号括起的初始化表达式代表一个std::intializer_list，但是模板型别推导不会</li>
+<li>在函数返回值或lambda式的形参中使用auto，意思是使用模板型别推导而非auto型别推导。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/c/" rel="tag"># c++</a>
+          
+            <a href="/tags/effective-modern-c/" rel="tag"># effective modern c++</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/2019/10/27/Effective-Modern-C-1-理解模板型别推导/" rel="next" title="Effective Modern C++ 1 理解模板型别推导">
+                <i class="fa fa-chevron-left"></i> Effective Modern C++ 1 理解模板型别推导
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="gitalk-container"></div>
+  
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/logo1.jpg"
+      alt="Uyouii">
+  <p class="site-author-name" itemprop="name">Uyouii</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Uyouii" title="GitHub &rarr; https://github.com/Uyouii" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:taiyoudong@gmail.com" title="E-Mail &rarr; mailto:taiyoudong@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#条款2：-理解auto-型别推导"><span class="nav-number">1.</span> <span class="nav-text">条款2： 理解auto 型别推导</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#auto和模板类型的不同"><span class="nav-number">1.1.</span> <span class="nav-text">auto和模板类型的不同</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">1.2.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Uyouii</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+<script src="//cdn.jsdelivr.net/npm/js-md5@0.7.3/src/md5.min.js"></script>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: 'Iv1.d91818b2eefe0afe',
+    clientSecret: '092f07bb03aebaa6222773f3df6ff8713a4f52eb',
+    repo: 'gitment-comments',
+    owner: 'Uyouii',
+    admin: ['['Uyouii']'],
+    id: md5(location.pathname),
+      language: window.navigator.language || window.navigator.userLanguage,
+    
+    distractionFreeMode: 'true'
+  });
+  gitalk.render('gitalk-container');
+</script>
+
+
+</body>
+</html>
