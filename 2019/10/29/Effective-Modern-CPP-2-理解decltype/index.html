@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini" lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: ''
+    },
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    }
+  };
+</script>
+
+  <meta name="description" content="条款3：理解decltype先看看一般的案例 123456789101112131415161718192021222324const int i = 0;           // decltype(i) is const intbool f(const Widget&amp;amp; w);   // decltype(w) is const Widget&amp;amp;">
+<meta name="keywords" content="CPP - effective modern CPP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Effective-Modern-CPP-3-理解decltype">
+<meta property="og:url" content="https://uyouii.github.io/2019/10/29/Effective-Modern-CPP-2-理解decltype/index.html">
+<meta property="og:site_name" content="Uyouii&#39;s Blogs">
+<meta property="og:description" content="条款3：理解decltype先看看一般的案例 123456789101112131415161718192021222324const int i = 0;           // decltype(i) is const intbool f(const Widget&amp;amp; w);   // decltype(w) is const Widget&amp;amp;">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-10-28T17:40:10.818Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Effective-Modern-CPP-3-理解decltype">
+<meta name="twitter:description" content="条款3：理解decltype先看看一般的案例 123456789101112131415161718192021222324const int i = 0;           // decltype(i) is const intbool f(const Widget&amp;amp; w);   // decltype(w) is const Widget&amp;amp;">
+  <link rel="canonical" href="https://uyouii.github.io/2019/10/29/Effective-Modern-CPP-2-理解decltype/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Effective-Modern-CPP-3-理解decltype | Uyouii's Blogs</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Uyouii's Blogs</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">There are many things need to learn.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+    </ul>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2019/10/29/Effective-Modern-CPP-2-理解decltype/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Uyouii">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/logo1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Uyouii's Blogs">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Effective-Modern-CPP-3-理解decltype
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-10-29 01:39:10 / Modified: 01:40:10" itemprop="dateCreated datePublished" datetime="2019-10-29T01:39:10+08:00">2019-10-29</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/effective-modern-CPP/" itemprop="url" rel="index"><span itemprop="name">effective modern CPP</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="条款3：理解decltype"><a href="#条款3：理解decltype" class="headerlink" title="条款3：理解decltype"></a>条款3：理解decltype</h2><p>先看看一般的案例</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> i = <span class="number">0</span>;           <span class="comment">// decltype(i) is const int</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">f</span><span class="params">(<span class="keyword">const</span> Widget&amp; w)</span></span>;   <span class="comment">// decltype(w) is const Widget&amp;</span></span><br><span class="line">                           <span class="comment">// decltype(f) is bool(const Widget&amp;)</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Point</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> x, y;                <span class="comment">// decltype(Point::x) is int</span></span><br><span class="line">&#125;;                         <span class="comment">// decltype(Point::y) is int</span></span><br><span class="line"></span><br><span class="line">Widget w;                  <span class="comment">// decltype(w) is Widget</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (f(w)) …                <span class="comment">// decltype(f(w)) is bool</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;       <span class="comment">// simplified version of std::vector</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">vector</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  …</span><br><span class="line">  T&amp; <span class="keyword">operator</span>[](<span class="built_in">std</span>::<span class="keyword">size_t</span> index);</span><br><span class="line">  …</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; v;             <span class="comment">// decltype(v) is vector&lt;int&gt;</span></span><br><span class="line">…</span><br><span class="line"><span class="keyword">if</span> (v[<span class="number">0</span>] == <span class="number">0</span>) …           <span class="comment">// decltype(v[0]) is int&amp;</span></span><br></pre></td></tr></table></figure>
+<p>C++11中，decltype的主要用途大概就是在于声明那些返回值类型依赖于形参型别的函数模板。</p>
+<p>一般来说，含有型别T的对象的容器，其operator[]会返回T&amp;。std::queue就属于这种情况，而std::vector也几乎总是属于这种情况。只有std::vector<bool>对应的operator[]并不返回bool&amp;，而时返回一个全新的对象。容器的operator[]的返回类型取决于改容器本身。</bool></p>
+<h3 id="示例1："><a href="#示例1：" class="headerlink" title="示例1："></a>示例1：</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Container, <span class="keyword">typename</span> Index&gt;    <span class="comment">// works, but</span></span><br><span class="line"><span class="function"><span class="keyword">auto</span> <span class="title">authAndAccess</span><span class="params">(Container&amp; c, Index i)</span>       <span class="comment">// requires</span></span></span><br><span class="line">  -&gt; decltype(c[i])                             // refinement</span><br><span class="line">&#123;</span><br><span class="line">  authenticateUser();</span><br><span class="line">  <span class="keyword">return</span> c[i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>函数名字之前的auto和型别推导没有任何关系，它只是说明了这里使用了C++11中的<strong>返回值型别尾序语法</strong>（trailing return type syntax），即改函数的返回值型别将在形参列表之后（在-&gt;之后）。</p>
+<p>尾序返回值的好处在于，在指定返回值型别时可以使用函数形参。</p>
+<p>采用这种声明形式之后，operator[]返回值是什么型别，authAndAccess的返回值就是什么型别。</p>
+<h3 id="示例2："><a href="#示例2：" class="headerlink" title="示例2："></a>示例2：</h3><p>C++11允许对单表达式的lambda返回值型别实施推导，而C++14则将这个允许返回扩张到了一切lambda表达式和一切函数。</p>
+<p>在C++14中可以去掉返回值型别尾序语法，而只保留前导auto。在这样的声明形式中，auto确实会发生型别推导。具体的说，它说明编译器会依据函数实现来实施函数返回值推导。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Container, <span class="keyword">typename</span> Index&gt;    <span class="comment">// C++14;</span></span><br><span class="line"><span class="function"><span class="keyword">auto</span> <span class="title">authAndAccess</span><span class="params">(Container&amp; c, Index i)</span>       <span class="comment">// not quite</span></span></span><br><span class="line"><span class="function"></span>&#123;                                               <span class="comment">// correct</span></span><br><span class="line">  authenticateUser();</span><br><span class="line">  <span class="keyword">return</span> c[i];                  <span class="comment">// return type deduced from c[i]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译器会对auto之行为返回型别的函数实现模板型别推导，在上例中，这样就留下了隐患。</p>
+<p>大多数含有型别T的对象的容器operator[]会返回T&amp;，但是条款1说明，模板型别推导过程中，初始化表达式的引用性会被忽略。</p>
+<h3 id="示例3："><a href="#示例3：" class="headerlink" title="示例3："></a>示例3：</h3><p>如果希望authAndAccess按照期望运作，就要对其返回值执行decltype型别推导。</p>
+<p>在C++14中通过decltype(auto)饰词解决了这个问题：auto制定了欲实施推导的型别，而推导过程采用的是decltype的规则。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Container, <span class="keyword">typename</span> Index&gt;   <span class="comment">// C++14; works,</span></span><br><span class="line"><span class="keyword">decltype</span>(<span class="keyword">auto</span>)                                 <span class="comment">// but still</span></span><br><span class="line">authAndAccess(Container&amp; c, Index i)           <span class="comment">// requires</span></span><br><span class="line">&#123;                                              <span class="comment">// refinement</span></span><br><span class="line">  authenticateUser();</span><br><span class="line">  <span class="keyword">return</span> c[i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>现在，authAndAccess的返回值型别和c[i]的返回值型别一致了。</p>
+<h3 id="示例4："><a href="#示例4：" class="headerlink" title="示例4："></a>示例4：</h3><p>decltype(auto)并不限于在函数返回值型别处使用。也可以在初始化表达式处应用decltype型别推导规则：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Widget w;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Widget&amp; cw = w;</span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span> myWidget1 = cw;             <span class="comment">// auto type deduction:</span></span><br><span class="line">                                 <span class="comment">// myWidget1's type is Widget</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">decltype</span>(<span class="keyword">auto</span>) myWidget2 = cw;   <span class="comment">// decltype type deduction:</span></span><br><span class="line">                                 <span class="comment">// myWidget2's type is</span></span><br><span class="line">                                 <span class="comment">//   const Widget&amp;</span></span><br></pre></td></tr></table></figure>
+<h3 id="示例5："><a href="#示例5：" class="headerlink" title="示例5："></a>示例5：</h3><p>容器的传递方式是对非常量的左值引用（lvalue-reference-to-non-const)，因为返回该容器的某个元素的引用，就意味着允许用户对容器进行修改。不过这也意味着无法向该函数传递右值容器。右值是不能绑定到左值引用的（除非是对常量的左值引用）。</p>
+<p>要解决这种情况，重载是一个办法，但是需要维护两个函数。</p>
+<p>另一种方式是采用一种既能绑定到左值也能绑定到右值的引用形参：万能引用。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Container, <span class="keyword">typename</span> Index&gt;    <span class="comment">// c is now a</span></span><br><span class="line"><span class="keyword">decltype</span>(<span class="keyword">auto</span>) authAndAccess(Container&amp;&amp; c,     <span class="comment">// universal</span></span><br><span class="line">                             Index i);          <span class="comment">// reference</span></span><br></pre></td></tr></table></figure>
+<p>条款25：对万能引用要应用std::forward</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Container, <span class="keyword">typename</span> Index&gt;       <span class="comment">// final</span></span><br><span class="line"><span class="keyword">decltype</span>(<span class="keyword">auto</span>)                                     <span class="comment">// C++14</span></span><br><span class="line">authAndAccess(Container&amp;&amp; c, Index i)              <span class="comment">// version</span></span><br><span class="line">&#123;</span><br><span class="line">  authenticateUser();</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">std</span>::forward&lt;Container&gt;(c)[i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个版本徐娅c++14编译器，如果只能使用C++11的版本，需要自己指定返回值型别。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> Container, <span class="keyword">typename</span> Index&gt;       <span class="comment">// final</span></span><br><span class="line"><span class="keyword">auto</span>                                               <span class="comment">// C++11</span></span><br><span class="line">authAndAccess(Container&amp;&amp; c, Index i)              <span class="comment">// version</span></span><br><span class="line">-&gt; <span class="keyword">decltype</span>(<span class="built_in">std</span>::forward&lt;Container&gt;(c)[i])</span><br><span class="line">&#123;</span><br><span class="line">  authenticateUser();</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">std</span>::forward&lt;Container&gt;(c)[i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="深入理解decltype及其使用"><a href="#深入理解decltype及其使用" class="headerlink" title="深入理解decltype及其使用"></a>深入理解decltype及其使用</h3><p>想要彻底理解decltype的行为，需要熟悉若干特殊情况，这里只看一例就可以更深入的理解decltype及其使用。</p>
+<p>将decltype应用于一个名字之上，就会得到该名字的声明类型。</p>
+<p>名字其实是左值表达式，如果仅有一个名字，decltype的行为保持不变。</p>
+<p>不过，如果是比仅有名字更复杂的左值表达式的话，decltype就保证得出的型别总是左值引用。</p>
+<p>这种行为一般而言没什么影响，因为绝大多数左值表达式都自带一个左值引用饰词。例如：返回左值的函数总是返回左值引用。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> x = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+<p>例如：decltype(x)的结果是int，但是decltype((x))的结果变成了int&amp;，因为(x)是比名字更复杂的表达式。</p>
+<p>但是一个无关紧要的小改动，可能会影响到函数型别的推导结果：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">decltype</span>(<span class="keyword">auto</span>) f1()</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">int</span> x = <span class="number">0</span>;</span><br><span class="line">  …</span><br><span class="line">  <span class="keyword">return</span> x;        <span class="comment">// decltype(x) is int, so f1 returns int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">decltype</span>(<span class="keyword">auto</span>) f2()</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">int</span> x = <span class="number">0</span>;</span><br><span class="line">  …</span><br><span class="line">  <span class="keyword">return</span> (x);      <span class="comment">// decltype((x)) is int&amp;, so f2 returns int&amp;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>绝大多数情况下，decltype会得出变量或者表达式的型别而不做任何修改。</li>
+<li>对于型别为T的左值表达式，除非该表达式仅有一个名字，decltype总是得出型别T&amp;</li>
+<li>C++14支持decltype(auto)，和auto一样，它会从其初始化表达式出发来推导型别，但是它的型别推导使用的是decltype的规则。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/CPP-effective-modern-CPP/" rel="tag"># CPP - effective modern CPP</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/2019/10/27/Effective-Modern-CPP-2-理解auto型别推导/" rel="next" title="Effective Modern CPP 2 理解auto型别推导">
+                <i class="fa fa-chevron-left"></i> Effective Modern CPP 2 理解auto型别推导
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="gitalk-container"></div>
+  
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/logo1.jpg"
+      alt="Uyouii">
+  <p class="site-author-name" itemprop="name">Uyouii</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Uyouii" title="GitHub &rarr; https://github.com/Uyouii" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:taiyoudong@gmail.com" title="E-Mail &rarr; mailto:taiyoudong@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#条款3：理解decltype"><span class="nav-number">1.</span> <span class="nav-text">条款3：理解decltype</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#示例1："><span class="nav-number">1.1.</span> <span class="nav-text">示例1：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#示例2："><span class="nav-number">1.2.</span> <span class="nav-text">示例2：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#示例3："><span class="nav-number">1.3.</span> <span class="nav-text">示例3：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#示例4："><span class="nav-number">1.4.</span> <span class="nav-text">示例4：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#示例5："><span class="nav-number">1.5.</span> <span class="nav-text">示例5：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#深入理解decltype及其使用"><span class="nav-number">1.6.</span> <span class="nav-text">深入理解decltype及其使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">2.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Uyouii</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+<script src="//cdn.jsdelivr.net/npm/js-md5@0.7.3/src/md5.min.js"></script>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: 'Iv1.d91818b2eefe0afe',
+    clientSecret: '092f07bb03aebaa6222773f3df6ff8713a4f52eb',
+    repo: 'gitment-comments',
+    owner: 'Uyouii',
+    admin: ['['Uyouii']'],
+    id: md5(location.pathname),
+      language: window.navigator.language || window.navigator.userLanguage,
+    
+    distractionFreeMode: 'true'
+  });
+  gitalk.render('gitalk-container');
+</script>
+
+
+</body>
+</html>

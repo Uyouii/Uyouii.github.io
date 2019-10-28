@@ -222,6 +222,135 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2019/08/03/07-进程调度/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Uyouii">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/logo1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Uyouii's Blogs">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/08/03/07-进程调度/" class="post-title-link" itemprop="url">07 进程调度</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-08-03 18:03:25 / Modified: 18:12:35" itemprop="dateCreated datePublished" datetime="2019-08-03T18:03:25+08:00">2019-08-03</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/深入理解Linux内核/" itemprop="url" rel="index"><span itemprop="name">深入理解Linux内核</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+            <h2 id="调度策略"><a href="#调度策略" class="headerlink" title="调度策略"></a>调度策略</h2><p><strong>进程分类方法</strong></p>
+<p>传统上把进程分类为<strong>“I/O受限(I/O-bound)</strong>“或”<strong>CPU受限(CPU-bound)</strong>“。前者频繁的使用I/O设备，并花费很多时间等待I/O操作完成；后者则需要大量的CPU时间的数值计算应用程序。</p>
+<p>另一种分类方法把进程区分为三类：</p>
+<ul>
+<li><strong>交互式进程(interactive process)</strong>: 这些进程经常与用户进行交互，因此，需要花费很多时间等待键盘和鼠标操作。当接受了输入后，进程必须很快被唤醒，否则用户将发现系统反应迟钝。典型的交互式程序是命令shell、文本编辑器及图形应用程序。</li>
+<li><strong>批处理程序(batch process)</strong>: 这些进程不必与用户交互，因此经常在后台运行。这样的进程不必很快地响应，因此常受到调度程序地影响。典型地批处理进程是程序设计语言地编译程序、数据库搜索引擎及科学计算。</li>
+<li><strong>实时进程(real-time process)</strong>: 这些进程有很强地调度需要。这样的进程决不会被低优先级的进程阻塞，它们应该有一个短的响应时间，更重要的是，响应时间的变化应该很小。典型的实时程序有视频和音频应用程序、机器人控制程序及从物理传感器上收集数据的程序。</li>
+</ul>
+<h3 id="进程的抢占"><a href="#进程的抢占" class="headerlink" title="进程的抢占"></a>进程的抢占</h3><p>Linux的进程是抢占式的。如果进程进入TASK_RUNNING状态，内核检查它的动态优先级是否大于当前正在运行的进程的优先级。如果是，current的执行被中断，并调用调度程序选择另一个进程运行（通常是刚变为可运行的进程）。</p>
+<p>当然，进程在它的时间片到期时也可以被抢占。此时，当前进程thread_info结构中的TIF_NEED_RESCHED标志被设置，以便时钟中断处理程序终止时调度程序被调用。</p>
+<p>注：被强占的进程没有被挂起，因为它还处于TASK_RUNNING状态，只不过不再使用CPU。</p>
+<h3 id="一个时间片必须持续多长？"><a href="#一个时间片必须持续多长？" class="headerlink" title="一个时间片必须持续多长？"></a>一个时间片必须持续多长？</h3><p>如果平均时间片太短，有进程切换引起的系统额外开销就会变得非常高。</p>
+<p>如果平均时间片太长，进程看起来就不再是并发执行。</p>
+<p>对时间片大小的选择始终是一种折衷。Linux采取单凭经验的方法，即选择尽可能长、同时能保持良好响应时间的时间片。</p>
+<h3 id="调度算法"><a href="#调度算法" class="headerlink" title="调度算法"></a>调度算法</h3><p>调度程序总能成功地找到要执行地进程。总是至少有一个可运行进程，即swapper进程，它地PID等于0，而且它只有再CPU不能执行其他进程时才执行。</p>
+<p>每个Linux进程总是按照下面地调度类型被调度：</p>
+<ul>
+<li><strong>SCHED_FIFO</strong><ul>
+<li>先进先出地实时进程。当调度程序把CPU分配给进程地时候，它把改进程描述符保留在运行队列链表地当前位置。如果没有其他可运行的更高优先级实时进程，进程就继续使用CPU，想用多久就用多久，计师还有其他具有相同优先级的实时进程处于可运行状态。</li>
+</ul>
+</li>
+<li><strong>SCHED_RR</strong><ul>
+<li>时间片轮转的实时进程。当调度程序把CPU分配给进程的时候，它把该进程的描述符放在运行队列链表的末尾。这种策略保证对所有具有相同优先级的SCHED_RR实时进程公平的分配CPU时间。</li>
+</ul>
+</li>
+<li><strong>SCHED_NORMAL</strong><ul>
+<li>普通的分时进程</li>
+</ul>
+</li>
+</ul>
+<p>调度算法根据进程是普通进程还是实时进程有很大不同。</p>
+<h3 id="普通进程的调度"><a href="#普通进程的调度" class="headerlink" title="普通进程的调度"></a>普通进程的调度</h3><h3 id="实时进程的调度"><a href="#实时进程的调度" class="headerlink" title="实时进程的调度"></a>实时进程的调度</h3>
+          
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+      
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2019/08/03/03-进程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2423,144 +2552,6 @@
   </article>
 
     
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2018/05/12/记一次闹心的网络调试经历/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Uyouii">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/logo1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Uyouii's Blogs">
-    </span>
-      <header class="post-header">
-
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2018/05/12/记一次闹心的网络调试经历/" class="post-title-link" itemprop="url">记一次闹心的网络调试经经历</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2018-05-12 20:26:19" itemprop="dateCreated datePublished" datetime="2018-05-12T20:26:19+08:00">2018-05-12</time>
-            </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-08-02 11:28:18" itemprop="dateModified" datetime="2019-08-02T11:28:18+08:00">2019-08-02</time>
-              </span>
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Personal-Journal/" itemprop="url" rel="index"><span itemprop="name">Personal Journal</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          <br>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          
-            <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>目前为测试下自己毕业设计实现的网络库，手边没有两台电脑，所以就打算在本机测试实现，方法是通过修改本极路由表，让发向本地ip的网络包不直接通过回环端口，而是先发送到网关，在通过网关返回回来，这样通过丢包模拟软件设置本地网卡的丢包率和延时便可以模拟真实网络环境的波动，进而进行测试。</p>
-<p>环境是：<code>Windows 10</code>，丢包模拟软件是：<code>Network Emulator Client</code></p>
-<p>修改本地路由表的命令是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">route add [本地ip] mask 255.255.255.255 [网关ip]</span><br></pre></td></tr></table></figure></p>
-<h2 id="问题出现"><a href="#问题出现" class="headerlink" title="问题出现"></a>问题出现</h2><p>这种方法首先在公司是可行的，可是回到自己住的地方后，再通过这种方法发现发向本地ip的UDP包无法收到，ping本地ip测试之后，返回的是这个结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Reply from 192.168.31.1: Destination port unreachable.</span><br></pre></td></tr></table></figure></p>
-<p>目标端口不可达，这就非常奇怪了。</p>
-<p>一开始以为是本机防火墙的锅，但是修改了win10防火墙各种参数之后还是没有效果。</p>
-<p>并且通过测试可以发现，同一子网下的不同的两台主机之间是可以ping通的，所以不存在路由器找不到mac地址的问题，既然能找到mac地址，很有可能是路由器把这个包丢掉了。</p>
-<h2 id="解决尝试"><a href="#解决尝试" class="headerlink" title="解决尝试"></a>解决尝试</h2><p>既然是路由器的问题，一种方法是直接将路由器去掉，把网线直接插到网口上面，这样直接在上层的子网内尝试向本机ip发包，然后这次问题变成了超时，由于房间内网线上层连接的是2层交换机，交换机会进行什么样的操作就无法干预了，退回到路由器的问题。</p>
-<h2 id="远程连接路由器"><a href="#远程连接路由器" class="headerlink" title="远程连接路由器"></a>远程连接路由器</h2><p>路由器管理员界面是没有提供发包调试的功能，也没有命令行页面的，仅仅通过管理员界面是无法对路由表和防火墙进行操作的，没办法，先试着远程链接下路由器。</p>
-<p>由于我的路由器的型号是小米路由器3，通过查阅资料发现，要远程连接路由器首先需要将路由器刷机到开发版，然后给路由器装上ssh，这样就可以远程连接了。</p>
-<p>然后就去重官网上下载了小米路由器3开发版的最新版，尝试了几次之后给路由器成功刷成了开发者版本。</p>
-<p>发现安装ssh要通过u盘进行操作，然后先去找室友借到了u盘，下好ssh文件，插到路由器上后，重启，尝试连接，没有反应。</p>
-<p>这样反复几次之后，突然意识到u盘需要时fat32格式的，借到的u盘太大，无法格式化为fat32格式，只能是NTFS和EXFAT格式，因为FAT32最好的支持是小于32g的U盘，太大的U盘格式化便没了这个选项。</p>
-<p>没办法，费劲心力找到了一个8g的小U盘，格式化为FAT32格式的，插入路由器，安装，OK，重启，尝试连接，成功！</p>
-<h2 id="远程路由器"><a href="#远程路由器" class="headerlink" title="远程路由器"></a>远程路由器</h2><p>不得不说小米是骚气，路由器登陆界面竟然是这个：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"> -----------------------------------------------------</span><br><span class="line">       Welcome to XiaoQiang!</span><br><span class="line"> -----------------------------------------------------</span><br><span class="line">  $$$$$$\  $$$$$$$\  $$$$$$$$\      $$\      $$\        $$$$$$\  $$\   $$\</span><br><span class="line"> $$  __$$\ $$  __$$\ $$  _____|     $$ |     $$ |      $$  __$$\ $$ | $$  |</span><br><span class="line"> $$ /  $$ |$$ |  $$ |$$ |           $$ |     $$ |      $$ /  $$ |$$ |$$  /</span><br><span class="line"> $$$$$$$$ |$$$$$$$  |$$$$$\         $$ |     $$ |      $$ |  $$ |$$$$$  /</span><br><span class="line"> $$  __$$ |$$  __$$&lt; $$  __|        $$ |     $$ |      $$ |  $$ |$$  $$&lt;</span><br><span class="line"> $$ |  $$ |$$ |  $$ |$$ |           $$ |     $$ |      $$ |  $$ |$$ |\$$\</span><br><span class="line"> $$ |  $$ |$$ |  $$ |$$$$$$$$\       $$$$$$$$$  |       $$$$$$  |$$ | \$$\</span><br><span class="line"> \__|  \__|\__|  \__|\________|      \_________/        \______/ \__|  \__|</span><br><span class="line">root@XiaoQiang:~#</span><br></pre></td></tr></table></figure></p>
-<p>不知道雷布斯同学看了后是什么反应，= =。</p>
-<p>终于登陆到路由器了，然后下一步该干嘛呢 0.0</p>
-<p>先看一下路由器的路由表:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root@XiaoQiang:~# route -n</span><br><span class="line">Kernel IP routing table</span><br><span class="line">Destination     Gateway         Genmask         Flags Metric Ref    Use Iface</span><br><span class="line">192.168.1.0     0.0.0.0         255.255.255.0   U     0      0        0 eth0.2</span><br><span class="line">192.168.31.0    0.0.0.0         255.255.255.0   U     0      0        0 br-lan</span><br><span class="line">###.###.##.#    0.0.0.0         255.255.255.0   U     0      0        0 wl2</span><br><span class="line">0.0.0.0         192.168.1.1     0.0.0.0         UG    0      0        0 eth0.2</span><br><span class="line">0.0.0.0         192.168.1.1     0.0.0.0         UG    50     0        0 eth0.2</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>个人外网的ip地址处于安全问题就先用#代替了</p>
-</blockquote>
-<p>小米路由器的内网网关是192.168.31.1，掩码是 255.255.255.0，个人主机的ip地址是192.168.31.233。对应的规则是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">192.168.31.0    0.0.0.0         255.255.255.0   U     0      0        0 br-lan</span><br></pre></td></tr></table></figure></p>
-<p>好像并没有什么问题，发向192.168.31.0的子网的包会通过自己转发出去。</p>
-<p>难道是路由器防火墙的问题？</p>
-<h2 id="坑爹的路由器防火墙"><a href="#坑爹的路由器防火墙" class="headerlink" title="坑爹的路由器防火墙"></a>坑爹的路由器防火墙</h2><p>尝试下命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/etc/init.d/firewall stop</span><br></pre></td></tr></table></figure></p>
-<p>关掉了路由器的防火墙，重新向本地ip用Ping命令测试，居然成功了！！！！！</p>
-<p>OK，果然是这个坑爹的路由器防火墙把发向源ip和目的ip相同的包给拒了。</p>
-<p>但是····QAQ，把防火墙关了之后，坑爹的网居然被断了，只能子网内自己发发包玩下，包发不出去了= =，坑爹的，实在是没精力去学习路由器防火墙规则了，先这样把，测试的时候先把路由器防火墙关了，不用的时候再打开= =，非常郁闷了。</p>
-<p>不过花了三个晚上找到了问题还是很开心的。</p>
-<p>把这个问题放在这边，希望大家不要再踩这个坑了，测试还是用两台主机去测试吧。</p>
-
-          
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
   </section>
 
   
@@ -2601,7 +2592,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-count">45</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -2713,7 +2704,9 @@
         
           
         
-        <span class="site-state-item-count">29</span>
+          
+        
+        <span class="site-state-item-count">30</span>
         <span class="site-state-item-name">tags</span>
         </a>
       </div>
