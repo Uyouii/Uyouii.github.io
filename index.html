@@ -222,6 +222,128 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2019/11/10/Effective-Modern-CPP-6-当auto推导的型别不符合要求时-使用带显式型别的初始化物的习惯用法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Uyouii">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/logo1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Uyouii's Blogs">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/11/10/Effective-Modern-CPP-6-当auto推导的型别不符合要求时-使用带显式型别的初始化物的习惯用法/" class="post-title-link" itemprop="url">Effective-Modern-CPP-6 当auto推导的型别不符合要求时 使用带显式型别的初始化物的习惯用法</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-11-10 18:08:35 / Modified: 18:08:58" itemprop="dateCreated datePublished" datetime="2019-11-10T18:08:35+08:00">2019-11-10</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/effective-modern-CPP/" itemprop="url" rel="index"><span itemprop="name">effective modern CPP</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+            <h2 id="条款6：-当auto推导的型别不符合要求时，使用带显式型别的初始化物的习惯用法"><a href="#条款6：-当auto推导的型别不符合要求时，使用带显式型别的初始化物的习惯用法" class="headerlink" title="条款6： 当auto推导的型别不符合要求时，使用带显式型别的初始化物的习惯用法"></a>条款6： 当auto推导的型别不符合要求时，使用带显式型别的初始化物的习惯用法</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; features(<span class="keyword">const</span> Widget&amp; w);</span><br><span class="line"></span><br><span class="line">Widget w;</span><br><span class="line">…</span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> highPriority = features(w)[<span class="number">5</span>];  <span class="comment">// is w high priority?</span></span><br><span class="line">…</span><br><span class="line"></span><br><span class="line">processWidget(w, highPriority);      <span class="comment">// process w in accord</span></span><br><span class="line">                                     <span class="comment">// with its priority</span></span><br></pre></td></tr></table></figure>
+<p>如果给上述代码做一个看似无害的改变，把highPriority的型别改成auto，</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> highPriority = features(w)[<span class="number">5</span>];  <span class="comment">// is w high priority?</span></span><br></pre></td></tr></table></figure>
+<p>虽然代码仍然可以通过编译，但是行为变得不可预期了:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">processWidget(w, highPriority);      <span class="comment">// undefined behavior!</span></span><br></pre></td></tr></table></figure>
+<p>processWidget的调用现在会导致未定义行为。</p>
+<p>其实改了auto的代码中，highPriority的型别不再是bool了。</p>
+<p>从概念上说，std::vector<bool>应该持有的是bool型别的元素，但是std::vector<bool>的opertor[]的返回值并不是容器中的一个元素的引用（对于其他所有形参型别而言，std::vector::operator[]都返回这样的值，单单bool是个例外）。</bool></bool></p>
+<p>它返回的是个std::vector<bool>::reference型别的对象(这是一个嵌套在std::vector<bool>)里面的类。</bool></bool></p>
+<p>之所以有std::vector<bool>::reference，是因为std::vector<bool>做过特化，用了一种压缩形式表示其持有的bool元素，每个bool元素用一个比特来表示。</bool></bool></p>
+<p>这种做法给std::vector<bool>的operator[]带来一个问题，因为按常理来说std::vector<t>的operator[]应该返回一个T&amp;，然而C++中却禁止比特的引用。既然不能返回一个bool&amp;，std::vector<bool>的operator[]转而返回了一个表现得像bool&amp;的对象。实现这个效果的原理是，std::vector<bool>::reference做了一个向bool的隐式型别转换。  </bool></bool></t></bool></p>
+<h3 id="代理类-proxy-class"><a href="#代理类-proxy-class" class="headerlink" title="代理类(proxy class)"></a>代理类(proxy class)</h3><p>std::vector<bool>::reference是个代理类的实例。代理类就是指为了增广其他型别的类。</bool></p>
+<p>例如：std::vector<bool>::reference就是为了制造std::vector<bool>的operator[]返回的一个比特制造的引用的假象。标准库中的智能指针也是代理类，他们是为了将资源管理嫁接到裸指针之上。</bool></bool></p>
+<p>一些代理类的设计有隐藏在背后的意思，std::vector<bool>::reference就是这样的”隐形”代理，std::bitset相对应的std::bitset::reference也一样。</bool></p>
+<p>一个普遍的规律是，“隐形”代理类和auto无法和平共处。这种类的对象往往会设计为仅维持到单个语句之内存在，所以，如果要创造这种类的变量，往往就是违反了基本的库的设计的假定前提。</p>
+<p>所以，要防止写出这样的代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> someVar = expression of <span class="string">"invisible"</span> proxy class type;</span><br></pre></td></tr></table></figure>
+<p>一种解决方法是强制进行另一次型别转换。这种方法成为带显式型别的初始化物习惯用法。该方法要求使用auto声明变量，但针对初始化表达进行强制类型转换。</p>
+<p>e.g.</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> highPriority = <span class="keyword">static_cast</span>&lt;<span class="keyword">bool</span>&gt;(features(w)[<span class="number">5</span>]);</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>“隐形”的代理型别可以导致auto根据初始化表达式推导出的“错误的”型别。</li>
+<li>带显式型别的初始化物习惯用法强制auto推导出想要的型别。</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+      
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2019/11/06/Effective-Modern-CPP-5-优先选用auto-而非显式型别声明/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1342,119 +1464,6 @@
   </article>
 
     
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2019/08/03/小王子/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Uyouii">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/logo1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Uyouii's Blogs">
-    </span>
-      <header class="post-header">
-
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/08/03/小王子/" class="post-title-link" itemprop="url">小王子</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2019-08-03 18:17:20 / Modified: 18:22:38" itemprop="dateCreated datePublished" datetime="2019-08-03T18:17:20+08:00">2019-08-03</time>
-            </span>
-          
-            
-
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/bookread/" itemprop="url" rel="index"><span itemprop="name">bookread</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          <br>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          
-            <h2 id="小王子"><a href="#小王子" class="headerlink" title="小王子"></a>小王子</h2><ol>
-<li>如果有一个人爱上在这亿万颗星星中仅有的一朵花，这人望着星空的时候，就会觉得幸福。</li>
-<li>审判自己，比审判别人难得多。你若是能够公正地审判自己，那你就是一个真正地贤士。</li>
-<li>在我看来，你只不过是一个小男孩，跟成千上万地男孩毫无两样。我不需要你，你也不需要我。对你来说我只不过是一只狐狸，跟成千上万的狐狸毫无两样。但是，你如果驯养了我，那么我们俩就彼此相互需要。对我来说，你是世界上独一无二的；我在你看来，也是世界上独一无二的……</li>
-<li>只有用心看，才能看的清楚；本质的东西，眼睛是看不见的。</li>
-<li>正是因为你为你的玫瑰，花费了时间，才使你的花儿变得那么重要。</li>
-<li>对你驯养的东西，你要永远负责。你必须对你的玫瑰花负责……</li>
-<li>“沙漠美丽”，小王子说，“是因为在某个地方藏着一口水井……”</li>
-<li>无论是房子、星星或沙漠，使它们美丽的东西是看不见的。</li>
-<li>这水，不只是一种饮料，它是从披星戴月地长途跋涉、轱辘的歌声、我的双臂的力量产生出来的。这水，像是一份礼物，使心田得到慰藉。在我小的时候，只有圣诞树的光、子夜弥撒的音乐、甜蜜的微笑，这一切才使得我的圣诞礼物光芒四射。</li>
-<li>眼睛是什么也看不见的。应该用心灵去找。</li>
-<li>你倘若爱上一朵生长在星星上的花，那么，在夜间，你看看天空就会感到愉快。所有的星星都像盛开的鲜花。</li>
-<li>“每个人都有星星，“小王子说，”但在不同的人眼里就是不一样。对旅行者，星星是指引路的。对另一些人，星星只是一些小亮光。对学者，星星是探讨的问题。对我的那个商人，星星是黄金。但是，所有的星星都是一声不响的。你有的那些星星，是别人得不到的！“</li>
-<li>”你夜间仰望星空时，由于我就住在其中的一颗星星上，由于我在其中的一颗星上笑，那么，对你来说，所有的星星仿佛都在笑。唯有你，有一些会笑的星星。“</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
   </section>
 
   
@@ -1495,7 +1504,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-count">47</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
