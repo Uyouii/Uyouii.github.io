@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini" lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: ''
+    },
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    }
+  };
+</script>
+
+  <meta name="description" content="07  在创建对象的时候区分()和{}在C++中，指定初始化的方式包括使用小括号、等号或者是大括号： 12345int x(0);             // initializer is in parenthesesint y = 0;            // initializer follows &quot;=&quot;int z&amp;#123; 0 &amp;#125;;           // initial">
+<meta name="keywords" content="CPP - effective modern CPP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Effective-Modern-CPP-6-在创建对象的时候区分parens和braces“ ">
+<meta property="og:url" content="https://uyouii.github.io/2019/11/17/Effective-Modern-CPP-7-在创建对象的时候区分parens和braces/index.html">
+<meta property="og:site_name" content="Uyouii&#39;s Blogs">
+<meta property="og:description" content="07  在创建对象的时候区分()和{}在C++中，指定初始化的方式包括使用小括号、等号或者是大括号： 12345int x(0);             // initializer is in parenthesesint y = 0;            // initializer follows &quot;=&quot;int z&amp;#123; 0 &amp;#125;;           // initial">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-11-17T08:56:34.751Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Effective-Modern-CPP-6-在创建对象的时候区分parens和braces“ ">
+<meta name="twitter:description" content="07  在创建对象的时候区分()和{}在C++中，指定初始化的方式包括使用小括号、等号或者是大括号： 12345int x(0);             // initializer is in parenthesesint y = 0;            // initializer follows &quot;=&quot;int z&amp;#123; 0 &amp;#125;;           // initial">
+  <link rel="canonical" href="https://uyouii.github.io/2019/11/17/Effective-Modern-CPP-7-在创建对象的时候区分parens和braces/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Effective-Modern-CPP-6-在创建对象的时候区分parens和braces“  | Uyouii's Blogs</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Uyouii's Blogs</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">There are many things need to learn.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>About</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+    </ul>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2019/11/17/Effective-Modern-CPP-7-在创建对象的时候区分parens和braces/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Uyouii">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/logo1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Uyouii's Blogs">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Effective-Modern-CPP-6-在创建对象的时候区分parens和braces“ 
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-11-17 16:55:48 / Modified: 16:56:34" itemprop="dateCreated datePublished" datetime="2019-11-17T16:55:48+08:00">2019-11-17</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/effective-modern-CPP/" itemprop="url" rel="index"><span itemprop="name">effective modern CPP</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="07-在创建对象的时候区分-和"><a href="#07-在创建对象的时候区分-和" class="headerlink" title="07  在创建对象的时候区分()和{}"></a>07  在创建对象的时候区分()和{}</h2><p>在C++中，指定初始化的方式包括使用小括号、等号或者是大括号：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">x</span><span class="params">(<span class="number">0</span>)</span></span>;             <span class="comment">// initializer is in parentheses</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> y = <span class="number">0</span>;            <span class="comment">// initializer follows "="</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> z&#123; <span class="number">0</span> &#125;;           <span class="comment">// initializer is in braces</span></span><br></pre></td></tr></table></figure>
+<p>在很多情况下，使用一个等号和一对大括号也是可以的：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> z = &#123; <span class="number">0</span> &#125;;        <span class="comment">// initializer uses "=" and braces</span></span><br></pre></td></tr></table></figure>
+<p>c++中，等号加大括号这种用法和之右大括号的语法同样处理。这里虽然有个等号，但是里面是没有发生赋值的。</p>
+<p>像int这样的内建型别，初始化和赋值不过是学术之争，但是对于用户定义的型别，还是有把初始化和赋值分开的必要，这两种行为背后调用的是不同的函数。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Widget w1;            <span class="comment">// call default constructor</span></span><br><span class="line"></span><br><span class="line">Widget w2 = w1;       <span class="comment">// not an assignment; calls copy ctor 调用复制构造函数</span></span><br><span class="line"></span><br><span class="line">w1 = w2;              <span class="comment">// an assignment; calls copy operator= 调用复制赋值运算符</span></span><br></pre></td></tr></table></figure>
+<p>C++11中引入了统一初始化：单一的、至少从概念上可以用于一切场合、表达一切意思的初始化。它的基础是大括号形式，因此也可以称为大括号初始化(braced initialization)。</p>
+<p>e.g.</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; v&#123; <span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span> &#125;; <span class="comment">// v's initial content is 1, 3, 5</span></span><br></pre></td></tr></table></figure>
+<p>大括号同样可以用来为非静态成员函数指定默认初始化值，也可以使用”=”的初始化语法，却不能使用小括号。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span></span><br><span class="line">  …</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  <span class="keyword">int</span> x&#123; <span class="number">0</span> &#125;;                  <span class="comment">// fine, x's default value is 0</span></span><br><span class="line">  <span class="keyword">int</span> y = <span class="number">0</span>;                   <span class="comment">// also fine</span></span><br><span class="line">  <span class="function"><span class="keyword">int</span> <span class="title">z</span><span class="params">(<span class="number">0</span>)</span></span>;                    <span class="comment">// error!</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>不可复制对象(例如std::atomic型别的对象)可以采用大括号和小括号来进行初始化，却不能使用“=”：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::atomic&lt;<span class="keyword">int</span>&gt; ai1&#123; <span class="number">0</span> &#125;;     <span class="comment">// fine</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">std</span>::atomic&lt;<span class="keyword">int</span>&gt; ai2(<span class="number">0</span>);       <span class="comment">// fine</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">std</span>::atomic&lt;<span class="keyword">int</span>&gt; ai3 = <span class="number">0</span>;      <span class="comment">// error!</span></span><br></pre></td></tr></table></figure>
+<p>在C++的三种初始化表达式的写法中，只有大括号适用于所有的场合。</p>
+<p>大括号初始化有一项新的特性，就是它禁止内建型别之间进行隐士窄化型别转换(narrowing conversion)。如果大括号内的表达式无法保证能够采用进行初始化的对象来表达，则代码不能够通过编译。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">double</span> x, y, z;</span><br><span class="line"></span><br><span class="line">…</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> sum1&#123; x + y + z &#125;;       <span class="comment">// error! sum of doubles may</span></span><br><span class="line">                             <span class="comment">// not be expressible as int</span></span><br></pre></td></tr></table></figure>
+<p>而采用小括号和“=”的初始化则不会进行窄化型别转换检查。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sum2</span><span class="params">(x + y + z)</span></span>;         <span class="comment">// okay (value of expression</span></span><br><span class="line">                             <span class="comment">// truncated to an int)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> sum3 = x + y + z;        <span class="comment">// ditto</span></span><br></pre></td></tr></table></figure>
+<p>大括号初始化的另一项值得一提的特性是，它对于C++的最令人苦恼之解析语法免疫(most vexing parse)。C++规定：任何能够解析为声明的都要解析为声明。</p>
+<p>这个错误的根本原因在于构造函数的调用语法。</p>
+<p>当想以传参的方式调用构造函数时，可以这样写：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Widget <span class="title">w1</span><span class="params">(<span class="number">10</span>)</span></span>;     <span class="comment">// call Widget ctor with argument 10</span></span><br></pre></td></tr></table></figure>
+<p>但是如果想用同样的语法调用有个没有形参的widget的话，结果就变成了声明一个函数而非对象。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Widget <span class="title">w2</span><span class="params">()</span></span>;       <span class="comment">// most vexing parse! declares a function</span></span><br><span class="line">                   <span class="comment">// named w2 that returns a Widget!</span></span><br></pre></td></tr></table></figure>
+<p>但是用大括号完成对象的默认构造没有上面的问题：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Widget w3&#123;&#125;;       <span class="comment">// calls Widget ctor with no args</span></span><br></pre></td></tr></table></figure>
+<p>大括号初始化的缺陷在于伴随它有时会出现的意外行为。这种行为源于大括号初始化物、std::initializer_list以及构造函数重载决议之间的纠结关系。</p>
+<p>在构造函数被调用时，只要形参中没有任何一个具备std::intializer_list型别，那么小括号和大括号的意义就没有区别:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  Widget(<span class="keyword">int</span> i, <span class="keyword">bool</span> b);      <span class="comment">// ctors not declaring</span></span><br><span class="line">  Widget(<span class="keyword">int</span> i, <span class="keyword">double</span> d);    <span class="comment">// std::initializer_list params</span></span><br><span class="line">  …</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">Widget <span class="title">w1</span><span class="params">(<span class="number">10</span>, <span class="literal">true</span>)</span></span>;          <span class="comment">// calls first ctor</span></span><br><span class="line"></span><br><span class="line">Widget w2&#123;<span class="number">10</span>, <span class="literal">true</span>&#125;;          <span class="comment">// also calls first ctor</span></span><br><span class="line"></span><br><span class="line"><span class="function">Widget <span class="title">w3</span><span class="params">(<span class="number">10</span>, <span class="number">5.0</span>)</span></span>;           <span class="comment">// calls second ctor</span></span><br><span class="line"></span><br><span class="line">Widget w4&#123;<span class="number">10</span>, <span class="number">5.0</span>&#125;;           <span class="comment">// also calls second ctor</span></span><br></pre></td></tr></table></figure>
+<p>如果，有一个或者多个构造函数声明了任何一个具备std::initializer_list型别的形参，那么采用了大括号初始化语法的调用语句就会强烈地优先选用带有std::initialier_list型别形参得重载版本。</p>
+<p>真的非常强烈，编译器只要有任何可能把一个采用了大括号初始化的语法调用解读为带有initializer_list型别的形参的构造函数，则编译器就会选用这种解释。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  Widget(<span class="keyword">int</span> i, <span class="keyword">bool</span> b);                           <span class="comment">// as before</span></span><br><span class="line">  Widget(<span class="keyword">int</span> i, <span class="keyword">double</span> d);                         <span class="comment">// as before</span></span><br><span class="line">Widget(<span class="built_in">std</span>::<span class="built_in">initializer_list</span>&lt;<span class="keyword">long</span> <span class="keyword">double</span>&gt; il);   <span class="comment">// added</span></span><br><span class="line"></span><br><span class="line">  …</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">Widget <span class="title">w1</span><span class="params">(<span class="number">10</span>, <span class="literal">true</span>)</span></span>;     <span class="comment">// uses parens(小括号) and, as before,</span></span><br><span class="line">                         <span class="comment">// calls first ctor</span></span><br><span class="line"></span><br><span class="line">Widget w2&#123;<span class="number">10</span>, <span class="literal">true</span>&#125;;     <span class="comment">// uses braces(大括号), but now calls</span></span><br><span class="line">                         <span class="comment">// std::initializer_list ctor</span></span><br><span class="line">                         <span class="comment">// (10 and true convert to long double)</span></span><br><span class="line"></span><br><span class="line"><span class="function">Widget <span class="title">w3</span><span class="params">(<span class="number">10</span>, <span class="number">5.0</span>)</span></span>;      <span class="comment">// uses parens and, as before,</span></span><br><span class="line">                         <span class="comment">// calls second ctor</span></span><br><span class="line"></span><br><span class="line">Widget w4&#123;<span class="number">10</span>, <span class="number">5.0</span>&#125;;      <span class="comment">// uses braces, but now calls</span></span><br><span class="line">                         <span class="comment">// std::initializer_list ctor</span></span><br><span class="line">                         <span class="comment">// (10 and 5.0 convert to long double)</span></span><br></pre></td></tr></table></figure>
+<p>即使是平常会执行复制或者移动构造函数也有可能被带有std::initializer_list型别形参的构造函数劫持：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  Widget(<span class="keyword">int</span> i, <span class="keyword">bool</span> b);                           <span class="comment">// as before</span></span><br><span class="line">  Widget(<span class="keyword">int</span> i, <span class="keyword">double</span> d);                         <span class="comment">// as before</span></span><br><span class="line">  Widget(<span class="built_in">std</span>::<span class="built_in">initializer_list</span>&lt;<span class="keyword">long</span> <span class="keyword">double</span>&gt; il);   <span class="comment">// as before</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">operator</span> <span class="title">float</span><span class="params">()</span> <span class="keyword">const</span></span>;                          <span class="comment">// convert</span></span><br><span class="line">  …                                                <span class="comment">// to float</span></span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">Widget <span class="title">w5</span><span class="params">(w4)</span></span>;               <span class="comment">// uses parens, calls copy ctor</span></span><br><span class="line"></span><br><span class="line">Widget w6&#123;w4&#125;;               <span class="comment">// uses braces, calls</span></span><br><span class="line">                             <span class="comment">// std::initializer_list ctor</span></span><br><span class="line">                             <span class="comment">// (w4 converts to float, and float</span></span><br><span class="line">                             <span class="comment">// converts to long double)</span></span><br><span class="line"><span class="function">Widget <span class="title">w7</span><span class="params">(<span class="built_in">std</span>::move(w4))</span></span>;    <span class="comment">// uses parens, calls move ctor</span></span><br><span class="line"></span><br><span class="line">Widget w8&#123;<span class="built_in">std</span>::move(w4)&#125;;    <span class="comment">// uses braces, calls</span></span><br><span class="line">                             <span class="comment">// std::initializer_list ctor</span></span><br><span class="line">                             <span class="comment">// (for same reason as w6)</span></span><br></pre></td></tr></table></figure>
+<p>即使最优选的带有std::initializer_list型别形参构造函数无法使用时，这种决心还是会占上风。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  Widget(<span class="keyword">int</span> i, <span class="keyword">bool</span> b);                   <span class="comment">// as before</span></span><br><span class="line">  Widget(<span class="keyword">int</span> i, <span class="keyword">double</span> d);                 <span class="comment">// as before</span></span><br><span class="line"></span><br><span class="line">  Widget(<span class="built_in">std</span>::<span class="built_in">initializer_list</span>&lt;<span class="keyword">bool</span>&gt; il);  <span class="comment">// element type is</span></span><br><span class="line">                                           <span class="comment">// now bool</span></span><br><span class="line"></span><br><span class="line">  …                                        <span class="comment">// no implicit</span></span><br><span class="line">&#125;;                                         <span class="comment">// conversion funcs</span></span><br><span class="line"></span><br><span class="line">Widget w&#123;<span class="number">10</span>, <span class="number">5.0</span>&#125;;      <span class="comment">// error! requires narrowing conversions</span></span><br></pre></td></tr></table></figure>
+<p>这里编译器会忽略前两个构造函数，转而尝试带有一个std::initializer_list<bool>型别形参的构造函数，调用该函数就要求把一个int(int)和一个double(5.0)强制转换成bool型别。而这两个强制型别都是窄画的，并且窄化型别在大括号初始化物内部时禁止的，所以这个调用不合法，导致代码编译不通过。</bool></p>
+<p>只有在找不到任何办法把大括号初始化物中的实参转换成std::initializer_list模板中的型别时，编译器才会去检查普通的重载决议。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  Widget(<span class="keyword">int</span> i, <span class="keyword">bool</span> b);               <span class="comment">// as before</span></span><br><span class="line">  Widget(<span class="keyword">int</span> i, <span class="keyword">double</span> d);             <span class="comment">// as before</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// std::initializer_list element type is now std::string</span></span><br><span class="line">  Widget(<span class="built_in">std</span>::<span class="built_in">initializer_list</span>&lt;<span class="built_in">std</span>::<span class="built_in">string</span>&gt; il);</span><br><span class="line">  …                                    <span class="comment">// no implicit</span></span><br><span class="line">  &#125;;                                     <span class="comment">// conversion funcs</span></span><br><span class="line"></span><br><span class="line"><span class="function">Widget <span class="title">w1</span><span class="params">(<span class="number">10</span>, <span class="literal">true</span>)</span></span>;     <span class="comment">// uses parens, still calls first ctor</span></span><br><span class="line"></span><br><span class="line">Widget w2&#123;<span class="number">10</span>, <span class="literal">true</span>&#125;;     <span class="comment">// uses braces, now calls first ctor</span></span><br><span class="line"></span><br><span class="line"><span class="function">Widget <span class="title">w3</span><span class="params">(<span class="number">10</span>, <span class="number">5.0</span>)</span></span>;      <span class="comment">// uses parens, still calls second ctor</span></span><br><span class="line"></span><br><span class="line">Widget w4&#123;<span class="number">10</span>, <span class="number">5.0</span>&#125;;      <span class="comment">// uses braces, now calls second ctor</span></span><br></pre></td></tr></table></figure>
+<p>假定使用了一对大括号来构造一个对象，而该对象既支持默认构造函数，又支持带有std::initializer_list型别形参的构造函数。语言规定，这种情况下应该执行默认构造。空大括号表示的是”没有实参“，而非”空的std::initializer_list”：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  Widget();                                <span class="comment">// default ctor</span></span><br><span class="line"></span><br><span class="line">  Widget(<span class="built_in">std</span>::<span class="built_in">initializer_list</span>&lt;<span class="keyword">int</span>&gt; il);   <span class="comment">// std::initializer</span></span><br><span class="line">                                           <span class="comment">// _list ctor</span></span><br><span class="line"></span><br><span class="line">  …                                        <span class="comment">// no implicit</span></span><br><span class="line">&#125;;                                         <span class="comment">// conversion funcs</span></span><br><span class="line"></span><br><span class="line">Widget w1;            <span class="comment">// calls default ctor</span></span><br><span class="line"></span><br><span class="line">Widget w2&#123;&#125;;          <span class="comment">// also calls default ctor</span></span><br><span class="line"></span><br><span class="line"><span class="function">Widget <span class="title">w3</span><span class="params">()</span></span>;          <span class="comment">// most vexing parse! declares a function!</span></span><br></pre></td></tr></table></figure>
+<p>如果你的确想要调用一个带有std::initializer_list型别形参的构造函数，并传入一个空的std::initializer_list的话，你可以通过把空大括号作为构造函数实参的方式实现这个目的。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Widget <span class="title">w4</span><span class="params">(&#123;&#125;)</span></span>;        <span class="comment">// calls std::initializer_list ctor</span></span><br><span class="line">                      <span class="comment">// with empty list</span></span><br><span class="line"></span><br><span class="line">Widget w5&#123;&#123;&#125;&#125;;        <span class="comment">// ditto</span></span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>大括号初始化可以应用的语境最为宽泛，可以阻止隐式窄化型别转换，还对最令人苦恼之解析语法免疫。</li>
+<li>在构造函数重载决议期间，只要有任何可能，大括号初始化物就会与带有std::initializer_list型别的形参想匹配，即使其他重载版本有着貌似更加匹配的形参表。</li>
+<li>使用小括号还是大括号，会造成结果大相径庭的一个例子是：使用两个实参来创建一个std::vector&lt;数值型别&gt;对象。</li>
+<li>在模板内容进行对象创建时，到底应该使用小括号还是大括号会成为一个棘手问题。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/CPP-effective-modern-CPP/" rel="tag"># CPP - effective modern CPP</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/2019/11/10/Effective-Modern-CPP-6-当auto推导的型别不符合要求时-使用带显式型别的初始化物的习惯用法/" rel="next" title="Effective-Modern-CPP-6 当auto推导的型别不符合要求时 使用带显式型别的初始化物的习惯用法">
+                <i class="fa fa-chevron-left"></i> Effective-Modern-CPP-6 当auto推导的型别不符合要求时 使用带显式型别的初始化物的习惯用法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="gitalk-container"></div>
+  
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/logo1.jpg"
+      alt="Uyouii">
+  <p class="site-author-name" itemprop="name">Uyouii</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">48</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">categories</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">tags</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Uyouii" title="GitHub &rarr; https://github.com/Uyouii" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:taiyoudong@gmail.com" title="E-Mail &rarr; mailto:taiyoudong@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#07-在创建对象的时候区分-和"><span class="nav-number">1.</span> <span class="nav-text">07  在创建对象的时候区分()和{}</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">2.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Uyouii</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+<script src="//cdn.jsdelivr.net/npm/js-md5@0.7.3/src/md5.min.js"></script>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: 'Iv1.d91818b2eefe0afe',
+    clientSecret: '092f07bb03aebaa6222773f3df6ff8713a4f52eb',
+    repo: 'gitment-comments',
+    owner: 'Uyouii',
+    admin: ['['Uyouii']'],
+    id: md5(location.pathname),
+      language: window.navigator.language || window.navigator.userLanguage,
+    
+    distractionFreeMode: 'true'
+  });
+  gitalk.render('gitalk-container');
+</script>
+
+
+</body>
+</html>

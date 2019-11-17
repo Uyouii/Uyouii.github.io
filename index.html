@@ -222,6 +222,154 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2019/11/17/Effective-Modern-CPP-7-在创建对象的时候区分parens和braces/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Uyouii">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/logo1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Uyouii's Blogs">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/11/17/Effective-Modern-CPP-7-在创建对象的时候区分parens和braces/" class="post-title-link" itemprop="url">Effective-Modern-CPP-6-在创建对象的时候区分parens和braces“ </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-11-17 16:55:48 / Modified: 16:56:34" itemprop="dateCreated datePublished" datetime="2019-11-17T16:55:48+08:00">2019-11-17</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/effective-modern-CPP/" itemprop="url" rel="index"><span itemprop="name">effective modern CPP</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+            <h2 id="07-在创建对象的时候区分-和"><a href="#07-在创建对象的时候区分-和" class="headerlink" title="07  在创建对象的时候区分()和{}"></a>07  在创建对象的时候区分()和{}</h2><p>在C++中，指定初始化的方式包括使用小括号、等号或者是大括号：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">x</span><span class="params">(<span class="number">0</span>)</span></span>;             <span class="comment">// initializer is in parentheses</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> y = <span class="number">0</span>;            <span class="comment">// initializer follows "="</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> z&#123; <span class="number">0</span> &#125;;           <span class="comment">// initializer is in braces</span></span><br></pre></td></tr></table></figure>
+<p>在很多情况下，使用一个等号和一对大括号也是可以的：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> z = &#123; <span class="number">0</span> &#125;;        <span class="comment">// initializer uses "=" and braces</span></span><br></pre></td></tr></table></figure>
+<p>c++中，等号加大括号这种用法和之右大括号的语法同样处理。这里虽然有个等号，但是里面是没有发生赋值的。</p>
+<p>像int这样的内建型别，初始化和赋值不过是学术之争，但是对于用户定义的型别，还是有把初始化和赋值分开的必要，这两种行为背后调用的是不同的函数。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Widget w1;            <span class="comment">// call default constructor</span></span><br><span class="line"></span><br><span class="line">Widget w2 = w1;       <span class="comment">// not an assignment; calls copy ctor 调用复制构造函数</span></span><br><span class="line"></span><br><span class="line">w1 = w2;              <span class="comment">// an assignment; calls copy operator= 调用复制赋值运算符</span></span><br></pre></td></tr></table></figure>
+<p>C++11中引入了统一初始化：单一的、至少从概念上可以用于一切场合、表达一切意思的初始化。它的基础是大括号形式，因此也可以称为大括号初始化(braced initialization)。</p>
+<p>e.g.</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; v&#123; <span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span> &#125;; <span class="comment">// v's initial content is 1, 3, 5</span></span><br></pre></td></tr></table></figure>
+<p>大括号同样可以用来为非静态成员函数指定默认初始化值，也可以使用”=”的初始化语法，却不能使用小括号。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span></span><br><span class="line">  …</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  <span class="keyword">int</span> x&#123; <span class="number">0</span> &#125;;                  <span class="comment">// fine, x's default value is 0</span></span><br><span class="line">  <span class="keyword">int</span> y = <span class="number">0</span>;                   <span class="comment">// also fine</span></span><br><span class="line">  <span class="function"><span class="keyword">int</span> <span class="title">z</span><span class="params">(<span class="number">0</span>)</span></span>;                    <span class="comment">// error!</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>不可复制对象(例如std::atomic型别的对象)可以采用大括号和小括号来进行初始化，却不能使用“=”：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::atomic&lt;<span class="keyword">int</span>&gt; ai1&#123; <span class="number">0</span> &#125;;     <span class="comment">// fine</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">std</span>::atomic&lt;<span class="keyword">int</span>&gt; ai2(<span class="number">0</span>);       <span class="comment">// fine</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">std</span>::atomic&lt;<span class="keyword">int</span>&gt; ai3 = <span class="number">0</span>;      <span class="comment">// error!</span></span><br></pre></td></tr></table></figure>
+<p>在C++的三种初始化表达式的写法中，只有大括号适用于所有的场合。</p>
+<p>大括号初始化有一项新的特性，就是它禁止内建型别之间进行隐士窄化型别转换(narrowing conversion)。如果大括号内的表达式无法保证能够采用进行初始化的对象来表达，则代码不能够通过编译。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">double</span> x, y, z;</span><br><span class="line"></span><br><span class="line">…</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> sum1&#123; x + y + z &#125;;       <span class="comment">// error! sum of doubles may</span></span><br><span class="line">                             <span class="comment">// not be expressible as int</span></span><br></pre></td></tr></table></figure>
+<p>而采用小括号和“=”的初始化则不会进行窄化型别转换检查。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sum2</span><span class="params">(x + y + z)</span></span>;         <span class="comment">// okay (value of expression</span></span><br><span class="line">                             <span class="comment">// truncated to an int)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> sum3 = x + y + z;        <span class="comment">// ditto</span></span><br></pre></td></tr></table></figure>
+<p>大括号初始化的另一项值得一提的特性是，它对于C++的最令人苦恼之解析语法免疫(most vexing parse)。C++规定：任何能够解析为声明的都要解析为声明。</p>
+<p>这个错误的根本原因在于构造函数的调用语法。</p>
+<p>当想以传参的方式调用构造函数时，可以这样写：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Widget <span class="title">w1</span><span class="params">(<span class="number">10</span>)</span></span>;     <span class="comment">// call Widget ctor with argument 10</span></span><br></pre></td></tr></table></figure>
+<p>但是如果想用同样的语法调用有个没有形参的widget的话，结果就变成了声明一个函数而非对象。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Widget <span class="title">w2</span><span class="params">()</span></span>;       <span class="comment">// most vexing parse! declares a function</span></span><br><span class="line">                   <span class="comment">// named w2 that returns a Widget!</span></span><br></pre></td></tr></table></figure>
+<p>但是用大括号完成对象的默认构造没有上面的问题：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Widget w3&#123;&#125;;       <span class="comment">// calls Widget ctor with no args</span></span><br></pre></td></tr></table></figure>
+<p>大括号初始化的缺陷在于伴随它有时会出现的意外行为。这种行为源于大括号初始化物、std::initializer_list以及构造函数重载决议之间的纠结关系。</p>
+<p>在构造函数被调用时，只要形参中没有任何一个具备std::intializer_list型别，那么小括号和大括号的意义就没有区别:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  Widget(<span class="keyword">int</span> i, <span class="keyword">bool</span> b);      <span class="comment">// ctors not declaring</span></span><br><span class="line">  Widget(<span class="keyword">int</span> i, <span class="keyword">double</span> d);    <span class="comment">// std::initializer_list params</span></span><br><span class="line">  …</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">Widget <span class="title">w1</span><span class="params">(<span class="number">10</span>, <span class="literal">true</span>)</span></span>;          <span class="comment">// calls first ctor</span></span><br><span class="line"></span><br><span class="line">Widget w2&#123;<span class="number">10</span>, <span class="literal">true</span>&#125;;          <span class="comment">// also calls first ctor</span></span><br><span class="line"></span><br><span class="line"><span class="function">Widget <span class="title">w3</span><span class="params">(<span class="number">10</span>, <span class="number">5.0</span>)</span></span>;           <span class="comment">// calls second ctor</span></span><br><span class="line"></span><br><span class="line">Widget w4&#123;<span class="number">10</span>, <span class="number">5.0</span>&#125;;           <span class="comment">// also calls second ctor</span></span><br></pre></td></tr></table></figure>
+<p>如果，有一个或者多个构造函数声明了任何一个具备std::initializer_list型别的形参，那么采用了大括号初始化语法的调用语句就会强烈地优先选用带有std::initialier_list型别形参得重载版本。</p>
+<p>真的非常强烈，编译器只要有任何可能把一个采用了大括号初始化的语法调用解读为带有initializer_list型别的形参的构造函数，则编译器就会选用这种解释。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  Widget(<span class="keyword">int</span> i, <span class="keyword">bool</span> b);                           <span class="comment">// as before</span></span><br><span class="line">  Widget(<span class="keyword">int</span> i, <span class="keyword">double</span> d);                         <span class="comment">// as before</span></span><br><span class="line">Widget(<span class="built_in">std</span>::<span class="built_in">initializer_list</span>&lt;<span class="keyword">long</span> <span class="keyword">double</span>&gt; il);   <span class="comment">// added</span></span><br><span class="line"></span><br><span class="line">  …</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">Widget <span class="title">w1</span><span class="params">(<span class="number">10</span>, <span class="literal">true</span>)</span></span>;     <span class="comment">// uses parens(小括号) and, as before,</span></span><br><span class="line">                         <span class="comment">// calls first ctor</span></span><br><span class="line"></span><br><span class="line">Widget w2&#123;<span class="number">10</span>, <span class="literal">true</span>&#125;;     <span class="comment">// uses braces(大括号), but now calls</span></span><br><span class="line">                         <span class="comment">// std::initializer_list ctor</span></span><br><span class="line">                         <span class="comment">// (10 and true convert to long double)</span></span><br><span class="line"></span><br><span class="line"><span class="function">Widget <span class="title">w3</span><span class="params">(<span class="number">10</span>, <span class="number">5.0</span>)</span></span>;      <span class="comment">// uses parens and, as before,</span></span><br><span class="line">                         <span class="comment">// calls second ctor</span></span><br><span class="line"></span><br><span class="line">Widget w4&#123;<span class="number">10</span>, <span class="number">5.0</span>&#125;;      <span class="comment">// uses braces, but now calls</span></span><br><span class="line">                         <span class="comment">// std::initializer_list ctor</span></span><br><span class="line">                         <span class="comment">// (10 and 5.0 convert to long double)</span></span><br></pre></td></tr></table></figure>
+<p>即使是平常会执行复制或者移动构造函数也有可能被带有std::initializer_list型别形参的构造函数劫持：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  Widget(<span class="keyword">int</span> i, <span class="keyword">bool</span> b);                           <span class="comment">// as before</span></span><br><span class="line">  Widget(<span class="keyword">int</span> i, <span class="keyword">double</span> d);                         <span class="comment">// as before</span></span><br><span class="line">  Widget(<span class="built_in">std</span>::<span class="built_in">initializer_list</span>&lt;<span class="keyword">long</span> <span class="keyword">double</span>&gt; il);   <span class="comment">// as before</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">operator</span> <span class="title">float</span><span class="params">()</span> <span class="keyword">const</span></span>;                          <span class="comment">// convert</span></span><br><span class="line">  …                                                <span class="comment">// to float</span></span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function">Widget <span class="title">w5</span><span class="params">(w4)</span></span>;               <span class="comment">// uses parens, calls copy ctor</span></span><br><span class="line"></span><br><span class="line">Widget w6&#123;w4&#125;;               <span class="comment">// uses braces, calls</span></span><br><span class="line">                             <span class="comment">// std::initializer_list ctor</span></span><br><span class="line">                             <span class="comment">// (w4 converts to float, and float</span></span><br><span class="line">                             <span class="comment">// converts to long double)</span></span><br><span class="line"><span class="function">Widget <span class="title">w7</span><span class="params">(<span class="built_in">std</span>::move(w4))</span></span>;    <span class="comment">// uses parens, calls move ctor</span></span><br><span class="line"></span><br><span class="line">Widget w8&#123;<span class="built_in">std</span>::move(w4)&#125;;    <span class="comment">// uses braces, calls</span></span><br><span class="line">                             <span class="comment">// std::initializer_list ctor</span></span><br><span class="line">                             <span class="comment">// (for same reason as w6)</span></span><br></pre></td></tr></table></figure>
+<p>即使最优选的带有std::initializer_list型别形参构造函数无法使用时，这种决心还是会占上风。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  Widget(<span class="keyword">int</span> i, <span class="keyword">bool</span> b);                   <span class="comment">// as before</span></span><br><span class="line">  Widget(<span class="keyword">int</span> i, <span class="keyword">double</span> d);                 <span class="comment">// as before</span></span><br><span class="line"></span><br><span class="line">  Widget(<span class="built_in">std</span>::<span class="built_in">initializer_list</span>&lt;<span class="keyword">bool</span>&gt; il);  <span class="comment">// element type is</span></span><br><span class="line">                                           <span class="comment">// now bool</span></span><br><span class="line"></span><br><span class="line">  …                                        <span class="comment">// no implicit</span></span><br><span class="line">&#125;;                                         <span class="comment">// conversion funcs</span></span><br><span class="line"></span><br><span class="line">Widget w&#123;<span class="number">10</span>, <span class="number">5.0</span>&#125;;      <span class="comment">// error! requires narrowing conversions</span></span><br></pre></td></tr></table></figure>
+<p>这里编译器会忽略前两个构造函数，转而尝试带有一个std::initializer_list<bool>型别形参的构造函数，调用该函数就要求把一个int(int)和一个double(5.0)强制转换成bool型别。而这两个强制型别都是窄画的，并且窄化型别在大括号初始化物内部时禁止的，所以这个调用不合法，导致代码编译不通过。</bool></p>
+<p>只有在找不到任何办法把大括号初始化物中的实参转换成std::initializer_list模板中的型别时，编译器才会去检查普通的重载决议。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  Widget(<span class="keyword">int</span> i, <span class="keyword">bool</span> b);               <span class="comment">// as before</span></span><br><span class="line">  Widget(<span class="keyword">int</span> i, <span class="keyword">double</span> d);             <span class="comment">// as before</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// std::initializer_list element type is now std::string</span></span><br><span class="line">  Widget(<span class="built_in">std</span>::<span class="built_in">initializer_list</span>&lt;<span class="built_in">std</span>::<span class="built_in">string</span>&gt; il);</span><br><span class="line">  …                                    <span class="comment">// no implicit</span></span><br><span class="line">  &#125;;                                     <span class="comment">// conversion funcs</span></span><br><span class="line"></span><br><span class="line"><span class="function">Widget <span class="title">w1</span><span class="params">(<span class="number">10</span>, <span class="literal">true</span>)</span></span>;     <span class="comment">// uses parens, still calls first ctor</span></span><br><span class="line"></span><br><span class="line">Widget w2&#123;<span class="number">10</span>, <span class="literal">true</span>&#125;;     <span class="comment">// uses braces, now calls first ctor</span></span><br><span class="line"></span><br><span class="line"><span class="function">Widget <span class="title">w3</span><span class="params">(<span class="number">10</span>, <span class="number">5.0</span>)</span></span>;      <span class="comment">// uses parens, still calls second ctor</span></span><br><span class="line"></span><br><span class="line">Widget w4&#123;<span class="number">10</span>, <span class="number">5.0</span>&#125;;      <span class="comment">// uses braces, now calls second ctor</span></span><br></pre></td></tr></table></figure>
+<p>假定使用了一对大括号来构造一个对象，而该对象既支持默认构造函数，又支持带有std::initializer_list型别形参的构造函数。语言规定，这种情况下应该执行默认构造。空大括号表示的是”没有实参“，而非”空的std::initializer_list”：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Widget</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  Widget();                                <span class="comment">// default ctor</span></span><br><span class="line"></span><br><span class="line">  Widget(<span class="built_in">std</span>::<span class="built_in">initializer_list</span>&lt;<span class="keyword">int</span>&gt; il);   <span class="comment">// std::initializer</span></span><br><span class="line">                                           <span class="comment">// _list ctor</span></span><br><span class="line"></span><br><span class="line">  …                                        <span class="comment">// no implicit</span></span><br><span class="line">&#125;;                                         <span class="comment">// conversion funcs</span></span><br><span class="line"></span><br><span class="line">Widget w1;            <span class="comment">// calls default ctor</span></span><br><span class="line"></span><br><span class="line">Widget w2&#123;&#125;;          <span class="comment">// also calls default ctor</span></span><br><span class="line"></span><br><span class="line"><span class="function">Widget <span class="title">w3</span><span class="params">()</span></span>;          <span class="comment">// most vexing parse! declares a function!</span></span><br></pre></td></tr></table></figure>
+<p>如果你的确想要调用一个带有std::initializer_list型别形参的构造函数，并传入一个空的std::initializer_list的话，你可以通过把空大括号作为构造函数实参的方式实现这个目的。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Widget <span class="title">w4</span><span class="params">(&#123;&#125;)</span></span>;        <span class="comment">// calls std::initializer_list ctor</span></span><br><span class="line">                      <span class="comment">// with empty list</span></span><br><span class="line"></span><br><span class="line">Widget w5&#123;&#123;&#125;&#125;;        <span class="comment">// ditto</span></span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>大括号初始化可以应用的语境最为宽泛，可以阻止隐式窄化型别转换，还对最令人苦恼之解析语法免疫。</li>
+<li>在构造函数重载决议期间，只要有任何可能，大括号初始化物就会与带有std::initializer_list型别的形参想匹配，即使其他重载版本有着貌似更加匹配的形参表。</li>
+<li>使用小括号还是大括号，会造成结果大相径庭的一个例子是：使用两个实参来创建一个std::vector&lt;数值型别&gt;对象。</li>
+<li>在模板内容进行对象创建时，到底应该使用小括号还是大括号会成为一个棘手问题。</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+      
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2019/11/10/Effective-Modern-CPP-6-当auto推导的型别不符合要求时-使用带显式型别的初始化物的习惯用法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1353,117 +1501,6 @@
   </article>
 
     
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2019/08/03/情人/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Uyouii">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/logo1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Uyouii's Blogs">
-    </span>
-      <header class="post-header">
-
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/08/03/情人/" class="post-title-link" itemprop="url">情人</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2019-08-03 18:17:30 / Modified: 18:21:29" itemprop="dateCreated datePublished" datetime="2019-08-03T18:17:30+08:00">2019-08-03</time>
-            </span>
-          
-            
-
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/bookread/" itemprop="url" rel="index"><span itemprop="name">bookread</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          <br>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          
-            <h2 id="情人"><a href="#情人" class="headerlink" title="情人"></a>情人</h2><ol>
-<li>一种可以自由地支配时间的快感和一种怎样来支配这段时间的犹豫往往老是搅和在一起。</li>
-<li>男人与女人并不是整天厮守在一起才算幸福，男人女人如果没有共同理想，各自没有独立的能力，很难保持男女间的关系至始至终。</li>
-<li>不管怎么爱着这个男人，也不想失去自己一个人时的清静，自己 有属于自己的时间，这是最重要的。</li>
-<li>但是人会喜欢上一个人也不是瞎说，世界上就是有着这种不合道理的道理，这要靠每个人的良知与道德修养来做出评判。</li>
-<li>我可不是你想象的那样漂亮美丽、心地善良的女人呦。我有人们所具有的假面，在你看到的这假面背后，傲慢、猥琐、任性等等的毛病，我是应有尽有的呢。</li>
-<li>男人与女人之间就应该有这么一面不能捅破的隔墙，才能使两人之间的关系保持长久的新鲜感。</li>
-<li>也许有人会感到这种关系不太近人情。但是格子生活的全部都相互缠在一起，人生特有的趣味便会淡漠无存。</li>
-<li>“请与我结婚吧”这句话，对女人来说都是梦寐以求的，不管她喜不喜欢这个男人。这句话，是绝对能将女人的心彻彻底底地打动地。</li>
-<li>情人的地位确实不稳定，但同时却代表着美丽的存在。</li>
-<li>忘记日常生活的琐碎杂事，相互体贴，相互慰藉。难得的见面，使双方都将自己的美德表现出来。生日呀，两人初恋的日子呀，每一个有意义的日子，两人都一起过，那样的时刻便是最珍贵，最幸福的。</li>
-<li>有不少女人是只愿当情人，不愿做妻子的，这种情人的爱情，不是一生一世，而是一时一刻的。这样才更适合自己，能更自由自在，更能展示自己的魅力。为此而忌讳那种结婚名分的女人并不为少。</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
   </section>
 
   
@@ -1504,7 +1541,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-count">48</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

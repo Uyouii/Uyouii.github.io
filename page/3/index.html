@@ -222,6 +222,153 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2019/08/03/12-虚拟文件系统/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Uyouii">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/logo1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Uyouii's Blogs">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/08/03/12-虚拟文件系统/" class="post-title-link" itemprop="url">12 虚拟文件系统</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-08-03 18:03:55 / Modified: 18:12:47" itemprop="dateCreated datePublished" datetime="2019-08-03T18:03:55+08:00">2019-08-03</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/深入理解Linux内核/" itemprop="url" rel="index"><span itemprop="name">深入理解Linux内核</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+            <h1 id="虚拟文件系统"><a href="#虚拟文件系统" class="headerlink" title="虚拟文件系统"></a>虚拟文件系统</h1><h3 id="虚拟文件系统（VFS）的作用"><a href="#虚拟文件系统（VFS）的作用" class="headerlink" title="虚拟文件系统（VFS）的作用"></a>虚拟文件系统（VFS）的作用</h3><p>虚拟文件系统(Virtual Filesystem)也可以称之为虚拟文件系统转换(Virtual Filesystem Switch, VFS)，是一个内核软件层，用来处理于Unix标准文件系统相关的所有系统调用。</p>
+<p>VFS支持的文件系统可以划分为三种主要类型：</p>
+<ul>
+<li><strong>磁盘文件系统</strong><ul>
+<li>这些文件系统管理在本地磁盘分区中可用的储存空间或者其他可以起到磁盘作用的设备（比如说一个USB闪存）</li>
+</ul>
+</li>
+<li><strong>网络文件系统</strong><ul>
+<li>这些文件系统允许轻易地访问属于其他网络计算机的文件系统所包含的文件。</li>
+</ul>
+</li>
+<li><strong>特殊文件系统</strong><ul>
+<li>这些文件系统部管理本地或者远程磁盘空间。/proc文件系统是特殊文件系统的一个典型范例。</li>
+</ul>
+</li>
+</ul>
+<p>Unix目录建立了一颗根目录为”/“的树。根目录包含在文件系统(root filesystem)中，在Linux中这个跟文件系统通常是Ext2或Ext3类型。其他所有文件系统都可以被”安装“在根文件系统的子目录中。</p>
+<p>基于磁盘的文件系统通常放在硬件设备中，如硬盘、软盘或者CD-ROM。</p>
+<h4 id="通用文件模型"><a href="#通用文件模型" class="headerlink" title="通用文件模型"></a>通用文件模型</h4><p>VFS所隐含的主要思想在于引入一个通用的文件模型(common file model)，这个模型能够表示所有支持的文件系统。不过，要实现每个具体的文件系统，必须将其物立组织结构转换为虚拟文件系统的通用文件模型。</p>
+<p>从本质上说，Linux内核不能对一个特定的函数进行硬编码来执行诸如read()或ioctl()这样的操作，而是对每个操作都必须使用一个指针，指向要访问的具体文件系统的适当函数。</p>
+<p>通用文件模型由下列对象组成：</p>
+<ul>
+<li><strong>超级块对象(superblock object)</strong><ul>
+<li>存放已安装文件系统的有关信息。对基于磁盘的文件系统，这类对象通常对于存放在磁盘上的<strong>文件系统控制块(filesystem control block)</strong></li>
+</ul>
+</li>
+<li><strong>索引节点对象(inode object)</strong><ul>
+<li>存放关于具体文件的一般信息。对于基于磁盘的文件系统，这类对象通常对应于存放在磁盘上的<strong>文件控制块(file control block)</strong>。每个索引节点对象都有一个索引节点号，这个节点号唯一地标识文件系统中的文件。</li>
+</ul>
+</li>
+<li><strong>文件对象(file object)</strong><ul>
+<li>存放打开文件与进程之间进行交互的有关信息。这类信息仅当进程访问文件期间存在内核内存中。</li>
+</ul>
+</li>
+<li><strong>目录项对象(dentry object)</strong><ul>
+<li>存放目录项（也就是文件的特定名称）与对应文件进行链接的有关信息。每个磁盘文件系统都以自己特有的方式将改类信息存放在磁盘上。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>进程与VFS对象之间的交互</p>
+</blockquote>
+<p><img src="https://note.youdao.com/yws/api/personal/file/C4789661047241908CA97231F7444059?method=download&amp;shareKey=b519bbe0405aff597cf7ceefbb132e54" alt></p>
+<p>例如：三个不同的进程已经打开同一个文件，其中两个进程使用同一个硬链接。在这种情况下，每个进程都使用自己的文件对象，但只需要两个目录项对象，每个硬链接对应一个目录项对象。这两个目录项对象指向同一个索引节点文件，该索引节点对象标识超级块对象，以及随后的普通磁盘文件。</p>
+<p>最近最常使用的目录项被存放在所谓目录项高速缓存 (dentry cache)的<strong>磁盘高速缓存</strong>中，以加速从文件路径名到最后一个路径分量的索引节点的转换过程。</p>
+<p>一般来说，<strong>磁盘高速缓存(disk cache)</strong>属于软件机制，它允许内核将原本存在磁盘上的某些信息保存在RAM中，以便这些数据得的进一步访问能快速进行，而不必慢速访问磁盘本身。</p>
+<p>磁盘高速缓存不同于<strong>硬件高速缓存</strong>或<strong>内存高速缓存</strong>，后两者都与磁盘或者其他设备无关。硬件高速缓存是一个快速静态RAM，它加快了直接对慢速动态RAM的请求。内存高速缓存是一种软件机制，引入它是为了绕过内核内存分配器。</p>
+<p>除了<strong>目录项高速缓存</strong>和<strong>索引节点高速缓存</strong>之外，Linux还使用其他磁盘高速缓存。其中最重要的一种就是<strong>页高速缓存</strong>。</p>
+<h3 id="VFS数据结构"><a href="#VFS数据结构" class="headerlink" title="VFS数据结构"></a>VFS数据结构</h3><h4 id="超级块对象"><a href="#超级块对象" class="headerlink" title="超级块对象"></a>超级块对象</h4><p>所有超级块对象都以双向循环链表的形式链接在一起。</p>
+
+          
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+      
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2019/08/03/09-进程地址空间/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2171,208 +2318,6 @@
   </article>
 
     
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2018/07/05/读书摘要/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Uyouii">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/logo1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Uyouii's Blogs">
-    </span>
-      <header class="post-header">
-
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2018/07/05/读书摘要/" class="post-title-link" itemprop="url">读书摘要</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2018-07-05 16:36:39" itemprop="dateCreated datePublished" datetime="2018-07-05T16:36:39+08:00">2018-07-05</time>
-            </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-08-02 11:28:18" itemprop="dateModified" datetime="2019-08-02T11:28:18+08:00">2019-08-02</time>
-              </span>
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/bookread/" itemprop="url" rel="index"><span itemprop="name">bookread</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          <br>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          
-            <h2 id="神们自己"><a href="#神们自己" class="headerlink" title="神们自己"></a>神们自己</h2><ol>
-<li><p>历史往往就是由这些讨厌而且毫无目的的冲动推动的。</p>
-</li>
-<li><p>有人认为，公众希望环境得以保护，人类的存续得以实现，还认为那些为了这类崇高目标而奋斗的理想主义者会得到公众的爱戴，这种想法都是错的。实际上，公众所期望的只有一件事：他们自己过上安逸舒适的生活。通过二十世纪的环境危机，我们早就看明白了。当人们知道吸烟会导致患癌症的几率上升而最有效的解决办法就是禁烟时，他们却希望能够发明一种不致癌的香烟。当人们知道内燃机会对大气造成污染而最好的办法就是不再使用这类引擎时，他们却希望能够发明不污染空气的引擎。</p>
-</li>
-<li><p>“他们只需要拒绝相信就行。面对难题，最容易的对策就是拒绝相信它的存在。”</p>
-</li>
-<li><p>凡是对自己有一点利益就会选择相信。有时候即使毫无可能，人们也会顽冥不化。</p>
-</li>
-</ol>
-<h2 id="人间失格"><a href="#人间失格" class="headerlink" title="人间失格"></a>人间失格</h2><ol>
-<li><p>那是我对人类最后的求爱。我对人类极度恐惧，却无论如何也无法对人类死心。</p>
-</li>
-<li><p>旁人承受的痛苦的性质和大小，我完全捉摸不透。现实生活中的痛苦，只是吃个饭就能化解的痛苦，或许才是莫大的痛苦。也许，我刚才所说的那十个灾祸在这些痛苦面前不值一提。也许那些我无法理解的痛苦才是凄惨的阿鼻地狱。果真如此嘛？我不知道。但即使如此，那些人依然不想轻生、不会发狂，纵谈政治、毫不绝望、毫不屈服，继续与生活作战。他们不觉得痛苦吗？他们变得自私自利，甚至视其为理所当然，难道他们从未怀疑过自己？若真如此，那真是快活。不是每个人都是如此吧？真的都满足于此吗？我不知道······在夜里酣然入睡，一早醒来就会神清气爽吗？他们做了怎样的梦？走路时想些什么？想着钱的事情？不会仅此而已吧？我似乎听过说“民以食为天”，却从未听过“人为钱而活”。不，也许因人而异吧······我还是搞不懂······思绪渐感困惑之时，我越发惶恐不安，仿佛自己是这个世界上的异类。我与旁人几乎无法交谈，因我不知该谈些什么，也不知该如何谈起。</p>
-</li>
-<li><p>因此我总是黯然接收外界打击，内心却承受着疯狂的恐惧。</p>
-</li>
-<li><p>受人责备或怒斥时，或许没有人能保持好心情。但我在人们怒不可遏的脸上，看到了比狮子、鳄鱼、巨龙更加可怕的动物本性。寻常时候，他们似乎会将这一本性刻意隐藏，但一有机会，人类可怕的真面目就会在愤怒中不经意的暴露出来。就像在草地上安稳打盹的牛，冷不防甩尾吗“啪”地打死肚子上地牛虻。每每见到人类露出本性，我都惊悚得汗毛倒竖。而一旦想到，这种本性或许是人活于世的必备资质之一，我简直要对自己绝望了。</p>
-</li>
-<li><p>对讨厌的事物说不出讨厌，对喜欢的事也总是偷偷摸摸，我总是品着极为苦涩的滋味，困难以名状的恐惧痛苦挣扎。</p>
-</li>
-<li><p>我一向对“向人诉苦”不抱任何期待。无论是向父母说，还是向警察或者政府说，最终还是会被那些深谙处世之道的人打败，任由他们花言巧语，喋喋不休。</p>
-</li>
-<li><p>相互欺骗的双方竟然都相安无事，甚至未曾察觉相互欺骗之事————我以为，人类生活中无处不是这样单纯、明了的不信任之举。</p>
-</li>
-<li><p>对人类极度恐惧的人，反而会比任何人都渴望亲眼见识妖怪的可怕。愈是敏感、愈是胆怯，愈会企盼暴风雨降临的更加猛烈。</p>
-</li>
-<li><p>对我而言，听女人就自己的身世说上千言万语，也不及一句低喃让我心生共鸣。我是如此期盼听到这句低语，然而我在这世上遇到的女子，竟没有一人向我如此诉说，我深感不可思议。眼前这名女子，虽然没有用言语变现自己的寂寞，但整个身体的轮廓却无声地吐露出巨大地寂寞气息。她的身旁仿佛充斥着约莫一寸见方的气流，走近她身旁，我的身体也被那气流说包裹。这气流与我自身携带的阴郁气流完美的融合，如贴在水底岩石上的枯叶一般，是我得以从恐惧与不安中抽离。</p>
-</li>
-<li><p>胆小鬼连幸福都会害怕，碰到棉花都会受伤，有时还会被幸福所伤。</p>
-</li>
-</ol>
-<h2 id="天才在左，疯子在右"><a href="#天才在左，疯子在右" class="headerlink" title="天才在左，疯子在右"></a>天才在左，疯子在右</h2><ol>
-<li>人之所以会产生一些妄想或者说是幻觉，主要是因为大脑不听使唤，左脑接受了来自右脑的错误指令，因而产生了歪曲的理解和判断。</li>
-<li>缺乏安全感和孤独寂寞的人最容易出现妄想症，他们最初觉得“没人关系我”，后来演变为“有人要害我”。</li>
-<li>视觉对于外界光线的感应能偶帮助我们维持生物钟的正常运转。但如果用光线照射我们的双眼，大脑便会由此“上当”，从而加速或者减缓我们的生理时钟的运转。</li>
-<li>“马太效应”是社会心理学的经典效应，他向我们证明了强者恒强、弱者越弱的道理。如果一个人获得了成功，那么随之而来，各种好事情都会发生在他的身上。同样，如果一个人很衰，他就会遇到各种各样衰的事情。</li>
-<li>心理学家认为，人的幸或者不幸，并不是上帝在天空中决定并安排好的，实际上一个人的运气好坏是由这个人的行为和思想决定的。<br>  幸运的人通常乐观积极，活力四射，这样的心态让他们对未知的恐惧低于阈值，因为更容易接受新的挑战，更容易抓住新的机遇。<pre><code>而那些不幸的人则相反，他们多半性格孤僻，反应也不够敏捷。他们的情感关注点更多地集中于自己身上，因此很害怕周遭发生的会让自己感受到不舒服的改变。对他们而言，“未知”便是最大的恐惧和不安，处于恐惧中时，他们便会与大好的机会擦肩而过。
-</code></pre></li>
-<li>自我监控能力强的人显然更容易成为撒谎高手，而这种能力较弱的人，似乎用撒谎来掩饰自己的意识较差。</li>
-<li>六度分隔假说，其含义是世界上任意两个欲取得联系的陌生人之间，最多只隔着六个人，便能够达成联系。</li>
-<li>越是急于证明自己，就越是证明不了。因为没有人愿意跟着你的思路去思考问题。</li>
-<li>车尔尼雪夫斯基说：“在人间有什么会更有诗意，更为迷人，胜于那怀着欢乐的爱，对自己觉得像自己本身一样崇高、纯洁和美妙的一切东西都发生共鸣的纯真的纯真的少年心灵呢？”</li>
-<li>童年对一个作家的影响是深入骨髓的，是融贯在灵魂中的，同年是我们的精神故乡，同年所遭受的创伤会让人铭记在心。创伤在灵魂的深处生了根，就好像在土地中播撒了种子般，在岁月流逝中，种子逐渐发芽、长出了树枝，成长为参天大树，然而其根基仍然是当初的种子，是由幼时的创伤繁衍出来的。创伤及由此而形成的思想就由此成为作家作品的内核。</li>
-<li>有人曾这样描述弗吉尼亚.伍尔夫：“她的记忆有着隐秘的两面——一面澄清，一面黑暗；一面寒冷，一面温热；一面创造，一面是毁灭；一面铺洒着天堂之光，一面燃烧着地狱之火。</li>
-</ol>
-<h2 id="解忧杂货店"><a href="#解忧杂货店" class="headerlink" title="解忧杂货店"></a>解忧杂货店</h2><ol>
-<li>他们内心都破了个洞，重要的东西正从那个破洞中流失。人的心声是绝对不能无视的。</li>
-<li>很多时候，咨询的人心里已经有个答案，来咨询只是想确认自己的决定是对的。所以有些人读过回信后，会再次写信过来，大概就是因为回答的内容和他的想法不一样吧。</li>
-<li>如果自己不想积极乐观的生活，不管得到什么样的回答都没有用。</li>
-<li>虽然至今为止的道路绝非一片坦途，但想到正因为或者才有机会感受到痛楚，我就成功克服了种种困难。</li>
-<li>人与人之间请以断绝，并不需要什么具体的理由。就算表面上有，也很可能只是心已经离开的结果，事后才编造出的借口而已。因为倘若心没有离开，当将会导致关系破裂的师太发生时，理应有人努力去挽救。如果没有，说明其实关系早已破裂。</li>
-<li>可是换个角度来看，正因为是一张白纸，才可以随心所欲地描绘地图。一切全在你自己。对你来说，一切都是自由的，在你面前是无限的可能。这可是很棒的事呀。我衷心祈祷你可以相信自己，无悔地燃烧自己的人生。</li>
-<li>话语教给我们很多，但善恶还是可以自明。话语想要教给我们，人与人生来就不平等。在人间，尊卑有序是永恒的真理，但你也可以不听。</li>
-</ol>
-<h2 id="无人生还"><a href="#无人生还" class="headerlink" title="无人生还"></a>无人生还</h2><ol>
-<li>直到现在我才明白，艺术家永远不会只满足于创造艺术。他渴望自己的艺术得到世人的青睐，是人性使然。</li>
-</ol>
-<h2 id="小王子"><a href="#小王子" class="headerlink" title="小王子"></a>小王子</h2><ol>
-<li>如果有一个人爱上在这亿万颗星星中仅有的一朵花，这人望着星空的时候，就会觉得幸福。</li>
-<li>审判自己，比审判别人难得多。你若是能够公正地审判自己，那你就是一个真正地贤士。</li>
-<li>在我看来，你只不过是一个小男孩，跟成千上万地男孩毫无两样。我不需要你，你也不需要我。对你来说我只不过是一只狐狸，跟成千上万的狐狸毫无两样。但是，你如果驯养了我，那么我们俩就彼此相互需要。对我来说，你是世界上独一无二的；我在你看来，也是世界上独一无二的……</li>
-<li>只有用心看，才能看的清楚；本质的东西，眼睛是看不见的。</li>
-<li>正是因为你为你的玫瑰，花费了时间，才使你的花儿变得那么重要。</li>
-<li>对你驯养的东西，你要永远负责。你必须对你的玫瑰花负责……</li>
-<li>“沙漠美丽”，小王子说，“是因为在某个地方藏着一口水井……”</li>
-<li>无论是房子、星星或沙漠，使它们美丽的东西是看不见的。</li>
-<li>这水，不只是一种饮料，它是从披星戴月地长途跋涉、轱辘的歌声、我的双臂的力量产生出来的。这水，像是一份礼物，使心田得到慰藉。在我小的时候，只有圣诞树的光、子夜弥撒的音乐、甜蜜的微笑，这一切才使得我的圣诞礼物光芒四射。</li>
-<li>眼睛是什么也看不见的。应该用心灵去找。</li>
-<li>你倘若爱上一朵生长在星星上的花，那么，在夜间，你看看天空就会感到愉快。所有的星星都像盛开的鲜花。</li>
-<li>“每个人都有星星，“小王子说，”但在不同的人眼里就是不一样。对旅行者，星星是指引路的。对另一些人，星星只是一些小亮光。对学者，星星是探讨的问题。对我的那个商人，星星是黄金。但是，所有的星星都是一声不响的。你有的那些星星，是别人得不到的！“</li>
-<li>”你夜间仰望星空时，由于我就住在其中的一颗星星上，由于我在其中的一颗星上笑，那么，对你来说，所有的星星仿佛都在笑。唯有你，有一些会笑的星星。“</li>
-</ol>
-<h2 id="情人"><a href="#情人" class="headerlink" title="情人"></a>情人</h2><ol>
-<li>一种可以自由地支配时间的快感和一种怎样来支配这段时间的犹豫往往老是搅和在一起。</li>
-<li>男人与女人并不是整天厮守在一起才算幸福，男人女人如果没有共同理想，各自没有独立的能力，很难保持男女间的关系至始至终。</li>
-<li>不管怎么爱着这个男人，也不想失去自己一个人时的清静，自己 有属于自己的时间，这是最重要的。</li>
-<li>但是人会喜欢上一个人也不是瞎说，世界上就是有着这种不合道理的道理，这要靠每个人的良知与道德修养来做出评判。</li>
-<li>我可不是你想象的那样漂亮美丽、心地善良的女人呦。我有人们所具有的假面，在你看到的这假面背后，傲慢、猥琐、任性等等的毛病，我是应有尽有的呢。</li>
-<li>男人与女人之间就应该有这么一面不能捅破的隔墙，才能使两人之间的关系保持长久的新鲜感。</li>
-<li>也许有人会感到这种关系不太近人情。但是格子生活的全部都相互缠在一起，人生特有的趣味便会淡漠无存。</li>
-<li>“请与我结婚吧”这句话，对女人来说都是梦寐以求的，不管她喜不喜欢这个男人。这句话，是绝对能将女人的心彻彻底底地打动地。</li>
-<li>情人的地位确实不稳定，但同时却代表着美丽的存在。</li>
-<li>忘记日常生活的琐碎杂事，相互体贴，相互慰藉。难得的见面，使双方都将自己的美德表现出来。生日呀，两人初恋的日子呀，每一个有意义的日子，两人都一起过，那样的时刻便是最珍贵，最幸福的。</li>
-<li>有不少女人是只愿当情人，不愿做妻子的，这种情人的爱情，不是一生一世，而是一时一刻的。这样才更适合自己，能更自由自在，更能展示自己的魅力。为此而忌讳那种结婚名分的女人并不为少。</li>
-</ol>
-<h2 id="百年孤独"><a href="#百年孤独" class="headerlink" title="百年孤独"></a>百年孤独</h2><ol>
-<li>死神一直追随者他的脚步，嗅闻他的行踪，但尚未下定决心给他最后一击。</li>
-<li>“世上正发生着不可思议的事情，”他对乌尔苏拉说，“就在那边，在河的另一边，各种魔法机器应有尽有，而我们却还像驴子一样生活。”</li>
-<li>蕾梅黛丝在下午两点令人昏昏欲睡的空气中，蕾梅黛丝在玫瑰无声的呼吸中，蕾梅黛丝在清晨面包的热其中，蕾梅黛丝无所不在，蕾梅黛丝无视或缺。</li>
-<li>你那么憎恨军人，跟他们斗了这么久，琢磨了他们这么久，最终却变得和他们一样。人世间没有任何理想值得以这样的沉沦作为代价。</li>
-<li>约略懂得幸福的晚年秘诀不过是与孤独签下不失尊严的协定罢了。</li>
-<li>过去都是假的，回忆没有归路，春天总是一去不复返，最疯狂执着的爱情也终究是过往云烟。</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
   </section>
 
   
@@ -2413,7 +2358,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-count">48</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
