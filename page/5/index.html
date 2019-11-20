@@ -222,6 +222,139 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2018/02/23/socket-编程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Uyouii">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/logo1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Uyouii's Blogs">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2018/02/23/socket-编程/" class="post-title-link" itemprop="url">socket 编程</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-02-23 17:16:07" itemprop="dateCreated datePublished" datetime="2018-02-23T17:16:07+08:00">2018-02-23</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-08-02 11:28:18" itemprop="dateModified" datetime="2019-08-02T11:28:18+08:00">2019-08-02</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Unix-Network-Programming/" itemprop="url" rel="index"><span itemprop="name">Unix Network Programming</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+            <h2 id="套接字"><a href="#套接字" class="headerlink" title="套接字"></a>套接字</h2><p>标识每个端点的两个值（IP地址和端口号）通常称为一个套接字。</p>
+<p>TCP无法仅仅通过查看端口号来分离外来的分节到不同的端点。它必须查看套接字对的所有4个元素才能确定由哪个端点接收某个到达的分节。</p>
+<h2 id="不同套接字地址结构比较"><a href="#不同套接字地址结构比较" class="headerlink" title="不同套接字地址结构比较"></a>不同套接字地址结构比较</h2><p><img src="https://github.com/Uyouii/Uyouii.github.io/raw/master/images/different%20address%20struct.JPG" alt="image"></p>
+<h2 id="getsockopt-和-setsockopt-函数"><a href="#getsockopt-和-setsockopt-函数" class="headerlink" title="getsockopt 和 setsockopt 函数"></a>getsockopt 和 setsockopt 函数</h2><p>这两个函数仅用于套接字<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">getsockopt</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">int</span> level, <span class="keyword">int</span> optname, <span class="keyword">void</span> *optval, <span class="keyword">socklen_t</span> *optlen)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">setsockopt</span><span class="params">(<span class="keyword">int</span> sockfd, <span class="keyword">int</span> level, <span class="keyword">int</span> optname, <span class="keyword">const</span> <span class="keyword">void</span>* optval, <span class="keyword">socklen_t</span> optlen)</span></span>;</span><br></pre></td></tr></table></figure></p>
+<p>optval是一个指向某个变量的指针，setsockopt从<code>*optval</code>中取得选项待设置的新值，getsockopt则把已获取的选项当前值存放到<code>*optval</code>中。</p>
+<p>套接字选项粗分为两大基本类型：一是启用或者禁止某个特性的二元选项（称为标志选项），二是取得并返回我们可以设置或检查的特定值选项（称为值选项）。</p>
+<p>当给这些标志选项调用getsockopt函数时，<code>*optval</code>是一个整数。<code>*optval</code>中返回的值为0表示相应选项被禁止，不为0表示相应选项被启用。</p>
+<p>setsockopt函数需要一个不为0的<code>*optva</code>值来启用选项，一个为0的<code>*optval</code>值来禁止选项。</p>
+<h2 id="套接字选项"><a href="#套接字选项" class="headerlink" title="套接字选项"></a>套接字选项</h2><h3 id="SO-KEEPALIVE-套接字选项"><a href="#SO-KEEPALIVE-套接字选项" class="headerlink" title="SO_KEEPALIVE 套接字选项"></a>SO_KEEPALIVE 套接字选项</h3><p>给一个TCP套接字设置保持存活（keep-alive）选项后，如果在2小时内在该套接字的任一方向上都没有数据交换，TCP就自动给对端发送一个保持存活探测分节(keep-alive probe)。这是一个对端必须响应的TCP分节。</p>
+<p>发送该分节后：</p>
+<ol>
+<li>对端以期望的ACK响应。应用进程得不到通知（因为一切正常）。在又经过仍无动静的2小时后，TCP将发出另一个探测分节。</li>
+<li>对端以rst响应，它告知本端TCP：对端已崩溃且已重新启动。该套接字的待处理错误被置为ECONNRESET，套接字本身则被关闭。</li>
+<li>对端对保持存活探测分节没有任何响应。源自Berkeley的TCP将另外发送8个探测分节，两两相隔75秒，试图得到一个响应。TCP在发出第一个探测分节后11分15秒内若没有得到任何响应则放弃。</li>
+</ol>
+<p>如果根本没有对TCP的探测分节的响应，该套接字的待处理错误就被置为ETIMEOUT，套接字本身则被关闭，然而如果该套接字收到一个ICMP错误作为某个探测分节的响应，那就返回相应的错误，套接字本身也被关闭。</p>
+<p>本选项的功能是检测对端主机是否崩溃或变得不可达。如果对端进程崩溃，它的TCP将跨连接发送一个FIN，这可以通过调用select很容易的检测到。同时也要认识到，即使对任何保持存活探测分节均无响应（第三种情况），我们也不能肯定对端主机已经崩溃，因而TCP可能会终止一个有效连接。</p>
+<p>本选项一本由服务器调用，不过客户端也可以使用。服务器使用本选项是因为它们花大部分时间阻塞在等待穿越TCP的连接输入上，也就是说在等待客户端的请求。然而如果客户主机连接掉线、电源掉线或系统崩溃，服务器进程将永远不会知道，并将继续等待永远不会到达的输入。这种情况称为半开连接（half-open connection）。保持存活选项将检测出这些半开连接并终止他们。</p>
+<h3 id="SO-RCVBUF-和-SO-SNDBUF-套接字选项"><a href="#SO-RCVBUF-和-SO-SNDBUF-套接字选项" class="headerlink" title="SO_RCVBUF 和 SO_SNDBUF 套接字选项"></a>SO_RCVBUF 和 SO_SNDBUF 套接字选项</h3><p>每个套接字都有一个发送缓冲区和一个接收缓冲区。</p>
+<p>接收缓冲区被TCP、UDP和SCTP用来保存接收到的数据，知道由应用进程来读取。对于TCP来说，套接字接收缓冲区中可用空间的大小限定了TCP通告对端的窗口大小。TCP套接字接收缓冲区不可能溢出，因为不允许对端发出超过本端所通告窗口大小的数据。这就是TCP的流量控制，如果对端无视窗口大大小而发出了超过该窗口大小的数据，本端TCP将丢弃他们。UDP是没有流量控制的：较快的发送端可以很容易地淹没较慢的接收端，导致接收端的UDP丢弃数据报。事实上较快的发送端甚至可以淹没本机的网络接口，导致数据报被本机丢弃。</p>
+<p>当设置TCP套接字接收缓冲区的大小时，函数调用的顺序很重要。这是因为TCP的窗口规模选项是在建立连接时用SYN分节与对端互换得到的。对于客户，这意味着SO_RCVBUF选项必须在调用connect之前设置；对于服务器，这意味着该选项必须在调用listen之前给监听套接字设置。给已连接套接字设置该选项对于可能存在的窗口规模选项没有任何影响，因为accept直到TCP的三路握手完成才会创建并返回已连接套接字。这就是必须给监听套接字设置本选项的原因。（套接字缓冲区的大小总是由新创建的已连接套接字从监听套接字继承而来）。</p>
+<p>TCP套接字缓冲区的大小至少应该是相应连接的MSS值的四倍。这一点的依据是TCP快速恢复算法的工作机制。TCP发送端使用三个重复的确认来检测某个分节是否丢失。发现某个分节丢失后，接收端将给新收到的每个分节发送一个重复的确认，如果窗口大小不足以存放4个这样的分节，那就不可能连发三个重复的确认，从而无法激活快速恢复算法。</p>
+<h3 id="TCP-NODELAY套接字选项"><a href="#TCP-NODELAY套接字选项" class="headerlink" title="TCP_NODELAY套接字选项"></a>TCP_NODELAY套接字选项</h3><p>开启TCP_NODELAY选项将禁止TCP的Nagle算法。</p>
+<p>Nagle算法的目的在于减少广域网（WAN）上小分组的数目。该算法指出：如果某个给定连接上有待确认数据（outstanding dataa），那么原本应该作为用户写操作相应的在该连接上立即发送相应小分组的行为就不会发生，直到现有数据被确认为止。这里“小”的定义就是小于MSS的任何分组。TCP总是尽可能地发送最大大小的分组，Nagle算法的目的在于防止一个连接在任何时刻有多个小分组待确认。</p>
+<p>Nalge算法常常与另一个TCP算法联合使用：ACK延滞算法（delayed ACK algorithm）。该算法使得TCP在收到数据后不立即发送ACK，而是等待一小段时间(典型值为50~200ms)，然后才发送ACK。TCP期待在这一小段时间内自身有数据发送回对端，被延滞的ACK就可以由这些数据捎带，从而省掉一个TCP分节。</p>
+
+          
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+      
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2018/02/02/python2-7-深入理解/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1928,7 +2061,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">48</span>
+          <span class="site-state-item-count">49</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

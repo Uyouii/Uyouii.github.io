@@ -57,19 +57,19 @@
   };
 </script>
 
-  <meta name="description" content="三体 那是一个荒凉的山谷，雪山从山谷的尽头露出一抹白；山谷的这一端，半截沧桑的枯木占据几乎三分之一的画面。汪淼在想象中把那个萦绕在他脑海里中的身影叠印到画面上。让她位于山谷的深处，看上去很小很小；这时汪淼惊奇地发现，整个画面苏醒过来，仿佛照片中的世界认出了那个身影，放佛这一切本来就是为她而存在。他又依次在想象中将那个身影叠印到另外几幅作品上，有时还将她那双眼睛作为照片上空旷苍穹的背景，那些画面也都">
-<meta name="keywords" content="booknote">
+  <meta name="description" content="条款8：优先选用nullptr，而非0或者NULL字面常量0的型别是int，而非指针。当C++在使用指针的语句中发现了一个0，也会勉强把它解释为空指针，但这是一个不得已而为之的行为。C++的基本观点还是0的型别是int，而非指针。 从实际效果上说，以上结论对于NULL也成立。0和NULL都不具备指针型别。 C++98中的基本观点可能在指针型别和整型之间进行重载时发生意外。如果向这样的重载函数传递0">
+<meta name="keywords" content="CPP - effective modern CPP">
 <meta property="og:type" content="article">
-<meta property="og:title" content="三体">
-<meta property="og:url" content="https://uyouii.github.io/2019/08/03/三体/index.html">
+<meta property="og:title" content="Effective-Modern-CPP-8-优先选用nullptr 而非0或者NULL">
+<meta property="og:url" content="https://uyouii.github.io/2019/11/20/Effective-Modern-CPP-8-优先选用nullptr-而非0或者NULL/index.html">
 <meta property="og:site_name" content="Uyouii&#39;s Blogs">
-<meta property="og:description" content="三体 那是一个荒凉的山谷，雪山从山谷的尽头露出一抹白；山谷的这一端，半截沧桑的枯木占据几乎三分之一的画面。汪淼在想象中把那个萦绕在他脑海里中的身影叠印到画面上。让她位于山谷的深处，看上去很小很小；这时汪淼惊奇地发现，整个画面苏醒过来，仿佛照片中的世界认出了那个身影，放佛这一切本来就是为她而存在。他又依次在想象中将那个身影叠印到另外几幅作品上，有时还将她那双眼睛作为照片上空旷苍穹的背景，那些画面也都">
+<meta property="og:description" content="条款8：优先选用nullptr，而非0或者NULL字面常量0的型别是int，而非指针。当C++在使用指针的语句中发现了一个0，也会勉强把它解释为空指针，但这是一个不得已而为之的行为。C++的基本观点还是0的型别是int，而非指针。 从实际效果上说，以上结论对于NULL也成立。0和NULL都不具备指针型别。 C++98中的基本观点可能在指针型别和整型之间进行重载时发生意外。如果向这样的重载函数传递0">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-08-03T10:19:32.435Z">
+<meta property="og:updated_time" content="2019-11-20T03:33:34.664Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="三体">
-<meta name="twitter:description" content="三体 那是一个荒凉的山谷，雪山从山谷的尽头露出一抹白；山谷的这一端，半截沧桑的枯木占据几乎三分之一的画面。汪淼在想象中把那个萦绕在他脑海里中的身影叠印到画面上。让她位于山谷的深处，看上去很小很小；这时汪淼惊奇地发现，整个画面苏醒过来，仿佛照片中的世界认出了那个身影，放佛这一切本来就是为她而存在。他又依次在想象中将那个身影叠印到另外几幅作品上，有时还将她那双眼睛作为照片上空旷苍穹的背景，那些画面也都">
-  <link rel="canonical" href="https://uyouii.github.io/2019/08/03/三体/">
+<meta name="twitter:title" content="Effective-Modern-CPP-8-优先选用nullptr 而非0或者NULL">
+<meta name="twitter:description" content="条款8：优先选用nullptr，而非0或者NULL字面常量0的型别是int，而非指针。当C++在使用指针的语句中发现了一个0，也会勉强把它解释为空指针，但这是一个不得已而为之的行为。C++的基本观点还是0的型别是int，而非指针。 从实际效果上说，以上结论对于NULL也成立。0和NULL都不具备指针型别。 C++98中的基本观点可能在指针型别和整型之间进行重载时发生意外。如果向这样的重载函数传递0">
+  <link rel="canonical" href="https://uyouii.github.io/2019/11/20/Effective-Modern-CPP-8-优先选用nullptr-而非0或者NULL/">
 
 
 <script id="page.configurations">
@@ -78,7 +78,7 @@
   };
 </script>
 
-  <title>三体 | Uyouii's Blogs</title>
+  <title>Effective-Modern-CPP-8-优先选用nullptr 而非0或者NULL | Uyouii's Blogs</title>
   
 
 
@@ -228,7 +228,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2019/08/03/三体/">
+    <link itemprop="mainEntityOfPage" href="https://uyouii.github.io/2019/11/20/Effective-Modern-CPP-8-优先选用nullptr-而非0或者NULL/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Uyouii">
@@ -242,7 +242,7 @@
       <header class="post-header">
 
         
-          <h1 class="post-title" itemprop="name headline">三体
+          <h1 class="post-title" itemprop="name headline">Effective-Modern-CPP-8-优先选用nullptr 而非0或者NULL
 
               
             
@@ -262,7 +262,7 @@
                 
               
 
-              <time title="Created: 2019-08-03 18:18:23 / Modified: 18:19:32" itemprop="dateCreated datePublished" datetime="2019-08-03T18:18:23+08:00">2019-08-03</time>
+              <time title="Created: 2019-11-20 11:33:02 / Modified: 11:33:34" itemprop="dateCreated datePublished" datetime="2019-11-20T11:33:02+08:00">2019-11-20</time>
             </span>
           
             
@@ -277,7 +277,7 @@
                 <span class="post-meta-item-text">In</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/bookread/" itemprop="url" rel="index"><span itemprop="name">bookread</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/effective-modern-CPP/" itemprop="url" rel="index"><span itemprop="name">effective modern CPP</span></a></span>
 
                 
                 
@@ -296,15 +296,22 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="三体"><a href="#三体" class="headerlink" title="三体"></a>三体</h2><ol>
-<li>那是一个荒凉的山谷，雪山从山谷的尽头露出一抹白；山谷的这一端，半截沧桑的枯木占据几乎三分之一的画面。汪淼在想象中把那个萦绕在他脑海里中的身影叠印到画面上。让她位于山谷的深处，看上去很小很小；这时汪淼惊奇地发现，整个画面苏醒过来，仿佛照片中的世界认出了那个身影，放佛这一切本来就是为她而存在。他又依次在想象中将那个身影叠印到另外几幅作品上，有时还将她那双眼睛作为照片上空旷苍穹的背景，那些画面也都苏醒过来，展现出一种汪淼从未想象过的美。以前，汪淼总觉得自己的摄影作品缺少某种灵魂；现在他知道了，缺的是她。</li>
-<li>“那你的生活是一种偶然，世界有这么多变换莫测的因素，你的人生却没什么变故。”</li>
-<li>“射手”假说：有一名神枪手，在一个靶子上每隔十厘米打一个洞。设想这个靶子的平面上生活着一种二维智能生物，它们中的科学家在对自己的宇宙进行观察后，发现了一个伟大的定律：“宇宙每隔10厘米，必然会有一个洞。”它们把这个神枪手一时兴起的随意行为，看成了自己宇宙的铁律。</li>
-<li>“农场主假说” 则有一层令人不安的恐怖色彩：一个农场里有一群火鸡，农场主每天中午十一点来给它们喂食。火鸡中的一名科学家观察到这个现象，一直观察了近一年都没有例外，于是它也发现了自己宇宙的伟大定律：“每天上午十一点，就有食物降临。”它在感恩节早晨向火鸡们公布了这个定律，但这天上午十一点食物没有降临，农场主进来把它们都捉去杀了。</li>
-<li>地球生命真的是宇宙偶然里的偶然，宇宙是个空荡荡的大宫殿，人类是这宫殿中唯一的一只小蚂蚁。这想法让我的后半辈子有一种很矛盾的心态：有时觉得生命珍贵，一切都重如泰山；有时又觉得人是那么渺小，什么都不值一提。反正日子就在这种奇怪的感觉中一天天过去，不知不觉人就老了……</li>
-<li>城市就是森林，每一个男人都是猎手，每一个女人都是陷阱。</li>
-<li>生活需要平滑，但也需要一个方向，不能总是回到起点。</li>
-</ol>
+        <h2 id="条款8：优先选用nullptr，而非0或者NULL"><a href="#条款8：优先选用nullptr，而非0或者NULL" class="headerlink" title="条款8：优先选用nullptr，而非0或者NULL"></a>条款8：优先选用nullptr，而非0或者NULL</h2><p>字面常量0的型别是int，而非指针。当C++在使用指针的语句中发现了一个0，也会勉强把它解释为空指针，但这是一个不得已而为之的行为。C++的基本观点还是0的型别是int，而非指针。</p>
+<p>从实际效果上说，以上结论对于NULL也成立。0和NULL都不具备指针型别。</p>
+<p>C++98中的基本观点可能在指针型别和整型之间进行重载时发生意外。如果向这样的重载函数传递0和NULL，时从来不会调用到要求指针型别的重载版本的。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">(<span class="keyword">int</span>)</span></span>;        <span class="comment">// three overloads of f</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">(<span class="keyword">bool</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f</span><span class="params">(<span class="keyword">void</span>*)</span></span>;</span><br><span class="line"></span><br><span class="line">f(<span class="number">0</span>);               <span class="comment">// calls f(int), not f(void*)</span></span><br><span class="line"></span><br><span class="line">f(<span class="literal">NULL</span>);            <span class="comment">// might not compile, but typically calls</span></span><br><span class="line">                    <span class="comment">// f(int). Never calls f(void*)</span></span><br></pre></td></tr></table></figure>
+<p>f(NULL)的不确定性是NULL的型别在实现中的余地的一种反映。例如，如果NULL的定义为0L，那么这个调用就有多义性了。因为从long到int，从long到bool，从0L到void*的型别转换被视为同样好的。</p>
+<p>一个指导原则是，不要在指针型别和整型型别之间做重载。</p>
+<p>nullptr的优点是，它不具备整型型别。实话实说，它也不具备指针型别。nullptr的实际型别是std::nullptr_t，并且，在一个漂亮的循环定义下，std::nullptr_t的定义被指定为nullptr的型别。</p>
+<p>型别std::nullptr_t可以隐式转换到所有裸指针型别，这就是nullptr可以扮演所有型别指针的原因。</p>
+<p>调用重载函数f时传入nullptr会调用void*那个重载版本，因为nullptr无法被视作任何一种整型。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">f(<span class="literal">nullptr</span>);         <span class="comment">// calls f(void*) overload</span></span><br></pre></td></tr></table></figure>
+<p>nullptr在有模板的前提下表现最亮眼。在模板型别推导中，0和NULL都会被推导成为int，但是nullptr会被推导为指针型别。</p>
+<p>所以，当想表示空指针时，使用nullptr，而非0或NULL。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>相对于0或NULL，优先选用nullptr。</li>
+<li>避免在整型和指针型别之间重载。</li>
+</ul>
 
     </div>
 
@@ -316,13 +323,13 @@
           
         
         <div class="post-tags">
-            <a href="/tags/booknote/" rel="tag"># booknote</a>
+            <a href="/tags/CPP-effective-modern-CPP/" rel="tag"># CPP - effective modern CPP</a>
           
         </div>
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
-              <a href="/2019/08/03/明朝那些事儿/" rel="next" title="明朝那些事儿">
-                <i class="fa fa-chevron-left"></i> 明朝那些事儿
+              <a href="/2019/11/17/Effective-Modern-CPP-7-在创建对象的时候区分parens和braces/" rel="next" title="Effective-Modern-CPP-6-在创建对象的时候区分parens和braces“ ">
+                <i class="fa fa-chevron-left"></i> Effective-Modern-CPP-6-在创建对象的时候区分parens和braces“ 
               </a>
             
           </div>
@@ -330,10 +337,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-              <a href="/2019/10/27/Effective-Modern-CPP-1-理解模板型别推导/" rel="prev" title="Effective Modern CPP 1 理解模板型别推导">
-                Effective Modern CPP 1 理解模板型别推导 <i class="fa fa-chevron-right"></i>
-              </a>
-            
           </div>
         </div>
     </footer>
@@ -550,7 +553,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#三体"><span class="nav-number">1.</span> <span class="nav-text">三体</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#条款8：优先选用nullptr，而非0或者NULL"><span class="nav-number">1.</span> <span class="nav-text">条款8：优先选用nullptr，而非0或者NULL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">2.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
 
           </div>
